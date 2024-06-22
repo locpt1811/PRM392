@@ -4,17 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Scaffold
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+
 import com.example.finalproject.ui.theme.FinalProjectTheme
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
@@ -23,7 +21,7 @@ import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import java.sql.Date
+
 import androidx.compose.material3.ListItem
 import androidx.compose.runtime.mutableStateListOf
 
@@ -50,10 +48,13 @@ class MainActivity : ComponentActivity() {
 
 @Serializable
 data class Book (
-    val id: Int,
+    val book_id: Int,
     val title: String,
-    val author: String,
-    val date: String
+    val isbn13: String,
+    val language_id: Int,
+    val num_pages: Int,
+    val publication_date: String,
+    val publisher_id: Int
 )
 
 @Composable
@@ -64,8 +65,12 @@ fun BookList(){
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO){
-            val response = supabase.postgrest.from("book").select().decodeList<Book>()
-           book.addAll(response)
+            try {
+                val response = supabase.postgrest.from("book").select().decodeList<Book>()
+                book.addAll(response)
+            } catch (e: Exception) {
+                println("Error: ${e.message}")
+            }
         }
     }
     LazyColumn {
