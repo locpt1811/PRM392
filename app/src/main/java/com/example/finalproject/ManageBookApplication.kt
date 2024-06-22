@@ -1,4 +1,8 @@
 package com.example.finalproject
 
-class ManageBookApplication {
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class ManageBookApplication : Application(){
 }
