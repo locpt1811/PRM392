@@ -2,9 +2,9 @@ package com.example.finalproject.views.Book
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finalproject.Book
-import com.example.finalproject.BookDTO
-import com.example.finalproject.repository.BookRepository
+import com.example.finalproject.model.shopping.Book
+import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.domain.repository.BookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
