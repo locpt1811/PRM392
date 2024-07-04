@@ -310,7 +310,7 @@ private fun ProductScreenErrorPreview() {
                 isProductListLoading = false,
                 onProductClick = {},
                 onShoppingCartClicked = {},
-                errors = listOf(UiText.DynamicString("This is a fake error"))
+                errors = listOf(UiText.DynamicString("This is a preview error"))
             )
         }
     }

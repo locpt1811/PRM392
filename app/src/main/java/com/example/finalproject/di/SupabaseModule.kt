@@ -18,7 +18,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-private object SupabaseModule {
+object SupabaseModule {
 
     @Provides
     @Singleton
@@ -29,7 +29,7 @@ private object SupabaseModule {
         ) {
             install(Postgrest)
             install(Auth) {
-                flowType = FlowType.PKCE
+                flowType = FlowType.IMPLICIT
                 scheme = "app"
                 host = "supabase.com"
             }

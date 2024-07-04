@@ -3,6 +3,7 @@ package com.example.finalproject.utils
 // Preferences Keys
 const val MY_PREF = "app_preferences"
 const val REMEMBER_ME = "remember_me_pref"
+const val ACCESS_TOKEN = "access_token_pref"
 
 
 const val BASE_URL = "https://fakestoreapi.com/"

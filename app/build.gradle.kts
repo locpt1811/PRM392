@@ -4,6 +4,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("plugin.serialization") version "1.9.0"
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+
+//    alias(libs.plugins.hilt.android)
+//    alias(libs.plugins.google.services)
+//    kotlin("kapt")
 }
 
 android {
@@ -94,9 +100,18 @@ dependencies {
     implementation("io.ktor:ktor-client-android:2.3.11")
 
     // Hilt
-    implementation ("com.google.dagger:hilt-android:2.51.1")
-    annotationProcessor ("com.google.dagger:hilt-compiler:2.51.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+//    implementation ("com.google.dagger:hilt-android:2.51.1")
+//    annotationProcessor ("com.google.dagger:hilt-compiler:2.51.1")
+//    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+//    implementation(libs.hilt.android)
+//    implementation(libs.androidx.hilt.navigation.compose)
+//    kapt(libs.hilt.android.compiler)
+
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-swiperefresh:0.21.0-beta")
@@ -126,4 +141,10 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
+}
+
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

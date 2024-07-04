@@ -13,6 +13,7 @@ import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.presentation.home.HomeSections
 import com.example.finalproject.presentation.home.addHomeGraph
+import com.example.finalproject.presentation.login.LoginScreen
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.presentation.navigation.rememberShoppingAppNavController
 
@@ -57,12 +58,12 @@ private fun NavGraphBuilder.shoppingAppGraph(
     ) {
         addHomeGraph(onProductClick, onSignOutClick, onCartClick, onNavigateToRoute)
     }
-//    composable(route = MainDestinations.LOGIN_ROUTE) { from ->
-//        LoginScreen(
-//            onSignUpClick = remember { { onSignUpClick(from) } },
-//            onLoginClick = remember { { onLoginClick(from) } }
-//        )
-//    }
+    composable(route = MainDestinations.LOGIN_ROUTE) { from ->
+        LoginScreen(
+            onSignUpClick = remember { { onSignUpClick(from) } },
+            onLoginClick = remember { { onLoginClick(from) } }
+        )
+    }
 //    composable(route = MainDestinations.SIGNUP_ROUTE) {
 //        SignUpScreen(upPress = upPress)
 //    }

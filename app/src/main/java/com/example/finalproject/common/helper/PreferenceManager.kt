@@ -3,8 +3,9 @@ package com.example.finalproject.common.helper
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.finalproject.utils.MY_PREF
+import javax.inject.Inject
 
-class PreferenceManager(context: Context) {
+class PreferenceManager @Inject constructor(private val context: Context) {
 
     private val preferences: SharedPreferences =
         context.getSharedPreferences(MY_PREF, Context.MODE_PRIVATE)
@@ -62,5 +63,10 @@ class PreferenceManager(context: Context) {
 
     fun getData(key: String, defaultValue: Float): Float {
         return preferences.getFloat(key, defaultValue)
+    }
+
+    fun clearPreferences() {
+        return preferences.edit().clear().apply()
+
     }
 }

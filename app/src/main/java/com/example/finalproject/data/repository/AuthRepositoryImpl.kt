@@ -1,13 +1,17 @@
 package com.example.finalproject.data.repository
 
+import android.util.Log
+import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.domain.repository.AuthRepository
+import com.example.finalproject.utils.ACCESS_TOKEN
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.providers.Google
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val auth: Auth
+    private val auth: Auth,
+    private val preferenceManager: PreferenceManager
 ) : AuthRepository {
     override suspend fun signIn(email: String, password: String): Boolean {
         return try {
@@ -15,6 +19,7 @@ class AuthRepositoryImpl @Inject constructor(
                 this.email = email
                 this.password = password
             }
+            auth.currentAccessTokenOrNull()?.let { preferenceManager.saveData(ACCESS_TOKEN, it) }
             true
         } catch (e: Exception) {
             false
@@ -27,6 +32,8 @@ class AuthRepositoryImpl @Inject constructor(
                 this.email = email
                 this.password = password
             }
+            auth.currentAccessTokenOrNull()?.let { preferenceManager.saveData(ACCESS_TOKEN, it) }
+            Log.d("aaaa", preferenceManager.getData(ACCESS_TOKEN, "").toString())
             true
         } catch (e: Exception) {
             false
@@ -36,6 +43,15 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signInWithGoogle(): Boolean {
         return try {
             auth.signInWith(Google)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    override suspend fun logout() : Boolean{
+        return try {
+            auth.signOut()
             true
         } catch (e: Exception) {
             false

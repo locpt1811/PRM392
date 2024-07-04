@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation.home.product
 
+import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.BookRepository
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.model.shopping.CateDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +18,22 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class ProductScreenUiState(
+    val categoryUiState: CategoryUiState = CategoryUiState(),
+    val productUiState: ProductUiState = ProductUiState(),
+    val errorMessages: List<UiText> = listOf()
+)
+
+data class CategoryUiState(
+    val isLoading: Boolean = true,
+    val categoryList: List<String> = listOf()
+)
+
+data class ProductUiState(
+    val isLoading: Boolean = true,
+    val productList: List<BookDTO> = listOf()
+)
 
 @Stable
 @HiltViewModel
@@ -30,7 +48,7 @@ class ProductViewModel @Inject constructor(
 
     init {
         getCategoryList()
-        getAllProducts()
+//        getAllProducts()
 //        getFCMTokenAndUpload()
     }
 
@@ -38,12 +56,14 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             when (val response = shoppingRepository.getCategories()) {
                 is Response.Success -> {
+                    Log.d("a", response.data[0].category_name.toString())
+
                     _uiState.update {
                         it.copy(
                             categoryUiState = CategoryUiState(
                                 isLoading = false,
                                 categoryList = response.data.map { category ->
-                                    category.replaceFirstChar { char -> char.uppercase() }
+                                    category.category_name.toString().replaceFirstChar { char -> char.uppercase() }
                                 }
                             )
                         )
@@ -111,19 +131,3 @@ class ProductViewModel @Inject constructor(
 //        }
 //    }
 }
-
-data class ProductScreenUiState(
-    val categoryUiState: CategoryUiState = CategoryUiState(),
-    val productUiState: ProductUiState = ProductUiState(),
-    val errorMessages: List<UiText> = listOf()
-)
-
-data class CategoryUiState(
-    val isLoading: Boolean = true,
-    val categoryList: List<String> = listOf()
-)
-
-data class ProductUiState(
-    val isLoading: Boolean = true,
-    val productList: List<BookDTO> = listOf()
-)
