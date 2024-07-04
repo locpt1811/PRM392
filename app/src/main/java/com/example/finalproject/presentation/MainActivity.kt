@@ -1,6 +1,14 @@
 package com.example.finalproject.presentation
 
+
+import android.Manifest
+import android.os.Build
+import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 
@@ -20,10 +28,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 import androidx.compose.material3.ListItem
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.BuildConfig
+import com.example.finalproject.presentation.navigation.MainDestinations
+import com.example.finalproject.utils.REMEMBER_ME
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 val supabase = createSupabaseClient(
     supabaseUrl = BuildConfig.SUPABASE_URL,
@@ -34,47 +49,50 @@ val supabase = createSupabaseClient(
     //install other modules
 }
 
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            FinalProjectTheme {
-//                BookList()
-//            }
-//        }
-//    }
-//}
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    //This will come later
-}
 
+//    @Inject
+//    lateinit var shoppingAlarmScheduler: ShoppingAlarmScheduler
 
-@Composable
-fun BookList(){
-   val book = remember {
-       mutableStateListOf<BookDTO>()
-   }
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
 
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO){
-            try {
-                val response = supabase.postgrest.from("book").select().decodeList<BookDTO>()
-                book.addAll(response)
-            } catch (e: Exception) {
-                println("Error: ${e.message}")
-            }
-        }
-    }
+    private var hasNotificationPermission: Boolean = false
 
-    LazyColumn {
-        items(book.chunked(3)) { rowBooks ->
-            Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                for (item in rowBooks) {
-                    ListItem(headlineContent = { Text(text = item.title) })
+    private val viewModel: MainActivityViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            val uiState by viewModel.uiState.collectAsState()
+
+            val permissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                onResult = { hasNotificationPermission = it }
+            )
+
+            if (!hasNotificationPermission) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    SideEffect {
+                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
                 }
             }
+
+//            if (uiState.consumableViewEvent.isNotEmpty()) {
+//                shoppingAlarmScheduler.schedule()
+//                viewModel.onUiEventConsumed()
+//            }
+
+            ShoppingApp(
+                startDestination = if (preferenceManager.getData(
+                        REMEMBER_ME,
+                        false
+                    )
+                ) MainDestinations.PRODUCT_ROUTE
+                else MainDestinations.LOGIN_ROUTE
+            )
         }
     }
 }

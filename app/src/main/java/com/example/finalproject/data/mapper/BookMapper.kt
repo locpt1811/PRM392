@@ -15,6 +15,7 @@ fun BookDTO.toProductEntity(): BookEntity {
         image_url = this.image_url,
         description = this.description,
         rating = this.rating,
+        price = this.price,
 
         language_id = this.book_language?.language_id,
         language_name = this.book_language?.language_name,
@@ -40,6 +41,7 @@ fun BookEntity.toProduct(): BookDTO {
         image_url = this.image_url,
         description = this.description,
         rating = this.rating,
+        price = this.price,
         book_language = BookLanguage(
             language_id = this.language_id,
             language_name = this.language_name,

@@ -13,6 +13,8 @@ data class BookDTO(
     val image_url: String? = null,
     val description: String? = null,
     val rating: Double? = null,
+    val price: Double? = null,
+
     val book_language: BookLanguage? = null,
     val category: Category? = null,
     val publisher: Publisher? = null

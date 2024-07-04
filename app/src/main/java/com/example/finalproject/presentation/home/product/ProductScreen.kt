@@ -40,9 +40,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.finalproject.R
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.presentation.designsystem.components.ShoppingProductItem
 import com.example.finalproject.presentation.designsystem.components.ShoppingScaffold
+import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.presentation.home.HomeSections
 import com.example.finalproject.presentation.home.ShoppingAppBottomBar
+import com.example.finalproject.utils.CustomPreview
+import java.util.Date
 
 @Composable
 fun ProductScreen(
@@ -225,18 +229,30 @@ private fun ProductList(
         ) {
             items(
                 if (selectedCatName == allCatText) productList
-                else productList.filter { it.category?.uppercase() == selectedCatName.uppercase() },
-                key = { it.id }
+                else productList.filter { it.category?.category_name?.uppercase() == selectedCatName.uppercase() },
+                key = { it.book_id }
             ) {
                 ShoppingProductItem(
-                    id = it.id,
+                    book_id = it.book_id,
                     title = it.title,
-                    price = it.price,
+                    isbn13 = it.isbn13,
+                    num_pages = it.num_pages,
+                    publication_date = it.publication_date,
+                    image_url = it.image_url,
                     description = it.description,
-                    category = it.category,
-                    image = it.image,
-                    rate = it.rating?.rate,
-                    count = it.rating?.count,
+                    rating = it.rating,
+                    price = it.price,
+
+                    language_id = it.book_language?.language_id,
+                    language_code = it.book_language?.language_code,
+                    language_name = it.book_language?.language_name,
+
+                    publisher_id = it.publisher?.publisher_id,
+                    publisher_name = it.publisher?.publisher_name,
+
+                    category_id = it.category?.category_id,
+                    category_name = it.category?.category_name,
+
                     onProductClick = onProductClick
                 )
             }
@@ -260,14 +276,16 @@ private fun ProductScreenPreview() {
                 ),
                 isCategoriesLoading = false,
                 productList = List(3) {
-                    Product(
-                        id = it,
-                        title = "Product Title",
-                        price = (10 * it).toString(),
-                        description = null,
-                        category = null,
-                        image = null,
-                        rating = null
+                    BookDTO(
+                        book_id = it,
+                        title = "Product $it",
+                        isbn13 = "1234567890123",
+                        num_pages = 100,
+                        publication_date = Date.from(Date().toInstant().plusSeconds(it.toLong())),
+                        image_url = "https://example.com/product$it.jpg",
+                        description = "This is a product description",
+                        rating = 4.5,
+                        price = 19.99
                     )
                 },
                 isProductListLoading = false,

@@ -43,6 +43,7 @@ import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.model.shopping.BookLanguage
 import com.example.finalproject.model.shopping.Category
 import com.example.finalproject.model.shopping.Publisher
+import java.util.Date
 
 private val imageModifier = Modifier
     .fillMaxWidth()
@@ -51,14 +52,26 @@ private val imageModifier = Modifier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShoppingProductItem(
-    id: Int,
+    book_id: Int,
     title: String?,
-    price: String?,
+    isbn13: String?,
+    num_pages: Int?,
+    publication_date: Date?,
+    image_url: String?,
     description: String?,
-    category: String?,
-    image: String?,
-    rate: Double?,
-    count: Int?,
+    rating: Double?,
+    price: Double?,
+
+    language_id: Int?,
+    language_code: String?,
+    language_name: String?,
+
+    publisher_id: Int?,
+    publisher_name: String?,
+
+    category_id: Int?,
+    category_name: String?,
+
     onProductClick: (BookDTO) -> Unit
 ) {
     Card(
@@ -73,9 +86,11 @@ fun ShoppingProductItem(
                 image_url,
                 description,
                 rating,
+                price,
+                BookLanguage(language_id, language_code, language_name),
                 Category(category_id, category_name),
-                Publisher(publisher_id, publisher_name),
-                BookLanguage(language_id, language_code, language_name))
+                Publisher(publisher_id, publisher_name)
+                )
         ) } },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(
@@ -101,7 +116,7 @@ fun ShoppingProductItem(
             AsyncImage(
                 modifier = imageModifier,
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(image)
+                    .data(image_url)
                     .crossfade(true)
                     .build(),
                 error = painterResource(id = R.drawable.error_img),

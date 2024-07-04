@@ -31,6 +31,10 @@ data class BookEntity(
     @ColumnInfo("rating")
     val rating: Double?,
 
+    @ColumnInfo("price")
+    val price: Double?,
+
+    // Language
     @ColumnInfo("language_id")
     val language_id: Int?,
 
@@ -40,15 +44,20 @@ data class BookEntity(
     @ColumnInfo("language_name")
     val language_name: String?,
 
+    // Date
     @ColumnInfo("publication_date")
     val publication_date: Date?,
 
+
+    // Publisher
     @ColumnInfo("publisher_id")
     val publisher_id: Int?,
 
     @ColumnInfo("publisher_name")
     val publisher_name: String?,
 
+
+    // Category
     @ColumnInfo("category_id")
     val category_id: Int?,
 
