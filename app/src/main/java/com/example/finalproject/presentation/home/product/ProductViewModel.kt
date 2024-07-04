@@ -48,7 +48,7 @@ class ProductViewModel @Inject constructor(
 
     init {
         getCategoryList()
-//        getAllProducts()
+        getAllProducts()
 //        getFCMTokenAndUpload()
     }
 

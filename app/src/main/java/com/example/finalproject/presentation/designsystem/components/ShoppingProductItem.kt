@@ -56,7 +56,7 @@ fun ShoppingProductItem(
     title: String?,
     isbn13: String?,
     num_pages: Int?,
-    publication_date: Date?,
+    publication_date: String?,
     image_url: String?,
     description: String?,
     rating: Double?,

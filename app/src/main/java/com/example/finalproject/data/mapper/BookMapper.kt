@@ -21,7 +21,7 @@ fun BookDTO.toProductEntity(): BookEntity {
         language_name = this.book_language?.language_name,
         language_code = this.book_language?.language_code,
 
-        publication_date = this.publication_date,
+        publication_date = this.publication_date.toString(),
 
         publisher_id = this.publisher?.publisher_id,
         publisher_name = this.publisher?.publisher_name,
@@ -37,7 +37,7 @@ fun BookEntity.toProduct(): BookDTO {
         title = this.title,
         isbn13 = this.isbn13,
         num_pages = this.num_pages,
-        publication_date = this.publication_date, // Adjust as needed based on your date handling
+        publication_date = this.publication_date.toString(), // Adjust as needed based on your date handling
         image_url = this.image_url,
         description = this.description,
         rating = this.rating,

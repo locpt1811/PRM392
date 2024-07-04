@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
 @Immutable
+@Serializable
 data class CateDTO (
     val category_id: Int,
     val category_name: String? = null

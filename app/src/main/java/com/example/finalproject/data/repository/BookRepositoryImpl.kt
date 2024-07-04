@@ -24,10 +24,9 @@ class BookRepositoryImpl @Inject constructor(
                     .decodeList<CateDTO>()
                 Response.Success(result)
             } catch (e: Exception) {
-                Response.Error<List<CateDTO>>(errorMessageId = R.string.error_message_categories)
+                Response.Error(errorMessageId = R.string.error_message_categories)
             }
 
-//            Response.Success(emptyList())
         }
     }
 
@@ -71,6 +70,7 @@ class BookRepositoryImpl @Inject constructor(
 //                Response.Error<List<BookDTO>>(errorMessageId = R.string.error_message_books)
 //            }
             Response.Success(emptyList())
+
         }
     }
 
