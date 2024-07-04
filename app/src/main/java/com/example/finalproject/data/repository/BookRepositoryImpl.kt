@@ -24,7 +24,7 @@ class BookRepositoryImpl @Inject constructor(
                     .decodeList<CateDTO>()
                 Response.Success(result)
             } catch (e: Exception) {
-                Response.Error(errorMessageId = R.string.error_message_categories)
+                Response.Error<List<CateDTO>>(errorMessageId = R.string.error_message_categories)
             }
 
         }
@@ -32,14 +32,13 @@ class BookRepositoryImpl @Inject constructor(
 
     override suspend fun getBooks(): Response<List<BookDTO>> {
         return withContext(Dispatchers.IO) {
-//            try {
+            try {
 //                val columns = Columns.raw("""
 //                                            book_id,
 //                                            title,
 //                                            isbn13,
 //                                            language_id,
 //                                            num_pages,
-//                                            publication_date,
 //                                            publisher_id
 //                                            image_url,
 //                                            description,
@@ -64,12 +63,17 @@ class BookRepositoryImpl @Inject constructor(
 //                    .from("book")
 //                    .select(columns = columns)
 //                    .decodeList<BookDTO>()
-//
-//                Response.Success(result)
-//            } catch (e: Exception) {
-//                Response.Error<List<BookDTO>>(errorMessageId = R.string.error_message_books)
-//            }
-            Response.Success(emptyList())
+
+                val result = postgrest
+                    .from("book")
+                    .select()
+                    .decodeList<BookDTO>()
+
+                Response.Success(result)
+            } catch (e: Exception) {
+                Response.Error(errorMessageId = R.string.error_message_books)
+            }
+//            Response.Success(emptyList())
 
         }
     }

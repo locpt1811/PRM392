@@ -11,7 +11,6 @@ data class BookDTO(
     val title: String? = null,
     val isbn13: String? = null,
     val num_pages: Int? = null,
-    val publication_date: String? = null,
 
     val image_url: String? = null,
     val description: String? = null,

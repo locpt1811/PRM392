@@ -44,9 +44,6 @@ data class BookEntity(
     @ColumnInfo("language_name")
     val language_name: String?,
 
-    // Date
-    @ColumnInfo("publication_date")
-    val publication_date: String?,
 
 
     // Publisher
