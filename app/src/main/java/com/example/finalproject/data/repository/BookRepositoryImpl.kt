@@ -73,7 +73,6 @@ class BookRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 Response.Error(errorMessageId = R.string.error_message_books)
             }
-//            Response.Success(emptyList())
 
         }
     }
