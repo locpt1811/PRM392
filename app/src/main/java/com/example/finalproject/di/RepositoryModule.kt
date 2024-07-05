@@ -1,6 +1,8 @@
 package com.example.finalproject.di
 
 import com.example.finalproject.common.helper.PreferenceManager
+import com.example.finalproject.data.datasource.local.cart.CartLocalDataSource
+import com.example.finalproject.data.datasource.local.favorite_product.FavoriteProductLocalDatasource
 import com.example.finalproject.data.repository.AuthRepositoryImpl
 import com.example.finalproject.data.repository.BookRepositoryImpl
 import com.example.finalproject.domain.repository.AuthRepository
@@ -19,15 +21,19 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideAuthRepository(
-        auth: Auth, // Provide the Auth dependency
-        preferenceManager: PreferenceManager // Provide the PreferenceManager dependency
+        auth: Auth,
+        preferenceManager: PreferenceManager
     ): AuthRepository {
         return AuthRepositoryImpl(auth, preferenceManager)
     }
 
     @Provides
     @Singleton
-    fun provideBookRepository(postgrest: Postgrest): BookRepository {
-        return BookRepositoryImpl(postgrest)
+    fun provideBookRepository(
+        postgrest: Postgrest,
+        favoriteProductLocalDatasource: FavoriteProductLocalDatasource,
+        cartLocalDataSource: CartLocalDataSource
+    ): BookRepository {
+        return BookRepositoryImpl(postgrest, favoriteProductLocalDatasource, cartLocalDataSource)
     }
 }

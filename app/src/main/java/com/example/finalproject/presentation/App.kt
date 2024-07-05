@@ -16,6 +16,7 @@ import com.example.finalproject.presentation.home.addHomeGraph
 import com.example.finalproject.presentation.login.LoginScreen
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.presentation.navigation.rememberShoppingAppNavController
+import com.example.finalproject.presentation.product_detail.ProductDetailScreen
 
 
 @Composable
@@ -78,12 +79,12 @@ private fun NavGraphBuilder.shoppingAppGraph(
 //    ) { from ->
 //        PaymentScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
 //    }
-//    composable(
-//        route = "${MainDestinations.PRODUCT_DETAIL_ROUTE}/{${MainDestinations.PRODUCT_DETAIL_KEY}}",
-//        arguments = listOf(
-//            navArgument(MainDestinations.PRODUCT_DETAIL_KEY) { type = NavType.StringType }
-//        )
-//    ) { from ->
-//        ProductDetailScreen(onCartClick = remember { { onCartClick(from) } })
-//    }
+    composable(
+        route = "${MainDestinations.PRODUCT_DETAIL_ROUTE}/{${MainDestinations.PRODUCT_DETAIL_KEY}}",
+        arguments = listOf(
+            navArgument(MainDestinations.PRODUCT_DETAIL_KEY) { type = NavType.StringType }
+        )
+    ) { from ->
+        ProductDetailScreen(onCartClick = remember { { onCartClick(from) } })
+    }
 }

@@ -2,9 +2,12 @@ package com.example.finalproject.data.repository
 
 import com.example.finalproject.R
 import com.example.finalproject.common.Response
+import com.example.finalproject.data.datasource.local.cart.CartLocalDataSource
+import com.example.finalproject.data.datasource.local.favorite_product.FavoriteProductLocalDatasource
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.domain.repository.BookRepository
 import com.example.finalproject.model.shopping.BookEntity
+import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.model.shopping.CateDTO
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
@@ -15,6 +18,8 @@ import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
     private val postgrest: Postgrest,
+    private val favoriteProductLocalDatasource: FavoriteProductLocalDatasource,
+    private val cartLocalDataSource: CartLocalDataSource
     ) : BookRepository {
     override suspend fun getCategories(): Response<List<CateDTO>> {
         return withContext(Dispatchers.IO) {
@@ -100,6 +105,39 @@ class BookRepositoryImpl @Inject constructor(
     override suspend fun getAllBookDb(id: String): Response<BookEntity> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun addFavoriteProduct(productEntity: BookEntity): Response<Unit> =
+        favoriteProductLocalDatasource.addFavoriteProduct(productEntity)
+
+    override suspend fun getAllFavoriteProducts(): Response<List<BookEntity>> =
+        favoriteProductLocalDatasource.getAllFavoriteProducts()
+
+    override suspend fun findFavoriteProduct(productId: Int): Response<BookEntity?> =
+        favoriteProductLocalDatasource.findFavoriteProduct(productId)
+
+    override suspend fun removeFavoriteProduct(productId: Int): Response<Unit> =
+        favoriteProductLocalDatasource.removeFavoriteProduct(productId)
+
+    override suspend fun addProductToCart(cartEntity: CartEntity): Response<Unit> =
+        cartLocalDataSource.addProductToCart(cartEntity)
+
+    override suspend fun removeProductFromCart(productId: Int): Response<Unit> =
+        cartLocalDataSource.removeProductFromCart(productId)
+
+    override suspend fun getCart(): Response<List<CartEntity>> =
+        cartLocalDataSource.getCart()
+
+    override suspend fun findCartItem(productId: Int): Response<CartEntity?> =
+        cartLocalDataSource.findCartItem(productId)
+
+    override suspend fun increaseCartItemCount(cartItemId: Int): Response<Unit> =
+        cartLocalDataSource.increaseCartItemCount(cartItemId)
+
+    override suspend fun decreaseCartItemCount(cartItemId: Int): Response<Unit> =
+        cartLocalDataSource.decreaseCartItemCount(cartItemId)
+
+    override suspend fun deleteAllCartItems(): Response<Unit> =
+        cartLocalDataSource.deleteAllItemsFromCart()
 
 }
 
