@@ -1,4 +1,4 @@
-package com.example.finalproject.presentation.designsystem.components
+package com.example.finalproject.presentation.home.product
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
@@ -43,7 +43,6 @@ import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.model.shopping.BookLanguage
 import com.example.finalproject.model.shopping.Category
 import com.example.finalproject.model.shopping.Publisher
-import java.util.Date
 
 private val imageModifier = Modifier
     .fillMaxWidth()

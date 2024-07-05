@@ -74,8 +74,14 @@ enum class HomeSections(
     val unSelectedIcon: ImageVector,
     val route: String
 ) {
-    PRODUCT(R.string.home, Icons.Filled.Home, Icons.Outlined.Home, "home/product"),
-    SEARCH(R.string.search, Icons.Filled.Search, Icons.Outlined.Search, "home/search"),
+    PRODUCT(R.string.home,
+        Icons.Filled.Home,
+        Icons.Outlined.Home,
+        "home/product"),
+    SEARCH(R.string.search,
+        Icons.Filled.Search,
+        Icons.Outlined.Search,
+        "home/search"),
     FAVORITES(
         R.string.favorites,
         Icons.Filled.Favorite,

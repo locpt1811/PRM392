@@ -7,7 +7,7 @@ const val ACCESS_TOKEN = "access_token_pref"
 
 
 const val BASE_URL = "https://fakestoreapi.com/"
-const val DELIVERY_FEE = 5.00
+const val DELIVERY_FEE = 2.00
 
 object EndPoints {
     const val CATEGORY = "products/categories"

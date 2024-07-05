@@ -40,13 +40,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.finalproject.R
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.model.shopping.BookDTO
-import com.example.finalproject.presentation.designsystem.components.ShoppingProductItem
 import com.example.finalproject.presentation.designsystem.components.ShoppingScaffold
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.presentation.home.HomeSections
 import com.example.finalproject.presentation.home.ShoppingAppBottomBar
 import com.example.finalproject.utils.CustomPreview
-import java.util.Date
 
 @Composable
 fun ProductScreen(

@@ -17,6 +17,7 @@ import com.example.finalproject.presentation.home.addHomeGraph
 import com.example.finalproject.presentation.login.LoginScreen
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.presentation.navigation.rememberShoppingAppNavController
+import com.example.finalproject.presentation.payment.PaymentScreen
 import com.example.finalproject.presentation.product_detail.ProductDetailScreen
 
 
@@ -69,21 +70,20 @@ private fun NavGraphBuilder.shoppingAppGraph(
 //    composable(route = MainDestinations.SIGNUP_ROUTE) {
 //        SignUpScreen(upPress = upPress)
 //    }
-//    composable(route = MainDestinations.CART_ROUTE) { from ->
-//        CartScreen(onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } })
-//    }
 
     composable(route = MainDestinations.CART_ROUTE) { from ->
-        CartScreen()
+        CartScreen(onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } })
     }
-//    composable(
-//        route = "${MainDestinations.PAYMENT_ROUTE}/{${MainDestinations.PAYMENT_AMOUNT_KEY}}",
-//        arguments = listOf(navArgument(MainDestinations.PAYMENT_AMOUNT_KEY) {
-//            type = NavType.FloatType
-//        })
-//    ) { from ->
-//        PaymentScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
-//    }
+
+    composable(
+        route = "${MainDestinations.PAYMENT_ROUTE}/{${MainDestinations.PAYMENT_AMOUNT_KEY}}",
+        arguments = listOf(navArgument(MainDestinations.PAYMENT_AMOUNT_KEY) {
+            type = NavType.FloatType
+        })
+    ) { from ->
+        PaymentScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
+    }
+
     composable(
         route = "${MainDestinations.PRODUCT_DETAIL_ROUTE}/{${MainDestinations.PRODUCT_DETAIL_KEY}}",
         arguments = listOf(
