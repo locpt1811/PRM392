@@ -17,13 +17,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.finalproject.R
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.presentation.home.favorite.FavoritesScreen
 import com.example.finalproject.presentation.home.product.ProductScreen
 
 fun NavGraphBuilder.addHomeGraph(
@@ -45,14 +45,14 @@ fun NavGraphBuilder.addHomeGraph(
 //            onNavigateRoute = onNavigateToRoute
 //        )
 //    }
-//    composable(HomeSections.FAVORITES.route) { from ->
-//        FavoritesScreen(
-//            onProductClick = remember {
-//                { product -> onProductClick(product, from) }
-//            },
-//            onNavigateRoute = onNavigateToRoute
-//        )
-//    }
+    composable(HomeSections.FAVORITES.route) { from ->
+        FavoritesScreen(
+            onProductClick = remember {
+                { product -> onProductClick(product, from) }
+            },
+            onNavigateRoute = onNavigateToRoute
+        )
+    }
 //    composable(HomeSections.PROFILE.route) { from ->
 //        val preferenceManager = PreferenceManager(LocalContext.current)
 //        ProfileScreen(

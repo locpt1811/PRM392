@@ -34,6 +34,7 @@ data class BookEntity(
     @ColumnInfo("price")
     val price: Double?,
 
+
     // Language
     @ColumnInfo("language_id")
     val language_id: Int?,

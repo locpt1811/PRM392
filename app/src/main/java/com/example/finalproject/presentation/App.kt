@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.presentation.cart.CartScreen
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.presentation.home.HomeSections
 import com.example.finalproject.presentation.home.addHomeGraph
@@ -71,6 +72,10 @@ private fun NavGraphBuilder.shoppingAppGraph(
 //    composable(route = MainDestinations.CART_ROUTE) { from ->
 //        CartScreen(onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } })
 //    }
+
+    composable(route = MainDestinations.CART_ROUTE) { from ->
+        CartScreen()
+    }
 //    composable(
 //        route = "${MainDestinations.PAYMENT_ROUTE}/{${MainDestinations.PAYMENT_AMOUNT_KEY}}",
 //        arguments = listOf(navArgument(MainDestinations.PAYMENT_AMOUNT_KEY) {
