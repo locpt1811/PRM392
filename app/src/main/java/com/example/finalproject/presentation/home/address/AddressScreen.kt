@@ -71,32 +71,29 @@ fun AddressScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Address Screen",
-                textAlign = TextAlign.Left,
-                modifier = Modifier.padding(16.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.1f)
+                    .fillMaxWidth()
+                    .background(Color.DarkGray),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = "The location of our shop is in Landmark 81",
+                    textAlign = TextAlign.Left,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             val mapView = rememberMapViewWithLifecycle()
-            AndroidView({ mapView }, modifier = Modifier.fillMaxHeight(0.75f)) { mapView ->
+            AndroidView({ mapView }) { mapView ->
                 mapView.getMapAsync { googleMap ->
                     val shopLocation = LatLng(10.7942, 106.7214) // Landmark 81, Vietnam
                     googleMap.addMarker(MarkerOptions().position(shopLocation).title("Marker in my shop"))
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(shopLocation))
                 }
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight(0.25f)
-                    .fillMaxWidth()
-                    .background(Color.DarkGray), 
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "The location of our shop is in Landmark 81",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+
         }
     }
 }
