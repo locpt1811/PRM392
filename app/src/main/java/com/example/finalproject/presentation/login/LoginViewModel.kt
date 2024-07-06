@@ -63,7 +63,7 @@ class LoginViewModel @Inject constructor(
     }
 
     @SuppressLint("CommitPrefEdits")
-    fun login(onNavigate: () -> Unit) {
+        fun login(onNavigate: () -> Unit) {
         val isEmailOk = AuthFieldCheckers.checkEmailField(
             email = email,
             onBlank = {

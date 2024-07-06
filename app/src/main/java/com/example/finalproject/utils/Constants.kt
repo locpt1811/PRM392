@@ -5,6 +5,7 @@ const val MY_PREF = "app_preferences"
 const val REMEMBER_ME = "remember_me_pref"
 const val MY_THEME = "my_theme_pref"
 const val ACCESS_TOKEN = "access_token_pref"
+const val FIRST_TIME_LAUNCH = "first_time_launch_pref"
 
 
 const val BASE_URL = "https://fakestoreapi.com/"

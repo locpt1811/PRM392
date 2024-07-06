@@ -15,6 +15,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 object MainDestinations {
+    const val ONBOARDING_ROUTE = "onboarding"
     const val LOGIN_ROUTE = "login"
     const val SIGNUP_ROUTE = "signup"
     const val PRODUCT_ROUTE = "product"
@@ -70,6 +71,12 @@ class ShoppingAppNavController(
     fun navigateToSignUp(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
             navController.navigate(MainDestinations.SIGNUP_ROUTE)
+        }
+    }
+
+    fun navigateToOnboarding(from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate(MainDestinations.ONBOARDING_ROUTE)
         }
     }
 

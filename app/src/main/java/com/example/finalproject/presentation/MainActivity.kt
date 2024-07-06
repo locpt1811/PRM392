@@ -3,6 +3,7 @@ package com.example.finalproject.presentation
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -31,12 +32,17 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.BuildConfig
 import com.example.finalproject.presentation.navigation.MainDestinations
+import com.example.finalproject.presentation.onboarding.OnboardingScreen
+import com.example.finalproject.utils.FIRST_TIME_LAUNCH
 import com.example.finalproject.utils.REMEMBER_ME
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,7 +50,6 @@ class MainActivity : ComponentActivity() {
 
 //    @Inject
 //    lateinit var shoppingAlarmScheduler: ShoppingAlarmScheduler
-
     @Inject
     lateinit var preferenceManager: PreferenceManager
 
@@ -54,9 +59,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        installSplashScreen()
+
+        preferenceManager = PreferenceManager(applicationContext)
+
         setContent {
             val uiState by viewModel.uiState.collectAsState()
-//            preferenceManager = PreferenceManager(applicationContext)
+
             val permissionLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestPermission(),
                 onResult = { hasNotificationPermission = it }
@@ -74,16 +84,16 @@ class MainActivity : ComponentActivity() {
 //                shoppingAlarmScheduler.schedule()
 //                viewModel.onUiEventConsumed()
 //            }
+            val a = preferenceManager.getData("FIRST_TIME_LAUNCH", true)
+            val startDestination = if (a) {
+                MainDestinations.ONBOARDING_ROUTE
+            } else {
+                MainDestinations.PRODUCT_ROUTE
+            }
 
             ShoppingApp(
-                startDestination = if (preferenceManager.getData(
-                        REMEMBER_ME,
-                        false
-                    )
-                ) MainDestinations.PRODUCT_ROUTE
-                else MainDestinations.LOGIN_ROUTE
+                startDestination = startDestination
             )
         }
-
     }
 }

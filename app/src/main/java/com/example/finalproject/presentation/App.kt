@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation
 
+import android.content.IntentSender.OnFinished
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavBackStackEntry
@@ -17,6 +18,7 @@ import com.example.finalproject.presentation.home.addHomeGraph
 import com.example.finalproject.presentation.login.LoginScreen
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.presentation.navigation.rememberShoppingAppNavController
+import com.example.finalproject.presentation.onboarding.OnboardingScreen
 import com.example.finalproject.presentation.payment.PaymentScreen
 import com.example.finalproject.presentation.product_detail.ProductDetailScreen
 
@@ -37,8 +39,9 @@ fun ShoppingApp(startDestination: String) {
                 onLoginClick = shoppingAppNavController::navigateHome,
                 onPaymentClick = shoppingAppNavController::navigatePayment,
                 onContinueShoppingClick = shoppingAppNavController::navigateHome,
+                onFinished = shoppingAppNavController::navigateHome,
                 upPress = shoppingAppNavController::upPress,
-                onNavigateToRoute = shoppingAppNavController::navigateToBottomBarRoute
+                onNavigateToRoute = shoppingAppNavController::navigateToBottomBarRoute,
             )
         }
     }
@@ -52,6 +55,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
     onLoginClick: (NavBackStackEntry) -> Unit,
     onPaymentClick: (Float, NavBackStackEntry) -> Unit,
     onContinueShoppingClick: (NavBackStackEntry) -> Unit,
+    onFinished: (NavBackStackEntry) -> Unit,
     upPress: () -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
@@ -61,6 +65,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
     ) {
         addHomeGraph(onProductClick, onSignOutClick, onCartClick, onNavigateToRoute)
     }
+
     composable(route = MainDestinations.LOGIN_ROUTE) { from ->
         LoginScreen(
             onSignUpClick = remember { { onSignUpClick(from) } },
@@ -70,6 +75,10 @@ private fun NavGraphBuilder.shoppingAppGraph(
 //    composable(route = MainDestinations.SIGNUP_ROUTE) {
 //        SignUpScreen(upPress = upPress)
 //    }
+
+    composable(route = MainDestinations.ONBOARDING_ROUTE) { from ->
+        OnboardingScreen(onFinished = remember { { onFinished(from) } })
+    }
 
     composable(route = MainDestinations.CART_ROUTE) { from ->
         CartScreen(onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } })
