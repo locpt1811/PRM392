@@ -14,11 +14,13 @@ import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.utils.REMEMBER_ME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @Stable
@@ -102,15 +104,22 @@ class LoginViewModel @Inject constructor(
 
         if (isEmailOk && isPasswordOk) {
             viewModelScope.launch(ioDispatcher) {
-                _uiState.update {
-                    it.copy(isLoading = true)
+                withContext(Dispatchers.Main){
+                    _uiState.update {
+                        it.copy(isLoading = true)
+                    }
                 }
 
                 try{
                     authRepository.signIn(email, password)
-                    _uiState.update {
-                        it.copy(isLoading = false, isLoginEnd = true)
+                    withContext(Dispatchers.Main){
+                        _uiState.update {
+                            it.copy(isLoading = true, isLoginEnd = true)
+                        }
                     }
+//                    _uiState.update {
+//                        it.copy(isLoading = false, isLoginEnd = true)
+//                    }
                     if (rememberMe) {
                         preferenceManager.saveData(REMEMBER_ME, true)
                     }
