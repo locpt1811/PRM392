@@ -23,7 +23,7 @@ object MainDestinations {
     const val PRODUCT_DETAIL_KEY = "productObject"
     const val PAYMENT_ROUTE = "payment"
     const val PAYMENT_AMOUNT_KEY = "paymentAmount"
-//    const val GGMAP_ROUTE = "ggmap"
+    const val ADDRESS_ROUTE = "address"
 }
 
 @Composable
@@ -104,11 +104,11 @@ class ShoppingAppNavController(
         }
     }
 
-//    fun navigateToMap(from: NavBackStackEntry) {
-//        if (shouldNavigate(from)) {
-//            navController.navigate(MainDestinations.GGMAP_ROUTE)
-//        }
-//    }
+    fun navigateToMap(from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate(MainDestinations.ADDRESS_ROUTE)
+        }
+    }
 }
 
 private fun shouldNavigate(from: NavBackStackEntry): Boolean = from.lifecycleIsResumed()
