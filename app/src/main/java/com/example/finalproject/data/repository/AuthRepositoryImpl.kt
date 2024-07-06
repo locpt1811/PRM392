@@ -10,6 +10,7 @@ import io.github.jan.supabase.gotrue.providers.builtin.Email
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
+
     private val auth: Auth,
     private val preferenceManager: PreferenceManager
 ) : AuthRepository {

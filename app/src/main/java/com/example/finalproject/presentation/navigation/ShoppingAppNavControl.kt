@@ -24,6 +24,7 @@ object MainDestinations {
     const val PRODUCT_DETAIL_KEY = "productObject"
     const val PAYMENT_ROUTE = "payment"
     const val PAYMENT_AMOUNT_KEY = "paymentAmount"
+    const val ADDRESS_ROUTE = "address"
 }
 
 @Composable
@@ -107,6 +108,12 @@ class ShoppingAppNavController(
                     inclusive = true
                 }
             }
+        }
+    }
+
+    fun navigateToMap(from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate(MainDestinations.ADDRESS_ROUTE)
         }
     }
 }

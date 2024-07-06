@@ -5,10 +5,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -23,6 +25,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.finalproject.R
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.presentation.home.address.AddressScreen
 import com.example.finalproject.presentation.home.favorite.FavoritesScreen
 import com.example.finalproject.presentation.home.product.ProductScreen
 
@@ -66,6 +69,12 @@ fun NavGraphBuilder.addHomeGraph(
 //            onNavigateRoute = onNavigateToRoute
 //        )
 //    }
+
+    composable(HomeSections.ADDRESS.route) { from ->
+        AddressScreen(
+            onNavigateRoute = onNavigateToRoute
+        )
+    }
 }
 
 enum class HomeSections(
@@ -93,6 +102,12 @@ enum class HomeSections(
         Icons.Filled.AccountCircle,
         Icons.Outlined.AccountCircle,
         "home/profile"
+    ),
+    ADDRESS(
+        R.string.address,
+        Icons.Filled.LocationOn,
+        Icons.Outlined.LocationOn,
+        "home/address"
     )
 }
 
