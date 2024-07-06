@@ -1,6 +1,5 @@
 package com.example.finalproject.presentation
 
-
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
@@ -39,15 +38,6 @@ import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.REMEMBER_ME
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-
-val supabase = createSupabaseClient(
-    supabaseUrl = BuildConfig.SUPABASE_URL,
-    supabaseKey = BuildConfig.SUPABASE_ANON_KEY
-) {
-    install(Auth)
-    install(Postgrest)
-    //install other modules
-}
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

@@ -31,4 +31,6 @@
     <color name="blue_200">#1DA5ED</color>
     <color name="blue_300">#2897F0</color>
     <color name="blue_400">#338AF2</color>
+
+    <color name="splash">#DFF1F1</color>
 </resources>

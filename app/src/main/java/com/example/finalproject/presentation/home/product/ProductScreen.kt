@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -41,6 +42,7 @@ import com.example.finalproject.R
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.presentation.designsystem.components.ShoppingScaffold
+import com.example.finalproject.presentation.designsystem.components.ThemeButton
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.presentation.home.HomeSections
 import com.example.finalproject.presentation.home.ShoppingAppBottomBar
@@ -137,6 +139,8 @@ private fun ProductScreenContent(
                     IconButton(onClick = onShoppingCartClicked) {
                         Icon(imageVector = Icons.Outlined.ShoppingCart, contentDescription = null)
                     }
+
+                    // change theme button
                 }
                 CategoryList(
                     categories = categories,

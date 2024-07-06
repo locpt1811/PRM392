@@ -56,8 +56,6 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             when (val response = shoppingRepository.getCategories()) {
                 is Response.Success -> {
-                    Log.d("a", response.data[0].category_name.toString())
-
                     _uiState.update {
                         it.copy(
                             categoryUiState = CategoryUiState(
