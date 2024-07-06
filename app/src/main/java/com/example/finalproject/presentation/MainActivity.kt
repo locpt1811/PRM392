@@ -84,5 +84,6 @@ class MainActivity : ComponentActivity() {
                 else MainDestinations.LOGIN_ROUTE
             )
         }
+
     }
 }
