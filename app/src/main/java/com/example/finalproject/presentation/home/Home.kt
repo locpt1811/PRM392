@@ -19,15 +19,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.finalproject.R
+import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.presentation.home.address.AddressScreen
 import com.example.finalproject.presentation.home.favorite.FavoritesScreen
 import com.example.finalproject.presentation.home.product.ProductScreen
+import com.example.finalproject.presentation.home.profile.ProfileScreen
+import com.example.finalproject.presentation.home.search.SearchScreen
+import com.example.finalproject.utils.REMEMBER_ME
 
 fun NavGraphBuilder.addHomeGraph(
     onProductClick: (BookDTO, NavBackStackEntry) -> Unit,
@@ -42,12 +47,12 @@ fun NavGraphBuilder.addHomeGraph(
             onNavigateRoute = onNavigateToRoute
         )
     }
-//    composable(HomeSections.SEARCH.route) { from ->
-//        SearchScreen(
-//            onProductClick = remember { { product -> onProductClick(product, from) } },
-//            onNavigateRoute = onNavigateToRoute
-//        )
-//    }
+    composable(HomeSections.SEARCH.route) { from ->
+        SearchScreen(
+            onProductClick = remember { { product -> onProductClick(product, from) } },
+            onNavigateRoute = onNavigateToRoute
+        )
+    }
     composable(HomeSections.FAVORITES.route) { from ->
         FavoritesScreen(
             onProductClick = remember {
@@ -56,19 +61,19 @@ fun NavGraphBuilder.addHomeGraph(
             onNavigateRoute = onNavigateToRoute
         )
     }
-//    composable(HomeSections.PROFILE.route) { from ->
-//        val preferenceManager = PreferenceManager(LocalContext.current)
-//        ProfileScreen(
-//            onSignOutClicked = remember {
-//                {
+    composable(HomeSections.PROFILE.route) { from ->
+        val preferenceManager = PreferenceManager(LocalContext.current)
+        ProfileScreen(
+            onSignOutClicked = remember {
+                {
 //                    FirebaseAuth.getInstance().signOut()
 //                    preferenceManager.saveData(REMEMBER_ME, false)
 //                    onSignOutClick(from)
-//                }
-//            },
-//            onNavigateRoute = onNavigateToRoute
-//        )
-//    }
+                }
+            },
+            onNavigateRoute = onNavigateToRoute
+        )
+    }
 
     composable(HomeSections.ADDRESS.route) { from ->
         AddressScreen(
@@ -86,11 +91,13 @@ enum class HomeSections(
     PRODUCT(R.string.home,
         Icons.Filled.Home,
         Icons.Outlined.Home,
-        "home/product"),
+        "home/product"
+    ),
     SEARCH(R.string.search,
         Icons.Filled.Search,
         Icons.Outlined.Search,
-        "home/search"),
+        "home/search"
+    ),
     FAVORITES(
         R.string.favorites,
         Icons.Filled.Favorite,

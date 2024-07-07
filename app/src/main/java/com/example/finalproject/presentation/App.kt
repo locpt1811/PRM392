@@ -21,6 +21,7 @@ import com.example.finalproject.presentation.navigation.rememberShoppingAppNavCo
 import com.example.finalproject.presentation.onboarding.OnboardingScreen
 import com.example.finalproject.presentation.payment.PaymentScreen
 import com.example.finalproject.presentation.product_detail.ProductDetailScreen
+import com.example.finalproject.presentation.signup.SignUpScreen
 
 
 @Composable
@@ -72,9 +73,9 @@ private fun NavGraphBuilder.shoppingAppGraph(
             onLoginClick = remember { { onLoginClick(from) } }
         )
     }
-//    composable(route = MainDestinations.SIGNUP_ROUTE) {
-//        SignUpScreen(upPress = upPress)
-//    }
+    composable(route = MainDestinations.SIGNUP_ROUTE) {
+        SignUpScreen(upPress = upPress)
+    }
 
     composable(route = MainDestinations.ONBOARDING_ROUTE) { from ->
         OnboardingScreen(onFinished = remember { { onFinished(from) } })

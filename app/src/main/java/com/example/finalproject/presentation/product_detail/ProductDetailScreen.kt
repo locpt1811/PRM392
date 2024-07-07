@@ -72,6 +72,10 @@ fun ProductDetailScreen(
             description = uiState.product?.description ?: "",
             price = uiState.product?.price ?: 0.0,
             rate = uiState.product?.rating ?: 0.0,
+            cateName = uiState.product?.category?.category_name ?: "",
+            pubName = uiState.product?.publisher?.publisher_name ?: "",
+            langName = uiState.product?.book_language?.language_name ?: "",
+            langCode = uiState.product?.book_language?.language_code ?: "",
             image = uiState.product?.image_url ?: "",
             isProductFavorite = uiState.isProductFavorite,
             onFavoriteBtnClicked = viewModel::onFavoriteProductClick,
@@ -100,6 +104,10 @@ private fun ProductDetailScreenContent(
     description: String,
     price: Double,
     rate: Double,
+    cateName: String,
+    pubName:String,
+    langName:String,
+    langCode:String,
     image: String,
     isProductFavorite: Boolean,
     onFavoriteBtnClicked: () -> Unit,
@@ -127,6 +135,10 @@ private fun ProductDetailScreenContent(
             description = description,
             price = price,
             rate = rate,
+            cateName = cateName,
+            pubName = pubName,
+            langName = langName,
+            langCode = langCode,
             isProductFavorite = isProductFavorite,
             onFavoriteBtnClicked = onFavoriteBtnClicked,
             onAddToCartClicked = onAddToCartClicked,
@@ -142,6 +154,10 @@ private fun ProductDetails(
     description: String,
     price: Double,
     rate: Double,
+    cateName: String,
+    pubName:String,
+    langName:String,
+    langCode:String,
     onFavoriteBtnClicked: () -> Unit,
     isProductFavorite: Boolean,
     onAddToCartClicked: () -> Unit,
@@ -156,6 +172,10 @@ private fun ProductDetails(
             title = title,
             description = description,
             rate = rate,
+            cateName = cateName,
+            pubName = pubName,
+            langName = langName,
+            langCode = langCode,
             onFavoriteBtnClicked = onFavoriteBtnClicked,
             isProductFavorite = isProductFavorite
         )
@@ -201,6 +221,10 @@ private fun ProductInfo(
     title: String,
     description: String,
     rate: Double,
+    cateName: String,
+    pubName:String,
+    langName:String,
+    langCode:String,
     isProductFavorite: Boolean,
     onFavoriteBtnClicked: () -> Unit
 ) {
@@ -244,6 +268,14 @@ private fun ProductInfo(
                 .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
             text = description
         )
+
+//        Text(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+//                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+//            text = description
+//        )
     }
 }
 
@@ -259,6 +291,10 @@ private fun ProductDetailScreenPreview() {
                 price = 120.0,
                 rate = 4.3,
                 image = "",
+                cateName = "Children",
+                pubName = "Shogakukan",
+                langName = "United Stated English",
+                langCode = "en-us",
                 isProductFavorite = false,
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},
@@ -280,6 +316,10 @@ private fun ProductDetailScreenProductFavoritePreview() {
                 price = 120.0,
                 rate = 4.3,
                 image = "",
+                cateName = "Children",
+                pubName = "Shogakukan",
+                langName = "United Stated English",
+                langCode = "en-us",
                 isProductFavorite = true,
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},

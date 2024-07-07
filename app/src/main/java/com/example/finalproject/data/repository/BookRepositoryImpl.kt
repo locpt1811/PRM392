@@ -4,6 +4,7 @@ import com.example.finalproject.R
 import com.example.finalproject.common.Response
 import com.example.finalproject.data.datasource.local.cart.CartLocalDataSource
 import com.example.finalproject.data.datasource.local.favorite_product.FavoriteProductLocalDatasource
+import com.example.finalproject.data.mapper.toProductEntity
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.domain.repository.BookRepository
 import com.example.finalproject.model.shopping.BookEntity
@@ -96,14 +97,28 @@ class BookRepositoryImpl @Inject constructor(
 
                 Response.Success(book)
             } catch (e: Exception) {
-                Response.Error(404)
+                Response.Error(errorMessageId = R.string.error_message_books_id)
             }
         }
     }
 
 
     override suspend fun getAllBookDb(): Response<List<BookEntity>> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            try {
+
+                val result = postgrest
+                    .from("book")
+                    .select()
+                    .decodeList<BookDTO>()
+                    .map { it.toProductEntity() }
+
+                Response.Success(result)
+            } catch (e: Exception) {
+                Response.Error(errorMessageId = R.string.error_message_books_db)
+            }
+
+        } as Response<List<BookEntity>>
     }
 
     override suspend fun addFavoriteProduct(productEntity: BookEntity): Response<Unit> =

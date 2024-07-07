@@ -79,5 +79,7 @@
 
     <string name="default_notification_channel_id" translatable="false">fcm_channel</string>
     <string name="error_message_books">Get Books repo Error</string>
+    <string name="error_message_books_id">Get Book By id repo Error</string>
+    <string name="error_message_books_db">Get db Books repo Error</string>
     <string name="error_message_categories">Get Categories repo Error</string>
 </resources>
