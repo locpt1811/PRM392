@@ -1,16 +1,23 @@
 package com.example.finalproject.presentation.login
 
 import android.annotation.SuppressLint
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.finalproject.common.helper.AuthFieldCheckers
 import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.domain.repository.AuthRepository
+import com.example.finalproject.presentation.ShoppingApp
+import com.example.finalproject.presentation.navigation.MainDestinations
+import com.example.finalproject.presentation.navigation.ShoppingAppNavController
+import com.example.finalproject.presentation.navigation.rememberShoppingAppNavController
 import com.example.finalproject.utils.REMEMBER_ME
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -113,17 +120,25 @@ class LoginViewModel @Inject constructor(
                 //add if success condition for the signin function, not try catch as below
 
                 try{
-                    authRepository.signIn(email, password)
-                    withContext(Dispatchers.Main){
-                        _uiState.update {
-                            it.copy(isLoading = true, isLoginEnd = true)
+                    val signInSuccessful = authRepository.signIn(email, password)
+                    if(signInSuccessful){
+                        withContext(Dispatchers.Main){
+                            _uiState.update {
+                                it.copy(isLoading = false, isLoginEnd = true)
+                            }
                         }
                     }
+
 
                     if (rememberMe) {
                         preferenceManager.saveData(REMEMBER_ME, true)
                     }
-                    onNavigate()
+//                    onNavigate()
+//                    if(signInSuccessful){
+//                        val navController = rememberNavController()
+//                        ShoppingApp(startDestination = MainDestinations.PRODUCT_ROUTE)
+//
+//                    }
                 }
                 catch (error: Exception) {
                     _uiState.update {

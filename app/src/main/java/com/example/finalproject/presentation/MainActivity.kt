@@ -92,7 +92,8 @@ class MainActivity : ComponentActivity() {
             }
 
             ShoppingApp(
-                startDestination = startDestination
+                startDestination = MainDestinations.LOGIN_ROUTE
+                //startDestination
             )
         }
     }

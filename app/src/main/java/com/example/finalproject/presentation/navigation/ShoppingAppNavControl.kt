@@ -116,6 +116,8 @@ class ShoppingAppNavController(
             navController.navigate(MainDestinations.ADDRESS_ROUTE)
         }
     }
+
+
 }
 
 private fun shouldNavigate(from: NavBackStackEntry): Boolean = from.lifecycleIsResumed()

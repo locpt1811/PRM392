@@ -20,9 +20,14 @@ class AuthRepositoryImpl @Inject constructor(
                 this.email = email
                 this.password = password
             }
-            auth.currentAccessTokenOrNull()?.let { preferenceManager.saveData(ACCESS_TOKEN, it) }
+
+            auth.currentAccessTokenOrNull()?.let {
+                preferenceManager.saveData(ACCESS_TOKEN, it)
+                Log.d("AuthRepositoryImpl", "Sign in successful, access token: $it")
+            }
             true
         } catch (e: Exception) {
+            Log.d("AuthRepositoryImpl", "Sign in failed, error: ${e.message}")
             false
         }
     }

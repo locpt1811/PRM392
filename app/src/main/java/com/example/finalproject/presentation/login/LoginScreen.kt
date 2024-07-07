@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.finalproject.R
 import com.example.finalproject.presentation.designsystem.components.AuthBackground
 import com.example.finalproject.presentation.designsystem.components.AuthEnterEmailOtf
@@ -41,10 +43,12 @@ import com.example.finalproject.presentation.designsystem.components.ShoppingSca
 import com.example.finalproject.presentation.designsystem.components.ShoppingShowToastMessage
 import com.example.finalproject.presentation.designsystem.components.WelcomeText
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
+import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.CustomPreview
 
 @Composable
 fun LoginScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     onSignUpClick: () -> Unit,
     onLoginClick: () -> Unit,
@@ -100,6 +104,13 @@ fun LoginScreen(
         }
     }
 
+    LaunchedEffect(uiState.isLoginEnd) {
+        if (uiState.isLoginEnd) {
+            navController.navigate(MainDestinations.PRODUCT_ROUTE) {
+                popUpTo(MainDestinations.LOGIN_ROUTE) { inclusive = true }
+            }
+        }
+    }
     ShoppingScaffold(modifier = modifier) { paddingValues ->
         AuthBackground()
         LoginScreenContent(

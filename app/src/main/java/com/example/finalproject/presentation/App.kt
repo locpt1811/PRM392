@@ -4,6 +4,7 @@ import android.content.IntentSender.OnFinished
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -33,6 +34,7 @@ fun ShoppingApp(startDestination: String) {
             startDestination = startDestination,
         ) {
             shoppingAppGraph(
+                navController = shoppingAppNavController.navController,
                 onProductClick = shoppingAppNavController::navigateToProduct,
                 onSignOutClick = shoppingAppNavController::onNavigateLogin,
                 onCartClick = shoppingAppNavController::navigateCart,
@@ -49,6 +51,7 @@ fun ShoppingApp(startDestination: String) {
 }
 
 private fun NavGraphBuilder.shoppingAppGraph(
+    navController: NavController,
     onProductClick: (BookDTO, NavBackStackEntry) -> Unit,
     onSignOutClick: (NavBackStackEntry) -> Unit,
     onCartClick: (NavBackStackEntry) -> Unit,
@@ -69,6 +72,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
 
     composable(route = MainDestinations.LOGIN_ROUTE) { from ->
         LoginScreen(
+            navController = navController,
             onSignUpClick = remember { { onSignUpClick(from) } },
             onLoginClick = remember { { onLoginClick(from) } }
         )
