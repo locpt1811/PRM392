@@ -85,22 +85,26 @@ fun OnboardingScreen(
 
             Box(modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.CenterEnd) {
-                OnboardingButton (text = buttonState.value[1],
+                OnboardingButton (
+                    text = buttonState.value[1],
                     backgroundColor = MaterialTheme.colorScheme.primary,
-                    textColor = MaterialTheme.colorScheme.onPrimary) {
-                    scope.launch {
-                        if (pagerState.currentPage < pages.size - 1) {
-                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                        } else {
-                            viewModel.setFinishOnboarding()
-                            onFinished()
+                    textColor = MaterialTheme.colorScheme.onPrimary,
+//                    onClick = viewModel::setFinishOnboarding
+                ) {
+                        scope.launch {
+                            if (pagerState.currentPage < pages.size - 1) {
+                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                            } else {
+                                viewModel.setFinishOnboarding()
+                                onFinished()
+                            }
                         }
                     }
-                }
             }
 
         }
-    }, content = {
+    },
+    content = {
         Column(Modifier.padding(it)) {
             HorizontalPager(state = pagerState) { index ->
                 OnboardingGraphUI(onboardingViewModel = pages[index])

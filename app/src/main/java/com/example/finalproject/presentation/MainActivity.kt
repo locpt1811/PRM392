@@ -42,6 +42,7 @@ import com.example.finalproject.presentation.onboarding.OnboardingScreen
 import com.example.finalproject.utils.FIRST_TIME_LAUNCH
 import com.example.finalproject.utils.REMEMBER_ME
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -84,8 +85,7 @@ class MainActivity : ComponentActivity() {
 //                shoppingAlarmScheduler.schedule()
 //                viewModel.onUiEventConsumed()
 //            }
-            val a = preferenceManager.getData("FIRST_TIME_LAUNCH", true)
-            val startDestination = if (a) {
+            val startDestination = if (preferenceManager.getData("FIRST_TIME_LAUNCH", true)) {
                 MainDestinations.ONBOARDING_ROUTE
             } else {
                 MainDestinations.PRODUCT_ROUTE

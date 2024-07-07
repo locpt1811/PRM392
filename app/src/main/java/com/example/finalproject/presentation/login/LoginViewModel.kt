@@ -63,7 +63,7 @@ class LoginViewModel @Inject constructor(
     }
 
     @SuppressLint("CommitPrefEdits")
-        fun login(onNavigate: () -> Unit) {
+    fun login(onNavigate: () -> Unit) {
         val isEmailOk = AuthFieldCheckers.checkEmailField(
             email = email,
             onBlank = {
@@ -110,6 +110,8 @@ class LoginViewModel @Inject constructor(
                     }
                 }
 
+                //add if success condition for the signin function, not try catch as below
+
                 try{
                     authRepository.signIn(email, password)
                     withContext(Dispatchers.Main){
@@ -117,9 +119,7 @@ class LoginViewModel @Inject constructor(
                             it.copy(isLoading = true, isLoginEnd = true)
                         }
                     }
-//                    _uiState.update {
-//                        it.copy(isLoading = false, isLoginEnd = true)
-//                    }
+
                     if (rememberMe) {
                         preferenceManager.saveData(REMEMBER_ME, true)
                     }

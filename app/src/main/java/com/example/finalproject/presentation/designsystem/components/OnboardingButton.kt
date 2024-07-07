@@ -22,18 +22,14 @@ fun OnboardingButton(
 ) {
 
     Button(
-        onClick = onClick, colors = ButtonDefaults.buttonColors(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor, contentColor = textColor
-        ), shape = RoundedCornerShape(10.dp)
+        ),
+        shape = RoundedCornerShape(10.dp)
     ) {
-
-
         Text(
             text = text, fontSize = fontSize.sp, style = textStyle
         )
-
-
     }
-
-
 }
