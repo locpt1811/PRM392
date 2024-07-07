@@ -102,7 +102,7 @@ class BookRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun getAllBookDb(id: String): Response<BookEntity> {
+    override suspend fun getAllBookDb(): Response<List<BookEntity>> {
         TODO("Not yet implemented")
     }
 
