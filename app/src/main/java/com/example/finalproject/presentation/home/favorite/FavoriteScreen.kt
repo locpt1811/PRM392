@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.finalproject.R
-import com.example.finalproject.data.mapper.toProduct
+import com.example.finalproject.data.mapper.toBookDTO
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.model.shopping.BookEntity
 import com.example.finalproject.presentation.designsystem.components.FullScreenCircularLoading
@@ -121,7 +121,7 @@ private fun FavoritesScreenContent(
                                 { onRemoveFavoriteClicked(it.book_id) }
                             },
                             onFavoriteItemClicked = remember {
-                                { onFavoriteItemClicked(it.toProduct()) }
+                                { onFavoriteItemClicked(it.toBookDTO()) }
                             }
                         )
                     }

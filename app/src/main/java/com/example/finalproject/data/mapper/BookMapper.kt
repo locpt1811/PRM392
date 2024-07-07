@@ -30,7 +30,7 @@ fun BookDTO.toProductEntity(): BookEntity {
     )
 }
 
-fun BookEntity.toProduct(): BookDTO {
+fun BookEntity.toBookDTO(): BookDTO {
     return BookDTO(
         book_id = this.book_id,
         title = this.title,

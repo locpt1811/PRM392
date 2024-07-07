@@ -260,6 +260,15 @@ private fun ProductInfo(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+            text = cateName
+        )
+
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -269,13 +278,7 @@ private fun ProductInfo(
             text = description
         )
 
-//        Text(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-//                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-//            text = description
-//        )
+
     }
 }
 

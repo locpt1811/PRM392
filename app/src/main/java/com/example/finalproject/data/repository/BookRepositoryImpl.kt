@@ -4,6 +4,7 @@ import com.example.finalproject.R
 import com.example.finalproject.common.Response
 import com.example.finalproject.data.datasource.local.cart.CartLocalDataSource
 import com.example.finalproject.data.datasource.local.favorite_product.FavoriteProductLocalDatasource
+import com.example.finalproject.data.mapper.toBookDTO
 import com.example.finalproject.data.mapper.toProductEntity
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.domain.repository.BookRepository
@@ -52,12 +53,12 @@ class BookRepositoryImpl @Inject constructor(
 //                                            category_id,
 //                                            price,
 //
-//                                            book_language(
+//                                            book_language (
 //                                              language_code,
 //                                              language_name
 //                                            ),
 //
-//                                            publisher(
+//                                            publisher (
 //                                              publisher_name
 //                                            )
 //
@@ -69,6 +70,7 @@ class BookRepositoryImpl @Inject constructor(
 //                    .from("book")
 //                    .select(columns = columns)
 //                    .decodeList<BookDTO>()
+
 
                 val result = postgrest
                     .from("book")
@@ -83,17 +85,51 @@ class BookRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getBooksFullDetail(): Response<List<BookDTO>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = postgrest.rpc("get_books_with_details")
+                    .decodeList<BookDTO>()
+
+                Response.Success(result)
+            } catch (e: Exception) {
+                Response.Error(errorMessageId = R.string.error_message_books)
+            }
+
+        }
+    }
 
     override suspend fun getBookById(id: String): Response<BookDTO> {
         return withContext(Dispatchers.IO) {
             try {
                 val book = postgrest.from("book")
-                    .select {
+                    .select() {
                         filter {
                             eq("book_id", id)
                         }
                     }
                     .decodeSingle<BookDTO>()
+
+                Response.Success(book)
+            } catch (e: Exception) {
+                Response.Error(errorMessageId = R.string.error_message_books_id)
+            }
+        }
+    }
+
+    override suspend fun getBookByIdFullDetail(id: String): Response<BookDTO> {
+        return withContext(Dispatchers.IO) {
+            try {
+//                val book = postgrest.from("book")
+//                    .select() {
+//                        filter {
+//                            eq("book_id", id)
+//                        }
+//                    }
+//                    .decodeSingle<BookDTO>()
+                val book = postgrest.rpc("get_books_by_id_with_details", id)
+                    .decodeSingle<BookEntity>()
+                    .toBookDTO()
 
                 Response.Success(book)
             } catch (e: Exception) {

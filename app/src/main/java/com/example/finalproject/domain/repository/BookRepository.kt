@@ -9,7 +9,9 @@ import com.example.finalproject.model.shopping.CateDTO
 interface BookRepository {
     suspend fun getCategories(): Response<List<CateDTO>>
     suspend fun getBooks(): Response<List<BookDTO>>
+    suspend fun getBooksFullDetail(): Response<List<BookDTO>>
     suspend fun getBookById(id: String): Response<BookDTO>
+    suspend fun getBookByIdFullDetail(id: String): Response<BookDTO>
     suspend fun getAllBookDb(): Response<List<BookEntity>>
     suspend fun addFavoriteProduct(productEntity: BookEntity): Response<Unit>
 
