@@ -117,35 +117,24 @@ class LoginViewModel @Inject constructor(
                     }
                 }
 
-                //add if success condition for the signin function, not try catch as below
-
-                try{
-                    val signInSuccessful = authRepository.signIn(email, password)
-                    if(signInSuccessful){
-                        withContext(Dispatchers.Main){
-                            _uiState.update {
-                                it.copy(isLoading = false, isLoginEnd = true)
-                            }
+                val signInSuccessful = authRepository.signIn(email, password)
+                if(signInSuccessful){
+                    withContext(Dispatchers.Main){
+                        _uiState.update {
+                            it.copy(isLoading = false, isLoginEnd = true)
                         }
                     }
-
-
                     if (rememberMe) {
                         preferenceManager.saveData(REMEMBER_ME, true)
                     }
-//                    onNavigate()
-//                    if(signInSuccessful){
-//                        val navController = rememberNavController()
-//                        ShoppingApp(startDestination = MainDestinations.PRODUCT_ROUTE)
-//
-//                    }
                 }
-                catch (error: Exception) {
+
+                else {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             errorMessages = listOf(
-                                UiText.DynamicString(error.message ?: "Unknown error")
+                                UiText.DynamicString("Username or password is incorrect")
                             )
                         )
                     }
