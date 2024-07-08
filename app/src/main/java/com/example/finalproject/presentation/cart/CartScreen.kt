@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -199,7 +200,7 @@ private fun EmptyCartListView(
 private fun CheckOutButton(
     subtotal: Double, onCheckoutBtnClicked: () -> Unit
 ) {
-    Divider(
+    HorizontalDivider(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
