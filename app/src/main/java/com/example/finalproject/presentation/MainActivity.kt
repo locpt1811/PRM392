@@ -37,6 +37,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.BuildConfig
+import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.presentation.onboarding.OnboardingScreen
 import com.example.finalproject.utils.FIRST_TIME_LAUNCH
@@ -55,6 +56,7 @@ class MainActivity : ComponentActivity() {
     lateinit var preferenceManager: PreferenceManager
 
     private var hasNotificationPermission: Boolean = false
+
 
     private val viewModel: MainActivityViewModel by viewModels()
 
@@ -90,7 +92,15 @@ class MainActivity : ComponentActivity() {
             } else {
                 MainDestinations.PRODUCT_ROUTE
             }
-
+//            if(authRepository.isLoggedIn()){
+//                ShoppingApp(
+//                    startDestination = MainDestinations.PRODUCT_ROUTE
+//                )
+//            } else {
+//                ShoppingApp(
+//                    startDestination = MainDestinations.LOGIN_ROUTE
+//                )
+//            }
             ShoppingApp(
                 startDestination = MainDestinations.LOGIN_ROUTE
                 //startDestination

@@ -58,9 +58,15 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun logout() : Boolean{
         return try {
             auth.signOut()
+            preferenceManager.removeData(ACCESS_TOKEN)
             true
         } catch (e: Exception) {
             false
         }
+    }
+
+    override  fun isLoggedIn(): Boolean {
+        val token = preferenceManager.getData(ACCESS_TOKEN, "")
+        return token.isNotEmpty()
     }
 }

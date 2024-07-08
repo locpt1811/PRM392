@@ -28,6 +28,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val auth: AuthRepository,
     private val repository: BookRepository,
+    private val authRepository: AuthRepository,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -93,6 +94,13 @@ class ProfileViewModel @Inject constructor(
 
     fun clearAccountInfoValue() {
         updateValue = ""
+    }
+    suspend fun logOut() {
+        try {
+            authRepository.logout();
+        } catch (e: Exception) {
+            Log.e("Error", e.message.toString())
+        }
     }
 
     fun setAccountInfoType(infoType: InfoType) {
