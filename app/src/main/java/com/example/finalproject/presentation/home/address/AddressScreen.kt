@@ -86,8 +86,8 @@ fun AddressScreen(
                 )
             }
             val mapView = rememberMapViewWithLifecycle()
-            AndroidView({ mapView }) { mapView ->
-                mapView.getMapAsync { googleMap ->
+            AndroidView({ mapView }) {
+                it.getMapAsync { googleMap ->
                     val shopLocation = LatLng(10.7942, 106.7214) // Landmark 81, Vietnam
                     googleMap.addMarker(MarkerOptions().position(shopLocation).title("Marker in my shop"))
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(shopLocation))

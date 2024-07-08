@@ -272,6 +272,22 @@ private fun ProductInfo(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+            text = langCode
+        )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+            text = langName
+        )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
                 .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
