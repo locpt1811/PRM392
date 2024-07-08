@@ -11,17 +11,21 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,9 +51,11 @@ import com.example.finalproject.presentation.designsystem.components.ShoppingSho
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.utils.CustomPreview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
     onCartClick: () -> Unit,
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
@@ -66,6 +72,19 @@ fun ProductDetailScreen(
     }
 
     ShoppingScaffold(modifier = modifier) { paddingValues ->
+        TopAppBar(
+            title = {
+                Text(text = stringResource(id = R.string.products))
+            },
+            navigationIcon = {
+                IconButton(onClick = onBackClick) {
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            )
+        )
         ProductDetailScreenContent(
             modifier = Modifier.padding(paddingValues),
             title = uiState.product?.title ?: "",
@@ -332,6 +351,6 @@ private fun ProductDetailScreenProductFavoritePreview() {
     }
 }
 
-private const val previewDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
+private const val previewDescription = "Ranranrn " +
         "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, " +
         "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."

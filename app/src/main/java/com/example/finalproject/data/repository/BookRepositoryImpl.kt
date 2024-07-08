@@ -84,18 +84,22 @@ class BookRepositoryImpl @Inject constructor(
 
         }
     }
-
     override suspend fun getBooksFullDetail(): Response<List<BookDTO>> {
         return withContext(Dispatchers.IO) {
             try {
+                // Fetch data from RPC endpoint and decode to List<BookEntity>
                 val result = postgrest.rpc("get_books_with_details")
-                    .decodeList<BookDTO>()
+                    .decodeList<BookEntity>()
 
-                Response.Success(result)
+                // Map BookEntity to BookDTO using extension function
+                val booksDto = result.map { entity ->
+                    entity.toBookDTO()
+                }
+
+                Response.Success(booksDto)
             } catch (e: Exception) {
                 Response.Error(errorMessageId = R.string.error_message_books)
             }
-
         }
     }
 

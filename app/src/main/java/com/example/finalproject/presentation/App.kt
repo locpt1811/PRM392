@@ -104,6 +104,9 @@ private fun NavGraphBuilder.shoppingAppGraph(
             navArgument(MainDestinations.PRODUCT_DETAIL_KEY) { type = NavType.StringType }
         )
     ) { from ->
-        ProductDetailScreen(onCartClick = remember { { onCartClick(from) } })
+        ProductDetailScreen(
+            onBackClick = { navController.popBackStack() },
+            onCartClick = remember { { onCartClick(from) } }
+        )
     }
 }
