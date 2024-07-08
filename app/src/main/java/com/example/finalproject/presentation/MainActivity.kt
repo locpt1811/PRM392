@@ -68,18 +68,19 @@ class MainActivity : ComponentActivity() {
                 Log.d("TAG", "yes")
             }
 
+            Log.d("permission", "${ hasNotificationPermission }")
+
             val startDestination = if (preferenceManager.getData(FIRST_TIME_LAUNCH, true)) {
                 MainDestinations.ONBOARDING_ROUTE
             } else {
-                if (preferenceManager.getData(ACCESS_TOKEN, "").isEmpty()) {
-                    MainDestinations.LOGIN_ROUTE
-                } else {
-                    MainDestinations.PRODUCT_ROUTE
-                }
+//                if (preferenceManager.getData(ACCESS_TOKEN, "").isEmpty()) {
+//                    MainDestinations.LOGIN_ROUTE
+//                } else {
+//                    MainDestinations.PRODUCT_ROUTE
+//                }
+                MainDestinations.PRODUCT_ROUTE
             }
-            Log.d("RMB", "onCreate: ${preferenceManager.getData(REMEMBER_ME, false)}")
-            Log.d("TOKEN", "onCreate: ${preferenceManager.getData(ACCESS_TOKEN, "")}")
-            Log.d("LAUNCH", "onCreate: ${preferenceManager.getData(FIRST_TIME_LAUNCH, true)}")
+
             ShoppingApp(
                 startDestination = startDestination
             )

@@ -42,7 +42,7 @@ fun AuthBackground() {
                 .fillMaxWidth()
                 .height(LocalConfiguration.current.screenHeightDp.dp / 2)
                 .onGloballyPositioned { sizeImage = it.size },
-            painter = painterResource(id = R.drawable.book_bg),
+            painter = painterResource(id = R.drawable.book_bg2),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
