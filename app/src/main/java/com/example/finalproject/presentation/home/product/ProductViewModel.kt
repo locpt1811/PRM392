@@ -84,7 +84,7 @@ class ProductViewModel @Inject constructor(
 
     private fun getAllProducts() {
         viewModelScope.launch(ioDispatcher) {
-            when (val response = shoppingRepository.getBooks()) {
+            when (val response = shoppingRepository.getBooksFullDetail()) {
                 is Response.Success -> {
                     _uiState.update {
                         it.copy(
