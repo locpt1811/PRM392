@@ -14,9 +14,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.finalproject.common.helper.PreferenceManager
+import com.example.finalproject.core.notification.ShoppingNotifier
 import com.example.finalproject.presentation.navigation.MainDestinations
+import com.example.finalproject.utils.ACCESS_TOKEN
 import com.example.finalproject.utils.FIRST_TIME_LAUNCH
 import com.example.finalproject.utils.REMEMBER_ME
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.wallet.contract.TaskResultContracts
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -25,6 +29,9 @@ class MainActivity : ComponentActivity() {
 
 //    @Inject
 //    lateinit var shoppingAlarmScheduler: ShoppingAlarmScheduler
+
+    @Inject
+    lateinit var shoppingNotifier: ShoppingNotifier
 
     @Inject
     lateinit var preferenceManager: PreferenceManager
@@ -58,16 +65,26 @@ class MainActivity : ComponentActivity() {
 //                shoppingAlarmScheduler.schedule()
 //                viewModel.onUiEventConsumed()
 //            }
+            if (hasNotificationPermission) {
+                shoppingNotifier.launchNotification()
+                Log.d("TAG", "yes")
+            }
+
+            Log.d("permission", "${ hasNotificationPermission }")
 
             val startDestination = if (preferenceManager.getData(FIRST_TIME_LAUNCH, true)) {
                 MainDestinations.ONBOARDING_ROUTE
             } else {
-                MainDestinations.PRODUCT_ROUTE
+//                if (preferenceManager.getData(ACCESS_TOKEN, "").isEmpty()) {
+//                    MainDestinations.LOGIN_ROUTE
+//                } else {
+//                    MainDestinations.PRODUCT_ROUTE
+//                }
+                MainDestinations.LOGIN_ROUTE
             }
 
             ShoppingApp(
-                startDestination = MainDestinations.LOGIN_ROUTE
-                //startDestination
+                startDestination = startDestination
             )
         }
     }

@@ -14,16 +14,16 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/splash_logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FinalProject"
+        android:theme="@style/Theme.SplashScreen"
         tools:targetApi="31">
 
-        <receiver android:name=".core.alarm.ShoppingAlarmReceiver"
-            android:enabled="true"/>
+<!--        <receiver android:name=".core.alarm.ShoppingAlarmReceiver"-->
+<!--            android:enabled="true"/>-->
 
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.SplashTheme">
+            android:theme="@style/Theme.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,6 +34,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBoOJJqaNmt6V1M3wuDnZW-4VU2cc53i1g"/>
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
 
     </application>
 

@@ -198,7 +198,6 @@ private fun ProductDetails(
             onFavoriteBtnClicked = onFavoriteBtnClicked,
             isProductFavorite = isProductFavorite
         )
-//        Divider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
         HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
 
         Row(

@@ -11,7 +11,12 @@ abstract class Notifier(private val notificationManager: NotificationManager) {
     abstract val notificationId: Int
 
     fun launchNotification() {
-        val channel = createNotificationChannel()
+//        val channel = createNotificationChannel()
+        val channel = NotificationChannel(
+            notificationChannelId,
+            notificationChannelName,
+            NotificationManager.IMPORTANCE_HIGH
+        )
         val notificationBuilder = buildNotification()
 
         notificationManager.apply {
