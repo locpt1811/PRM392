@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.outlined.Delete
@@ -84,8 +85,10 @@ fun ProfileScreen(
     onSignOutClicked: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var signOut by remember { mutableStateOf(false) }
+    var getProfile by remember { mutableStateOf(false) }
     ShoppingScaffold(
         modifier = modifier,
         bottomBar = {
@@ -128,6 +131,20 @@ fun ProfileScreen(
                 )
             }
 
+            IconButton(onClick = {
+               getProfile = true
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.AccountBox,
+                    contentDescription = null
+                )
+            }
+
+            // Display user information
+            Text(text = "Name: ${uiState.name}")
+            Text(text = "Email: ${uiState.email}")
+            Text(text = "Address: ${uiState.photoUrl}")
+
 
         }
     }
@@ -138,4 +155,10 @@ fun ProfileScreen(
             onSignOutClicked()
         }
     }
+    if (getProfile) {
+        LaunchedEffect(Unit) {
+            viewModel.getUserData()
+        }
+    }
+
 }

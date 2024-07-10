@@ -39,6 +39,7 @@ class ProfileViewModel @Inject constructor(
         getUserProfileImage()
         getUserDetails()
 
+
         val user = auth
 //        val user = auth.currentUser
 
@@ -103,6 +104,23 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    suspend fun getUserData() {
+        try {
+            val user = authRepository.retreiveCurrentUser()
+            Log.d("ProfileViewModel", "Retrieved user: $user")
+//            user?.let {
+//                _uiState.update { currentState ->
+//                    currentState.copy(
+//                        name = it.name,
+//                        email = it.email,
+//                        photoUrl = Uri.parse(it.photoUrl)
+//                    )
+//                }
+//            }
+        } catch (e: Exception) {
+            Log.e("Error", e.message.toString())
+        }
+    }
     fun setAccountInfoType(infoType: InfoType) {
         this.infoType = infoType
 

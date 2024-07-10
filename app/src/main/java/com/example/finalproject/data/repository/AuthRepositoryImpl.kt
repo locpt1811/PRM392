@@ -2,11 +2,14 @@ package com.example.finalproject.data.repository
 
 import android.util.Log
 import com.example.finalproject.common.helper.PreferenceManager
+import com.example.finalproject.data.mapper.toUser
 import com.example.finalproject.domain.repository.AuthRepository
+import com.example.finalproject.model.auth.User
 import com.example.finalproject.utils.ACCESS_TOKEN
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.providers.Google
 import io.github.jan.supabase.gotrue.providers.builtin.Email
+import io.github.jan.supabase.gotrue.user.UserInfo
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -24,7 +27,13 @@ class AuthRepositoryImpl @Inject constructor(
             auth.currentAccessTokenOrNull()?.let {
                 preferenceManager.saveData(ACCESS_TOKEN, it)
                 Log.d("AuthRepositoryImpl", "Sign in successful, access token: $it")
+
+                val userInfo =  auth.currentUserOrNull()
+                Log.d("AuthRepositoryImpl", "UserInfo: $userInfo")
+                val user = userInfo?.toUser()
+                Log.d("AuthRepositoryImpl", "User: $user")
             }
+
             true
         } catch (e: Exception) {
             Log.d("AuthRepositoryImpl", "Sign in failed, error: ${e.message}")
@@ -40,6 +49,7 @@ class AuthRepositoryImpl @Inject constructor(
             }
             auth.currentAccessTokenOrNull()?.let { preferenceManager.saveData(ACCESS_TOKEN, it) }
             Log.d("aaaa", preferenceManager.getData(ACCESS_TOKEN, "").toString())
+
             true
         } catch (e: Exception) {
             false
@@ -68,5 +78,16 @@ class AuthRepositoryImpl @Inject constructor(
     override  fun isLoggedIn(): Boolean {
         val token = preferenceManager.getData(ACCESS_TOKEN, "")
         return token.isNotEmpty()
+    }
+
+    override suspend fun retreiveCurrentUser(): User? {
+        return try{
+            val userInfo =  auth.currentUserOrNull()
+            val user = userInfo?.toUser()
+            return user
+        }catch (e: Exception){
+            null
+        }
+
     }
 }
