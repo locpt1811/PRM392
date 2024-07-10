@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
 //                } else {
 //                    MainDestinations.PRODUCT_ROUTE
 //                }
-                MainDestinations.LOGIN_ROUTE
+                MainDestinations.PRODUCT_ROUTE
             }
 
             ShoppingApp(
