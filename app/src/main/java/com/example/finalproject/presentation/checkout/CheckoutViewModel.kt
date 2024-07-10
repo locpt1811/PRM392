@@ -144,6 +144,8 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun requestPayment() {
+        Log.d("MMpaymentData", "requestPayment")
+        // Disables the button to prevent multiple clicks.
         viewModelScope.launch(ioDispatcher) {
             val task = getLoadPaymentDataTask(priceCents = 1200L)
 //            try {
@@ -165,12 +167,13 @@ class CheckoutViewModel @Inject constructor(
                     Log.d("MMpaymentData", it.result.toJson())
                     setPaymentData(paymentData)
                 }
+                else{
+                    Log.d("FuckCheckout", "requestPayment")
+                    Log.d("FuckCheckout", "${it.exception.toString()}")
+
+                }
             }
         }
-    }
-
-    fun logNow(){
-        Log.d("MMpaymentData", "logNow")
     }
 
     private fun handlePaymentSuccess(paymentData: PaymentData) {

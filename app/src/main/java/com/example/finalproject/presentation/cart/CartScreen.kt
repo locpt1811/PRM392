@@ -82,6 +82,8 @@ fun CartScreen(
                 { onGooglePayButtonClick((uiState.subtotal).toFloat()) }
             }
 
+//            onGooglePayButtonClick = { viewModel.requestPayment() }
+
         )
     }
 }

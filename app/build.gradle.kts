@@ -85,8 +85,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    //ggmap
-    implementation ("com.google.android.gms:play-services-maps:17.0.1")
+
+    implementation("androidx.compose.foundation:foundation")
+
+    // ggmap
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+
     // Supabase
     implementation("io.github.jan-tennert.supabase:postgrest-kt:2.5.0")
     implementation("io.github.jan-tennert.supabase:storage-kt:2.5.0")
@@ -127,6 +131,7 @@ dependencies {
     // Viewmodel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -149,12 +154,12 @@ dependencies {
     // Google Pay
     implementation("com.google.android.gms:play-services-wallet:19.4.0")
     implementation("com.google.pay.button:compose-pay-button:1.0.0")
+
+    // Coroutines for gg
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
 
     val appcompat_version = "1.7.0"
-
     implementation("androidx.appcompat:appcompat:$appcompat_version")
-    // For loading and tinting drawables on older versions of the platform
     implementation("androidx.appcompat:appcompat-resources:$appcompat_version")
 }
 

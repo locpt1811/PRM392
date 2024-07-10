@@ -89,7 +89,9 @@ fun CheckoutScreen(
             )
         }
 
-    } else {
+    }
+    else {
+        Text(text = "checkout screen")
         Column(
             modifier = Modifier
                 .background(grey)
@@ -104,7 +106,7 @@ fun CheckoutScreen(
                     modifier = Modifier
                         .testTag("payButton")
                         .fillMaxWidth(),
-                    onClick = viewModel::logNow,
+                    onClick = viewModel::requestPayment,
                     allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
                 )
             }
