@@ -19,6 +19,8 @@ import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.ACCESS_TOKEN
 import com.example.finalproject.utils.FIRST_TIME_LAUNCH
 import com.example.finalproject.utils.REMEMBER_ME
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.wallet.contract.TaskResultContracts
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -78,7 +80,7 @@ class MainActivity : ComponentActivity() {
 //                } else {
 //                    MainDestinations.PRODUCT_ROUTE
 //                }
-                MainDestinations.PRODUCT_ROUTE
+                MainDestinations.LOGIN_ROUTE
             }
 
             ShoppingApp(

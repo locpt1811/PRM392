@@ -14,7 +14,10 @@ import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.utils.ComponentPreview
 
 @Composable
-fun ShoppingButton(modifier: Modifier = Modifier, onClick: () -> Unit, buttonText: String) {
+fun ShoppingButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    buttonText: String) {
     Button(
         modifier = modifier
             .fillMaxWidth()
