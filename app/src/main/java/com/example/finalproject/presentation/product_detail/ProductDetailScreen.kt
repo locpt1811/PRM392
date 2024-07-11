@@ -57,6 +57,7 @@ fun ProductDetailScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onCartClick: () -> Unit,
+    onNavigateToChat: (currentUserId: String, bookOwnerId: String) -> Unit,
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -107,6 +108,7 @@ fun ProductDetailScreen(
                     }
                 }
             },
+            onNavigateToChat = onNavigateToChat,
             cartButtonText = if (uiState.isProductInCart) {
                 stringResource(id = R.string.go_to_cart)
             } else {
@@ -131,7 +133,8 @@ private fun ProductDetailScreenContent(
     isProductFavorite: Boolean,
     onFavoriteBtnClicked: () -> Unit,
     onAddToCartClicked: () -> Unit,
-    cartButtonText: String
+    cartButtonText: String,
+    onNavigateToChat: (currentUserId: String, bookOwnerId: String) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         AsyncImage(
@@ -161,7 +164,8 @@ private fun ProductDetailScreenContent(
             isProductFavorite = isProductFavorite,
             onFavoriteBtnClicked = onFavoriteBtnClicked,
             onAddToCartClicked = onAddToCartClicked,
-            cartButtonText = cartButtonText
+            cartButtonText = cartButtonText,
+            onNavigateToChat = onNavigateToChat
         )
     }
 }
@@ -180,7 +184,8 @@ private fun ProductDetails(
     onFavoriteBtnClicked: () -> Unit,
     isProductFavorite: Boolean,
     onAddToCartClicked: () -> Unit,
-    cartButtonText: String
+    cartButtonText: String,
+    onNavigateToChat: (currentUserId: String, bookOwnerId: String) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -196,7 +201,8 @@ private fun ProductDetails(
             langName = langName,
             langCode = langCode,
             onFavoriteBtnClicked = onFavoriteBtnClicked,
-            isProductFavorite = isProductFavorite
+            isProductFavorite = isProductFavorite,
+            onNavigateToChat = onNavigateToChat,
         )
 //        Divider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
         HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
@@ -245,8 +251,9 @@ private fun ProductInfo(
     langName:String,
     langCode:String,
     isProductFavorite: Boolean,
-    onFavoriteBtnClicked: () -> Unit
-) {
+    onFavoriteBtnClicked: () -> Unit,
+    onNavigateToChat: (currentUserId: String, bookOwnerId: String) -> Unit
+    ) {
     Column(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -320,7 +327,10 @@ private fun ProductDetailScreenPreview() {
                 isProductFavorite = false,
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},
-                cartButtonText = "Add to Cart"
+                cartButtonText = "Add to Cart",
+                onNavigateToChat = { currentUserId, bookOwnerId ->
+                    println("Navigating to chat: currentUserId=$currentUserId, bookOwnerId=$bookOwnerId")
+                }
             )
         }
     }
@@ -345,7 +355,10 @@ private fun ProductDetailScreenProductFavoritePreview() {
                 isProductFavorite = true,
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},
-                cartButtonText = "Go to Cart"
+                cartButtonText = "Go to Cart",
+                onNavigateToChat = { currentUserId, bookOwnerId ->
+                    println("Navigating to chat: currentUserId=$currentUserId, bookOwnerId=$bookOwnerId")
+                }
             )
         }
     }

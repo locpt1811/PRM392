@@ -16,6 +16,7 @@ data class BookDTO(
     val description: String? = null,
     val rating: Double? = null,
     val price: Double? = null,
+    val user_id: String? = null,
 
     val book_language: BookLanguage? = null,
     val category: Category? = null,
