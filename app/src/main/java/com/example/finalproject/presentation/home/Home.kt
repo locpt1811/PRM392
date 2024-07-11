@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation.home
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -26,6 +27,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.finalproject.R
 import com.example.finalproject.common.helper.PreferenceManager
+import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.presentation.home.address.AddressScreen
 import com.example.finalproject.presentation.home.favorite.FavoritesScreen
@@ -67,8 +69,9 @@ fun NavGraphBuilder.addHomeGraph(
             onSignOutClicked = remember {
                 {
 //                    FirebaseAuth.getInstance().signOut()
-//                    preferenceManager.saveData(REMEMBER_ME, false)
-//                    onSignOutClick(from)
+                    preferenceManager.saveData(REMEMBER_ME, false)
+                    onSignOutClick(from)
+
                 }
             },
             onNavigateRoute = onNavigateToRoute
@@ -81,6 +84,9 @@ fun NavGraphBuilder.addHomeGraph(
         )
     }
 }
+
+
+
 
 enum class HomeSections(
     @StringRes val title: Int,

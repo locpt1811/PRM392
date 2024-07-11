@@ -17,7 +17,7 @@ interface CartDao {
     @Query("SELECT * FROM CartEntity")
     suspend fun getCart(): List<CartEntity>
 
-    @Query("SELECT id, count, image, price, title FROM CartEntity WHERE id == :productId LIMIT 1")
+    @Query("SELECT * FROM CartEntity WHERE id == :productId LIMIT 1")
     suspend fun findCartItem(productId: Int): CartEntity?
 
     @Query("UPDATE CartEntity SET count = count + 1 WHERE id == :cartItemId")

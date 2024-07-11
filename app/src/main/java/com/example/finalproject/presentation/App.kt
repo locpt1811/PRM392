@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.presentation.cart.CartScreen
+import com.example.finalproject.presentation.checkout.CheckoutScreen
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.presentation.home.HomeSections
 import com.example.finalproject.presentation.home.addHomeGraph
@@ -41,6 +42,7 @@ fun ShoppingApp(startDestination: String) {
                 onSignUpClick = shoppingAppNavController::navigateToSignUp,
                 onLoginClick = shoppingAppNavController::navigateHome,
                 onPaymentClick = shoppingAppNavController::navigatePayment,
+                onGooglePayButtonClick = shoppingAppNavController::navigateGGPayment,
                 onContinueShoppingClick = shoppingAppNavController::navigateHome,
                 onFinished = shoppingAppNavController::navigateHome,
                 upPress = shoppingAppNavController::upPress,
@@ -58,6 +60,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
     onSignUpClick: (NavBackStackEntry) -> Unit,
     onLoginClick: (NavBackStackEntry) -> Unit,
     onPaymentClick: (Float, NavBackStackEntry) -> Unit,
+    onGooglePayButtonClick: (Float, NavBackStackEntry) -> Unit,
     onContinueShoppingClick: (NavBackStackEntry) -> Unit,
     onFinished: (NavBackStackEntry) -> Unit,
     upPress: () -> Unit,
@@ -78,7 +81,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
         )
     }
     composable(route = MainDestinations.SIGNUP_ROUTE) {
-        SignUpScreen(upPress = upPress)
+        SignUpScreen(navController = navController,upPress = upPress)
     }
 
     composable(route = MainDestinations.ONBOARDING_ROUTE) { from ->
@@ -86,7 +89,9 @@ private fun NavGraphBuilder.shoppingAppGraph(
     }
 
     composable(route = MainDestinations.CART_ROUTE) { from ->
-        CartScreen(onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } })
+        CartScreen(
+            onGooglePayButtonClick = remember { { amount -> onGooglePayButtonClick(amount, from) } },
+            onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } })
     }
 
     composable(
@@ -96,6 +101,15 @@ private fun NavGraphBuilder.shoppingAppGraph(
         })
     ) { from ->
         PaymentScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
+    }
+
+    composable(
+        route = "${MainDestinations.GG_PAYMENT_ROUTE}/{${MainDestinations.PAYMENT_AMOUNT_KEY}}",
+        arguments = listOf(navArgument(MainDestinations.PAYMENT_AMOUNT_KEY) {
+            type = NavType.FloatType
+        })
+    ) { from ->
+        CheckoutScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
     }
 
     composable(

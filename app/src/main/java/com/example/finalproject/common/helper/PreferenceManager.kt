@@ -69,4 +69,9 @@ class PreferenceManager @Inject constructor(private val context: Context) {
         return preferences.edit().clear().apply()
 
     }
+    fun removeData(key: String) {
+        val editor = preferences.edit()
+        editor.remove(key)
+        editor.apply()
+    }
 }

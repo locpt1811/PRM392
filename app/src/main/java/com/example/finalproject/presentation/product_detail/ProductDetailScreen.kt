@@ -204,7 +204,6 @@ private fun ProductDetails(
             isProductFavorite = isProductFavorite,
             onNavigateToChat = onNavigateToChat,
         )
-//        Divider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
         HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
 
         Row(
@@ -293,6 +292,22 @@ private fun ProductInfo(
                 .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
                 .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
             text = cateName
+        )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+            text = langCode
+        )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+            text = langName
         )
 
         Text(

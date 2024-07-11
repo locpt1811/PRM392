@@ -23,6 +23,7 @@ object MainDestinations {
     const val PRODUCT_DETAIL_ROUTE = "productDetail"
     const val PRODUCT_DETAIL_KEY = "productObject"
     const val PAYMENT_ROUTE = "payment"
+    const val GG_PAYMENT_ROUTE = "ggpayment"
     const val PAYMENT_AMOUNT_KEY = "paymentAmount"
     const val ADDRESS_ROUTE = "address"
 }
@@ -92,6 +93,12 @@ class ShoppingAppNavController(
     fun navigatePayment(totalAmount: Float, from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
             navController.navigate("${MainDestinations.PAYMENT_ROUTE}/$totalAmount")
+        }
+    }
+
+    fun navigateGGPayment(totalAmount: Float, from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate("${MainDestinations.GG_PAYMENT_ROUTE}/$totalAmount")
         }
     }
 

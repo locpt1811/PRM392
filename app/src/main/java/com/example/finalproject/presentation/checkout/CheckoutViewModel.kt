@@ -1,15 +1,13 @@
-package com.example.finalproject.presentation.cart
+package com.example.finalproject.presentation.checkout
 
 import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finalproject.common.Response
 import com.example.finalproject.common.helper.UiText
-import com.example.finalproject.domain.repository.BookRepository
-import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.PaymentsUtil
 import com.google.android.gms.common.api.ApiException
@@ -20,6 +18,7 @@ import com.google.android.gms.wallet.IsReadyToPayRequest
 import com.google.android.gms.wallet.PaymentData
 import com.google.android.gms.wallet.PaymentDataRequest
 import com.google.android.gms.wallet.PaymentsClient
+import com.google.android.gms.wallet.contract.TaskResultContracts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,133 +27,35 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.tasks.await
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.Executor
-import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 @Stable
 @HiltViewModel
-class CartViewModel @Inject constructor(
+class CheckoutViewModel @Inject constructor(
     application: Application,
-    private val bookRepository: BookRepository,
-    private val ioDispatcher:CoroutineDispatcher,
     savedStateHandle: SavedStateHandle,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(CartScreenUiState())
-    val uiState: StateFlow<CartScreenUiState> = _uiState.asStateFlow()
 
     private val _paymentUiState: MutableStateFlow<PaymentUiState> = MutableStateFlow(PaymentUiState.NotStarted)
     val paymentUiState: StateFlow<PaymentUiState> = _paymentUiState.asStateFlow()
 
     // A client for interacting with the Google Pay API.
     private val paymentsClient: PaymentsClient = PaymentsUtil.createPaymentsClient(application)
+    private var totalAmount : Double = 0.0
 
     init {
-        getCart()
-
+        savedStateHandle.get<Float>(MainDestinations.PAYMENT_AMOUNT_KEY)?.let { amount ->
+            totalAmount = amount.toDouble()
+        }
         viewModelScope.launch {
             verifyGooglePayReadiness()
         }
-    }
-
-    private fun getCart() {
-        viewModelScope.launch(ioDispatcher) {
-            when (val response = bookRepository.getCart()) {
-                is Response.Success -> {
-                    _uiState.update {
-                        it.copy(
-                            cartList = response.data,
-                            subtotal = calculateSubtotal(response.data)
-                        )
-                    }
-                }
-
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(errorMessages = listOf(
-                            UiText.StringResource(resId = response.errorMessageId)
-                        ))
-                    }
-                }
-            }
-        }
-    }
-
-    fun removeProductFromCart(productId: Int) {
-        viewModelScope.launch(ioDispatcher) {
-            when (val response = bookRepository.removeProductFromCart(productId)) {
-                is Response.Success -> {
-                    val cartList = _uiState.value.cartList.toMutableList()
-                    cartList.removeIf { it.id == productId }
-
-                    _uiState.update {
-                        it.copy(cartList = cartList, subtotal = calculateSubtotal(cartList))
-                    }
-                }
-
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(errorMessages = listOf(
-                            UiText.StringResource(resId = response.errorMessageId)
-                        ))
-                    }
-                }
-            }
-        }
-    }
-
-    fun increaseProductCount(productId: Int) {
-        viewModelScope.launch(ioDispatcher) {
-            when (val response = bookRepository.increaseCartItemCount(productId)) {
-                is Response.Success -> {
-                    getCart()
-                }
-
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(errorMessages = listOf(
-                            UiText.StringResource(resId = response.errorMessageId)
-                        ))
-                    }
-                }
-            }
-        }
-    }
-
-    fun decreaseProductCount(productId: Int) {
-        viewModelScope.launch(ioDispatcher) {
-            when (val response = bookRepository.decreaseCartItemCount(productId)) {
-                is Response.Success -> {
-                    getCart()
-                }
-
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(errorMessages = listOf(
-                            UiText.StringResource(resId = response.errorMessageId)
-                        ))
-                    }
-                }
-            }
-        }
-    }
-
-    fun consumedErrorMessage() {
-        _uiState.update {
-            it.copy(errorMessages = listOf())
-        }
-    }
-
-    private fun calculateSubtotal(cartList: List<CartEntity>): Double {
-        var subtotal = 0.0
-        cartList.forEach {
-            subtotal += it.price * it.count
-        }
-        return subtotal
     }
 
     /**
@@ -260,7 +161,6 @@ class CartViewModel @Inject constructor(
 //                // Handle error
 //                _paymentUiState.update { PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR, e.message) }
 //            }
-
             task.addOnCompleteListener {
                 if (it.isSuccessful) {
                     val paymentData = it.result
@@ -268,11 +168,11 @@ class CartViewModel @Inject constructor(
                     setPaymentData(paymentData)
                 }
                 else{
-                    Log.d("Fuck", it.exception.toString())
+                    Log.d("FuckCheckout", "requestPayment")
+                    Log.d("FuckCheckout", "${it.exception.toString()}")
+
                 }
             }
-
-
         }
     }
 
@@ -286,12 +186,6 @@ class CartViewModel @Inject constructor(
         setPaymentData(paymentData)
     }
 }
-
-data class CartScreenUiState(
-    val cartList: List<CartEntity> = listOf(),
-    val errorMessages: List<UiText> = listOf(),
-    val subtotal: Double = 0.0
-)
 
 abstract class PaymentUiState internal constructor() {
     object NotStarted : PaymentUiState()

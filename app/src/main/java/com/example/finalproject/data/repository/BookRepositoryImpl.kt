@@ -158,7 +158,7 @@ class BookRepositoryImpl @Inject constructor(
                 Response.Error(errorMessageId = R.string.error_message_books_db)
             }
 
-        } as Response<List<BookEntity>>
+        }
     }
 
     override suspend fun addFavoriteProduct(productEntity: BookEntity): Response<Unit> =

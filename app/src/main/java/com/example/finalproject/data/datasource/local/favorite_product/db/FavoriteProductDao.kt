@@ -14,7 +14,7 @@ interface FavoriteProductDao {
     @Query("SELECT * FROM BookEntity")
     suspend fun getAllFavoriteProducts(): List<BookEntity>
 
-    @Query("SELECT book_id FROM BookEntity WHERE book_id == :productId LIMIT 1")
+    @Query("SELECT * FROM BookEntity WHERE book_id == :productId LIMIT 1")
     suspend fun findFavoriteProduct(productId: Int): BookEntity?
 
     @Query("DELETE FROM BookEntity WHERE book_id == :productId")

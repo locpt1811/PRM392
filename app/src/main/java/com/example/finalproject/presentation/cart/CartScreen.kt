@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -45,11 +47,15 @@ import com.example.finalproject.presentation.designsystem.components.ShoppingSho
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.utils.CustomPreview
 import com.example.finalproject.utils.DELIVERY_FEE
+import com.example.finalproject.presentation.designsystem.components.CheckOutButton
+import com.example.finalproject.utils.PaymentsUtil
+import com.google.pay.button.PayButton
 
 @Composable
 fun CartScreen(
     modifier: Modifier = Modifier,
     onPaymentClick: (Float) -> Unit,
+    onGooglePayButtonClick: (Float) -> Unit,
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -71,7 +77,13 @@ fun CartScreen(
             onDecreaseClicked = remember(viewModel) { viewModel::decreaseProductCount },
             onCheckoutBtnClicked = remember {
                 { onPaymentClick((uiState.subtotal).toFloat()) }
+            },
+            onGooglePayButtonClick = remember {
+                { onGooglePayButtonClick((uiState.subtotal).toFloat()) }
             }
+
+//            onGooglePayButtonClick = { viewModel.requestPayment() }
+
         )
     }
 }
@@ -84,7 +96,8 @@ private fun CartScreenContent(
     subtotal: Double,
     onIncreaseClicked: (Int) -> Unit,
     onDecreaseClicked: (Int) -> Unit,
-    onCheckoutBtnClicked: () -> Unit
+    onCheckoutBtnClicked: () -> Unit,
+    onGooglePayButtonClick: () -> Unit
 ) {
     if (cartList.isNotEmpty()) {
         Column(
@@ -126,6 +139,13 @@ private fun CartScreenContent(
                 }
             }
             CheckOutButton(subtotal = subtotal, onCheckoutBtnClicked = onCheckoutBtnClicked)
+            PayButton(
+                modifier = Modifier
+                    .testTag("payButton")
+                    .fillMaxWidth(),
+                onClick = onGooglePayButtonClick,
+                allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
+            )
         }
     } else {
         EmptyCartListView(modifier = modifier, messageId = R.string.cart_empty)
@@ -195,34 +215,6 @@ private fun EmptyCartListView(
     }
 }
 
-@Composable
-private fun CheckOutButton(
-    subtotal: Double, onCheckoutBtnClicked: () -> Unit
-) {
-    Divider(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-            .padding(bottom = dimensionResource(id = R.dimen.two_level_margin))
-    )
-    Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin)),
-        onClick = onCheckoutBtnClicked,
-        contentPadding = PaddingValues(vertical = 16.dp),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Text(
-            text = buildAnnotatedString {
-                append(stringResource(id = R.string.checkout))
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append(" $${String.format("%.2f", subtotal + DELIVERY_FEE)}")
-                }
-            }, style = MaterialTheme.typography.titleMedium
-        )
-    }
-}
 
 @CustomPreview
 @Composable
@@ -238,7 +230,8 @@ private fun CartScreenPreview() {
                 subtotal = 10.0,
                 onIncreaseClicked = {},
                 onDecreaseClicked = {},
-                onCheckoutBtnClicked = {}
+                onCheckoutBtnClicked = {},
+                onGooglePayButtonClick = {}
             )
         }
     }
@@ -256,7 +249,8 @@ private fun CartScreenEmptyCartPreview() {
                 subtotal = 0.0,
                 onIncreaseClicked = {},
                 onDecreaseClicked = {},
-                onCheckoutBtnClicked = {}
+                onCheckoutBtnClicked = {},
+                onGooglePayButtonClick = {}
             )
         }
     }
