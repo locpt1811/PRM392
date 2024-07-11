@@ -5,10 +5,12 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +24,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
@@ -30,6 +36,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -101,51 +108,139 @@ fun ProfileScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         }
-    ) { paddingValues ->
+    ) {  paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
+            // Top Box
             Box(
                 modifier = Modifier
-                    .fillMaxHeight(0.1f)
                     .fillMaxWidth()
-                    .background(Color.DarkGray),
-                contentAlignment = Alignment.CenterStart
+                    .background(Color.DarkGray)
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "My Profile",
-                    textAlign = TextAlign.Left,
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            IconButton(onClick = {
-                signOut = true
-                onSignOutClicked()
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = null
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
 
-            IconButton(onClick = {
-               getProfile = true
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    contentDescription = null
-                )
+            // Profile Content
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                // First Column - Avatar
+                Column(
+                    modifier = Modifier
+                        .weight(0.4f)
+                        .padding(end = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                            .background(Color.LightGray)
+                            .border(1.dp, Color.Green, CircleShape)
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("https://thumbs.dreamstime.com/b/businessman-icon-vector-male-avatar-profile-image-profile-businessman-icon-vector-male-avatar-profile-image-182095609.jpg")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+
+                // Second Column - Profile Information
+                Column(
+                    modifier = Modifier.weight(0.6f)
+                ) {
+                    Text(
+                        text = "My Name: ${uiState.name}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = "My Email: ${uiState.email}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = "Email Verified: Yes",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    // Buttons
+                    OutlinedButton(
+                        onClick = { /* TODO: Update Username */ },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        border = null, // Remove default border
+                        shape = MaterialTheme.shapes.small, // Rounded corners
+                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                        colors = ButtonColors(
+                            containerColor = Color.DarkGray,
+                            contentColor = Color.White,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.DarkGray
+                        )
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Update Username Icon",
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = "Update Username",
+                                modifier = Modifier.padding(start = 8.dp),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+
+                    OutlinedButton(
+                        onClick = { /* TODO: Update Password */ },
+                        modifier = Modifier.fillMaxWidth(),
+                        border = null,
+                        shape = MaterialTheme.shapes.small,
+                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                        colors = ButtonColors(
+                            containerColor = Color.DarkGray,
+                            contentColor = Color.White,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.DarkGray
+                        )
+
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = "Update Password Icon",
+                                modifier = Modifier.size(18.dp),
+                                tint = Color.White
+                            )
+                            Text(
+                                text = "Update Password",
+                                modifier = Modifier.padding(start = 8.dp),
+                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                            )
+                        }
+                    }
+                }
             }
-
-            // Display user information
-            Text(text = "Name: ${uiState.name}")
-            Text(text = "Email: ${uiState.email}")
-            Text(text = "Address: ${uiState.photoUrl}")
-
-
         }
     }
 
