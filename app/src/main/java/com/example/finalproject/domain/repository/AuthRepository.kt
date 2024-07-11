@@ -9,7 +9,7 @@ interface AuthRepository {
     suspend fun signUp(email: String, password: String): Boolean
     suspend fun signInWithGoogle(): Boolean
     suspend fun logout() : Boolean
-
+    suspend fun sendEmailVerification():Boolean
      fun isLoggedIn(): Boolean
 
      suspend fun retreiveCurrentUser(): User?

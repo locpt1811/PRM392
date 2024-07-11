@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.finalproject.R
 import com.example.finalproject.presentation.designsystem.components.AuthBackground
 import com.example.finalproject.presentation.designsystem.components.AuthEnterEmailOtf
@@ -24,10 +26,12 @@ import com.example.finalproject.presentation.designsystem.components.ShoppingSca
 import com.example.finalproject.presentation.designsystem.components.ShoppingShowToastMessage
 import com.example.finalproject.presentation.designsystem.components.WelcomeText
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
+import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.CustomPreview
 
 @Composable
 fun SignUpScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     upPress: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
@@ -38,7 +42,13 @@ fun SignUpScreen(
         ShoppingShowToastMessage(message = uiState.errorMessages.first().asString())
         viewModel.consumedErrorMessage()
     }
-
+    LaunchedEffect(uiState.isSignUpEnd) {
+        if (uiState.isSignUpEnd) {
+            navController.navigate(MainDestinations.LOGIN_ROUTE) {
+                popUpTo(MainDestinations.SIGNUP_ROUTE) { inclusive = true }
+            }
+        }
+    }
     ShoppingScaffold(modifier = modifier) { paddingValues ->
         AuthBackground()
         SignUpScreenContent(

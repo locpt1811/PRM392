@@ -52,6 +52,7 @@ class AuthRepositoryImpl @Inject constructor(
 
             true
         } catch (e: Exception) {
+            Log.d("AuthRepositoryImpl", "Sign up failed, error: ${e.message}")
             false
         }
     }
@@ -89,5 +90,14 @@ class AuthRepositoryImpl @Inject constructor(
             null
         }
 
+    }
+
+    override suspend fun sendEmailVerification(): Boolean {
+        return try {
+//            auth.verifyEmailOtp()
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 }

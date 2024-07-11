@@ -81,7 +81,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
         )
     }
     composable(route = MainDestinations.SIGNUP_ROUTE) {
-        SignUpScreen(upPress = upPress)
+        SignUpScreen(navController = navController,upPress = upPress)
     }
 
     composable(route = MainDestinations.ONBOARDING_ROUTE) { from ->
