@@ -39,6 +39,9 @@ class ProfileViewModel @Inject constructor(
         getUserProfileImage()
         getUserDetails()
 
+        viewModelScope.launch {
+            getUserData()
+        }
 
         val user = auth
 //        val user = auth.currentUser
@@ -108,15 +111,13 @@ class ProfileViewModel @Inject constructor(
         try {
             val user = authRepository.retreiveCurrentUser()
             Log.d("ProfileViewModel", "Retrieved user: $user")
-//            user?.let {
-//                _uiState.update { currentState ->
-//                    currentState.copy(
-//                        name = it.name,
-//                        email = it.email,
-//                        photoUrl = Uri.parse(it.photoUrl)
-//                    )
-//                }
-//            }
+            _uiState.update {
+                it.copy(
+                    name = user?.name,
+                    email = user?.email,
+                    emailVerified = user?.emailVerified ?: false
+                )
+            }
         } catch (e: Exception) {
             Log.e("Error", e.message.toString())
         }
@@ -494,7 +495,8 @@ data class ProfileUiState(
     val userDetail: UserDetail? = null,
     val deleteAccountState: DeleteAccountState = DeleteAccountState(),
     val updateAccountInfoDialogState: DialogUiState = DialogUiState.DialogInactive,
-    val imageCropperDialogUiState: DialogUiState = DialogUiState.DialogInactive
+    val imageCropperDialogUiState: DialogUiState = DialogUiState.DialogInactive,
+    val emailVerified: Boolean = true,
 )
 
 data class VerifyPhoneNumberState(

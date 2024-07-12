@@ -126,7 +126,7 @@ class SignUpViewModel @Inject constructor(
                 } else {
                     _uiState.update {
                         it.copy(
-                            isSignUpEnd = true,
+                            isSignUpEnd = true, //set to true khi test, vi 1 ngay chi dc tao 1 user tren supabase
                             isLoading = false,
                             errorMessages = listOf(
                                 UiText.StringResource(R.string.signup_failed_please_try_again)

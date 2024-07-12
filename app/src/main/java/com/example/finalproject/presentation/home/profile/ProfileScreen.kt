@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,6 +44,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -96,6 +99,13 @@ fun ProfileScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var signOut by remember { mutableStateOf(false) }
     var getProfile by remember { mutableStateOf(false) }
+    var newUsername by remember { mutableStateOf("") }
+    var isUpdatePasswordVisible by remember { mutableStateOf(false) }
+    var isUpdateUsernameVisible by remember { mutableStateOf(false) }
+    var oldPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+
+
     ShoppingScaffold(
         modifier = modifier,
         bottomBar = {
@@ -133,7 +143,7 @@ fun ProfileScreen(
             // Profile Content
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(16.dp)
             ) {
                 // First Column - Avatar
@@ -183,7 +193,7 @@ fun ProfileScreen(
                     )
                     // Buttons
                     OutlinedButton(
-                        onClick = { /* TODO: Update Username */ },
+                        onClick = { isUpdateUsernameVisible = true },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp),
@@ -212,7 +222,7 @@ fun ProfileScreen(
                     }
 
                     OutlinedButton(
-                        onClick = { /* TODO: Update Password */ },
+                        onClick = { isUpdatePasswordVisible = true },
                         modifier = Modifier.fillMaxWidth(),
                         border = null,
                         shape = MaterialTheme.shapes.small,
@@ -239,6 +249,60 @@ fun ProfileScreen(
                             )
                         }
                     }
+
+
+
+                }
+            }
+
+            if (isUpdateUsernameVisible) {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextField(
+
+                    value = newUsername,
+                    onValueChange = { newUsername = it },
+                    label = { Text("New Username") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedButton(
+                    onClick = {
+//                                viewModel.updateUsername(newUsername)
+                        isUpdateUsernameVisible = false
+                    },
+                    // ...
+                ) {
+                    Text("Submit")
+                }
+            }
+
+            if (isUpdatePasswordVisible) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextField(
+                    value = oldPassword,
+                    onValueChange = { oldPassword = it },
+                    label = { Text("Old Password") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                TextField(
+                    value = newPassword,
+                    onValueChange = { newPassword = it },
+                    label = { Text("New Password") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedButton(
+                    onClick = {
+//                                viewModel.updatePassword(oldPassword, newPassword)
+                        isUpdatePasswordVisible = false
+                    },
+                    // ...
+                ) {
+                    Text("Submit")
                 }
             }
         }

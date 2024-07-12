@@ -10,6 +10,7 @@ import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.providers.Google
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.gotrue.user.UserInfo
+import io.github.jan.supabase.gotrue.user.UserUpdateBuilder
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -98,6 +99,15 @@ class AuthRepositoryImpl @Inject constructor(
             true
         } catch (e: Exception) {
             false
+        }
+    }
+
+    override suspend fun updateUser(config: UserUpdateBuilder.() -> Unit): UserInfo? {
+        return try {
+            auth.updateUser(true,"",config)
+        } catch (e: Exception) {
+            Log.d("AuthRepositoryImpl", "Update user failed, error: ${e.message}")
+            null
         }
     }
 }
