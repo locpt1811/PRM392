@@ -5,23 +5,32 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
@@ -29,11 +38,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -84,8 +95,17 @@ fun ProfileScreen(
     onSignOutClicked: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var signOut by remember { mutableStateOf(false) }
+    var getProfile by remember { mutableStateOf(false) }
+    var newUsername by remember { mutableStateOf("") }
+    var isUpdatePasswordVisible by remember { mutableStateOf(false) }
+    var isUpdateUsernameVisible by remember { mutableStateOf(false) }
+    var oldPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+
+
     ShoppingScaffold(
         modifier = modifier,
         bottomBar = {
@@ -98,37 +118,193 @@ fun ProfileScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         }
-    ) { paddingValues ->
+    ) {  paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
+            // Top Box
             Box(
                 modifier = Modifier
-                    .fillMaxHeight(0.1f)
                     .fillMaxWidth()
-                    .background(Color.DarkGray),
-                contentAlignment = Alignment.CenterStart
+                    .background(Color.DarkGray)
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "My Profile",
-                    textAlign = TextAlign.Left,
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            IconButton(onClick = {
-                signOut = true
-                onSignOutClicked()
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = null
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
 
+            // Profile Content
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                // First Column - Avatar
+                Column(
+                    modifier = Modifier
+                        .weight(0.4f)
+                        .padding(end = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                            .background(Color.LightGray)
+                            .border(1.dp, Color.Green, CircleShape)
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("https://thumbs.dreamstime.com/b/businessman-icon-vector-male-avatar-profile-image-profile-businessman-icon-vector-male-avatar-profile-image-182095609.jpg")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
 
+                // Second Column - Profile Information
+                Column(
+                    modifier = Modifier.weight(0.6f)
+                ) {
+                    Text(
+                        text = "My Name: ${uiState.name}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = "My Email: ${uiState.email}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = "Email Verified: Yes",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    // Buttons
+                    OutlinedButton(
+                        onClick = { isUpdateUsernameVisible = true },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        border = null, // Remove default border
+                        shape = MaterialTheme.shapes.small, // Rounded corners
+                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                        colors = ButtonColors(
+                            containerColor = Color.DarkGray,
+                            contentColor = Color.White,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.DarkGray
+                        )
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Update Username Icon",
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = "Update Username",
+                                modifier = Modifier.padding(start = 8.dp),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+
+                    OutlinedButton(
+                        onClick = { isUpdatePasswordVisible = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        border = null,
+                        shape = MaterialTheme.shapes.small,
+                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                        colors = ButtonColors(
+                            containerColor = Color.DarkGray,
+                            contentColor = Color.White,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.DarkGray
+                        )
+
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = "Update Password Icon",
+                                modifier = Modifier.size(18.dp),
+                                tint = Color.White
+                            )
+                            Text(
+                                text = "Update Password",
+                                modifier = Modifier.padding(start = 8.dp),
+                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                            )
+                        }
+                    }
+
+
+
+                }
+            }
+
+            if (isUpdateUsernameVisible) {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextField(
+
+                    value = newUsername,
+                    onValueChange = { newUsername = it },
+                    label = { Text("New Username") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedButton(
+                    onClick = {
+//                                viewModel.updateUsername(newUsername)
+                        isUpdateUsernameVisible = false
+                    },
+                    // ...
+                ) {
+                    Text("Submit")
+                }
+            }
+
+            if (isUpdatePasswordVisible) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextField(
+                    value = oldPassword,
+                    onValueChange = { oldPassword = it },
+                    label = { Text("Old Password") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                TextField(
+                    value = newPassword,
+                    onValueChange = { newPassword = it },
+                    label = { Text("New Password") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedButton(
+                    onClick = {
+//                                viewModel.updatePassword(oldPassword, newPassword)
+                        isUpdatePasswordVisible = false
+                    },
+                    // ...
+                ) {
+                    Text("Submit")
+                }
+            }
         }
     }
 
@@ -138,4 +314,10 @@ fun ProfileScreen(
             onSignOutClicked()
         }
     }
+    if (getProfile) {
+        LaunchedEffect(Unit) {
+            viewModel.getUserData()
+        }
+    }
+
 }

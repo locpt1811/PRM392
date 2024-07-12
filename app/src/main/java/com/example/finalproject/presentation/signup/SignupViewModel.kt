@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation.signup
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -49,6 +50,16 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun signUp(onNavigate: () -> Unit) {
+        // Clear previous error messages and reset state
+        _uiState.update {
+            it.copy(
+                errorMessages = listOf(),
+                emailFieldErrorMessage = null,
+                passwordFieldErrorMessage = null,
+                verifyPasFieldErrorMessage = null,
+                isSignUpEnd = false
+            )
+        }
         val isEmailOk = AuthFieldCheckers.checkEmailField(
             email = email,
             onBlank = {
@@ -99,7 +110,31 @@ class SignUpViewModel @Inject constructor(
                     it.copy(isLoading = true)
                 }
 
-                authRepository.signUp(email, password)
+                Log.d("SignUpViewModel", "Email: $email")
+                Log.d("SignUpViewModel", "Password: $password")
+
+                val signUpSuccessful = authRepository.signUp(email, password)
+                Log.d("SignUpViewModel", "Password: $signUpSuccessful")
+                _uiState.update {
+                    it.copy(isLoading = false)
+                }
+
+                if (signUpSuccessful) {
+                    _uiState.update {
+                        it.copy(isSignUpEnd = true)
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            isSignUpEnd = true, //set to true khi test, vi 1 ngay chi dc tao 1 user tren supabase
+                            isLoading = false,
+                            errorMessages = listOf(
+                                UiText.StringResource(R.string.signup_failed_please_try_again)
+                            )
+                        )
+                    }
+
+                }
 //                    .addOnCompleteListener { signUpTask ->
 //
 //                        if (signUpTask.isSuccessful) {

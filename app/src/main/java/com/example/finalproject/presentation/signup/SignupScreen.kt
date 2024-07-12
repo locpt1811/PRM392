@@ -4,16 +4,23 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.finalproject.R
 import com.example.finalproject.presentation.designsystem.components.AuthBackground
 import com.example.finalproject.presentation.designsystem.components.AuthEnterEmailOtf
@@ -24,10 +31,12 @@ import com.example.finalproject.presentation.designsystem.components.ShoppingSca
 import com.example.finalproject.presentation.designsystem.components.ShoppingShowToastMessage
 import com.example.finalproject.presentation.designsystem.components.WelcomeText
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
+import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.CustomPreview
 
 @Composable
 fun SignUpScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     upPress: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
@@ -38,7 +47,29 @@ fun SignUpScreen(
         ShoppingShowToastMessage(message = uiState.errorMessages.first().asString())
         viewModel.consumedErrorMessage()
     }
-
+    val showSnackbar = remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(uiState.isSignUpEnd) {
+        if (uiState.isSignUpEnd) {
+            showSnackbar.value = true
+            navController.navigate(MainDestinations.LOGIN_ROUTE) {
+                popUpTo(MainDestinations.SIGNUP_ROUTE) { inclusive = true }
+            }
+        }
+    }
+    if(showSnackbar.value){
+        Snackbar(
+            modifier = Modifier.padding(16.dp),
+            action =  {
+                TextButton(onClick = { showSnackbar.value = false }) {
+                    Text("Dismiss")
+                }
+            }
+        ) {
+            Text(text = "Visit your email and confirm to login into our app")
+        }
+    }
     ShoppingScaffold(modifier = modifier) { paddingValues ->
         AuthBackground()
         SignUpScreenContent(

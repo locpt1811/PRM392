@@ -39,6 +39,10 @@ class ProfileViewModel @Inject constructor(
         getUserProfileImage()
         getUserDetails()
 
+        viewModelScope.launch {
+            getUserData()
+        }
+
         val user = auth
 //        val user = auth.currentUser
 
@@ -103,6 +107,21 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    suspend fun getUserData() {
+        try {
+            val user = authRepository.retreiveCurrentUser()
+            Log.d("ProfileViewModel", "Retrieved user: $user")
+            _uiState.update {
+                it.copy(
+                    name = user?.name,
+                    email = user?.email,
+                    emailVerified = user?.emailVerified ?: false
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("Error", e.message.toString())
+        }
+    }
     fun setAccountInfoType(infoType: InfoType) {
         this.infoType = infoType
 
@@ -476,7 +495,8 @@ data class ProfileUiState(
     val userDetail: UserDetail? = null,
     val deleteAccountState: DeleteAccountState = DeleteAccountState(),
     val updateAccountInfoDialogState: DialogUiState = DialogUiState.DialogInactive,
-    val imageCropperDialogUiState: DialogUiState = DialogUiState.DialogInactive
+    val imageCropperDialogUiState: DialogUiState = DialogUiState.DialogInactive,
+    val emailVerified: Boolean = true,
 )
 
 data class VerifyPhoneNumberState(
