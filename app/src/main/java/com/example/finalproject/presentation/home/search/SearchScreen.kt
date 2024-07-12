@@ -121,6 +121,7 @@ private fun SearchScreenContent(
                         description = it.description,
                         rating = it.rating,
                         price = it.price,
+                        user_id = it.user_id,
 
                         language_id = it.language_id,
                         language_code = it.language_code,

@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.presentation.cart.CartScreen
+import com.example.finalproject.presentation.chat.ChatScreen
 import com.example.finalproject.presentation.checkout.CheckoutScreen
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.presentation.home.HomeSections
@@ -42,6 +43,7 @@ fun ShoppingApp(startDestination: String) {
                 onSignUpClick = shoppingAppNavController::navigateToSignUp,
                 onLoginClick = shoppingAppNavController::navigateHome,
                 onPaymentClick = shoppingAppNavController::navigatePayment,
+                onChatClick = shoppingAppNavController::navigateToChat,
                 onGooglePayButtonClick = shoppingAppNavController::navigateGGPayment,
                 onContinueShoppingClick = shoppingAppNavController::navigateHome,
                 onFinished = shoppingAppNavController::navigateHome,
@@ -64,6 +66,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
     onContinueShoppingClick: (NavBackStackEntry) -> Unit,
     onFinished: (NavBackStackEntry) -> Unit,
     upPress: () -> Unit,
+    onChatClick: (String, String, NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
     navigation(
@@ -120,7 +123,27 @@ private fun NavGraphBuilder.shoppingAppGraph(
     ) { from ->
         ProductDetailScreen(
             onBackClick = { navController.popBackStack() },
-            onCartClick = remember { { onCartClick(from) } }
+            onCartClick = remember { { onCartClick(from) } },
+            onChatClick = { userId, otherUserId ->
+                navController.navigate("${MainDestinations.CHAT_ROUTE}/$userId/$otherUserId")
+            }
+        )
+    }
+
+
+    composable(
+        route = "${MainDestinations.CHAT_ROUTE}/{${MainDestinations.CHAT_USER_ID}}/{${MainDestinations.CHAT_OTHER_USER_ID}}",
+        arguments = listOf(
+            navArgument(MainDestinations.CHAT_USER_ID) { type = NavType.StringType },
+            navArgument(MainDestinations.CHAT_OTHER_USER_ID) { type = NavType.StringType }
+        )
+    ) { backStackEntry ->
+        val userId = backStackEntry.arguments?.getString("userId") ?: ""
+        val otherUserId = backStackEntry.arguments?.getString("otherUserId") ?: ""
+        ChatScreen(
+            userId = userId,
+            otherUserId = otherUserId,
+            onBackClick = { navController.popBackStack() },
         )
     }
 }

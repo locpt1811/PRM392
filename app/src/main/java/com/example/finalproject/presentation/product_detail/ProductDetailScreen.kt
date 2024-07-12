@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation.product_detail
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -59,6 +61,7 @@ fun ProductDetailScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onCartClick: () -> Unit,
+    onChatClick: (String, String) -> Unit,
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -109,7 +112,13 @@ fun ProductDetailScreen(
                     }
                 }
             },
-            onNavigateToChat = viewModel::navigateToChat,
+            onNavigateToChat = {
+                val userId = uiState.userId // Assuming userId is stored in uiState
+                val otherUserId = uiState.product?.user_id
+                if(otherUserId != null && userId!=null){
+                    onChatClick(userId, otherUserId)
+                    }
+               },
             cartButtonText = if (uiState.isProductInCart) {
                 stringResource(id = R.string.go_to_cart)
             } else {

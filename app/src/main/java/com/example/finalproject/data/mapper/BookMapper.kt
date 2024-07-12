@@ -64,9 +64,8 @@ fun BookEntity.toBookDTO(): BookDTO {
 fun Map<String, Any>.toMessageDTO(): MessageDTO {
     return MessageDTO(
         id = this["id"] as String,
-        chatRoomId = this["chat_room_id"] as String,
-        userId = this["user_id"] as String,
-        content = this["content"] as String,
-        createdAt = this["created_at"] as String
+        chat_room_id = this["chat_room_id"] as String,
+        user_id = this["user_id"] as String,
+        content = this["content"] as String
     )
 }

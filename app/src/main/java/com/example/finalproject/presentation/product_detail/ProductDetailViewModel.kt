@@ -19,6 +19,7 @@ import com.example.finalproject.presentation.navigation.ShoppingAppNavController
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
+import kotlin.math.log
 
 @Stable
 @HiltViewModel
@@ -34,8 +36,6 @@ class ProductDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bookRepository: BookRepository,
     private val authRepository: AuthRepository,
-    private val chatRepository: ChatRepository,
-    private val navController: ShoppingAppNavController,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -50,6 +50,7 @@ class ProductDetailViewModel @Inject constructor(
                 _uiState.update { it.copy(product = product) }
                 findFavProduct(productId = product.book_id)
                 findProductInCart(productId = product.book_id)
+                retrieveUserId()
             } catch (e: Exception) {
                 Log.e("ProductDetailViewModel", "Error decoding or parsing product data", e)
             }
@@ -210,27 +211,16 @@ class ProductDetailViewModel @Inject constructor(
             }
         }
     }
-    fun navigateToChat() {
+
+    fun retrieveUserId() {
         viewModelScope.launch(ioDispatcher) {
-            val currentUser = authRepository.retreiveCurrentUser()
-            val productOwner = _uiState.value.product?.user_id ?: ""
-
-            if (currentUser != null && productOwner.isNotEmpty()) {
-                Log.e("ProductDetailViewModel", "USER "+currentUser.uid+ "OWNER "+ productOwner)
-
-                val response = chatRepository.getChatRoomId(currentUser.uid, productOwner)
-                if (response is Response.Success) {
-                    val chatRoomId = response.data ?: ""
-                    Log.e("ProductDetailViewModel", "NAVIGATE SUCCESS")
-                    navController.navigateToChat(chatRoomId)
-
-                } else {
-                    // Handle error case
-                    Log.e("ProductDetailViewModel", "Failed to retrieve chat room ID")
-                }
-            } else {
-                Log.e("ProductDetailViewModel", "Current user or product owner is null or empty")
+            val currentUserId = authRepository.retreiveCurrentUser()?.uid
+            _uiState.update {
+                it.copy(
+                    userId = currentUserId
+                )
             }
+            Log.e("DetailVM","current user id "+ currentUserId)
         }
     }
 
@@ -252,5 +242,6 @@ data class ProductScreenUiState(
     val isProductFavorite: Boolean = false,
     val userMessages: List<UiText> = listOf(),
     val errorMessages: List<UiText> = listOf(),
-    val isProductInCart: Boolean = false
+    val isProductInCart: Boolean = false,
+    val userId: String? = null
 )

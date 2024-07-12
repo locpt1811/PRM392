@@ -5,13 +5,14 @@ import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.model.shopping.BookEntity
 import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.model.shopping.CateDTO
+import com.example.finalproject.model.shopping.ChatDTO
 import com.example.finalproject.model.shopping.ChatRoomDTO
 import com.example.finalproject.model.shopping.MessageDTO
 
 interface ChatRepository {
-    suspend fun fetchChatRooms(userId: String): Response<List<ChatRoomDTO>>
-    suspend fun sendMessage(chatRoomId: String, userId: String, content: String): Response<Unit>
-    fun listenToMessages(chatRoomId: String, onNewMessage: (MessageDTO) -> Unit)
-    suspend fun getChatRoomId(userId1: String, userId2: String): Response<String?>
-    suspend fun getAllMessages(chatRoomId: String): Response<List<MessageDTO>>
+    suspend fun listenToMessages(userId: String, otherUserId: String, onNewMessage: (ChatDTO) -> Unit)
+    suspend fun getAllChatUser(userId: String): Response<List<String>>
+    suspend fun getAllChat(userId: String, otherUserId: String): Response<List<ChatDTO>>
+    suspend fun getAllOtherChat(userId: String, otherUserId: String): Response<List<ChatDTO>>
+    suspend fun sendChatMessage(fromUserId: String,toUserId: String, content: String): Response<Unit>
 }

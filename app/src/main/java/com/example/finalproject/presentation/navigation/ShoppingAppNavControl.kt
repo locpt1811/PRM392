@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -28,6 +29,8 @@ object MainDestinations {
     const val PAYMENT_AMOUNT_KEY = "paymentAmount"
     const val ADDRESS_ROUTE = "address"
     const val CHAT_ROUTE = "chat"
+    const val CHAT_USER_ID = "userId"
+    const val CHAT_OTHER_USER_ID = "otherUserId"
 }
 
 @Composable
@@ -83,16 +86,6 @@ class ShoppingAppNavController @Inject constructor(
             navController.navigate(MainDestinations.ONBOARDING_ROUTE)
         }
     }
-
-    fun navigateToChat(chatRoomId: String) {
-        navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatRoomId") {
-            launchSingleTop = true
-            restoreState = true
-            popUpTo(findStartDestination(navController.graph).id) {
-                saveState = true
-            }
-        }
-    }
     fun onNavigateLogin(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
             navController.navigate(MainDestinations.LOGIN_ROUTE) {
@@ -135,6 +128,13 @@ class ShoppingAppNavController @Inject constructor(
         }
     }
 
+    fun navigateToChat(userId: String, otherUserId: String, from: NavBackStackEntry) {
+
+        Log.e("ShopApp","Navigating")
+        if (shouldNavigate(from)) {
+            navController.navigate("${MainDestinations.CHAT_ROUTE}/$userId/$otherUserId")
+        }
+    }
 
 }
 

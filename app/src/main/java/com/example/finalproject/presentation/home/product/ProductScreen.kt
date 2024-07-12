@@ -243,6 +243,7 @@ private fun ProductList(
                     description = it.description,
                     rating = it.rating,
                     price = it.price,
+                    user_id = it.user_id,
 
                     language_id = it.book_language?.language_id,
                     language_code = it.book_language?.language_code,
