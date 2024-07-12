@@ -144,46 +144,21 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun requestPayment() {
-        Log.d("MMpaymentData", "requestPayment")
-        // Disables the button to prevent multiple clicks.
+        Log.d("MMpaymentData", "requestPayment start")
         viewModelScope.launch(ioDispatcher) {
             val task = getLoadPaymentDataTask(priceCents = 1200L)
-//            try {
-//                val paymentDataTask = task.awaitTask() // Get the Task<PaymentData>
-//                val paymentData = paymentDataTask.result // Extract PaymentData from the Task
-//                if (paymentData != null) {
-//                    handlePaymentSuccess(paymentData)
-//                } else {
-//                    // Handle the case where paymentData is null (potential error)
-//                    _paymentUiState.update { PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR, "Payment data is null") }
-//                }
-//            } catch (e: Exception) {
-//                // Handle error
-//                _paymentUiState.update { PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR, e.message) }
-//            }
             task.addOnCompleteListener {
                 if (it.isSuccessful) {
                     val paymentData = it.result
-                    Log.d("MMpaymentData", it.result.toJson())
+                    Log.d("MMpaymentData success", it.result.toJson())
                     setPaymentData(paymentData)
                 }
                 else{
-                    Log.d("FuckCheckout", "requestPayment")
-                    Log.d("FuckCheckout", "${it.exception.toString()}")
+                    Log.d("pay Fail", "${it.exception.toString()}")
 
                 }
             }
         }
-    }
-
-    private fun handlePaymentSuccess(paymentData: PaymentData) {
-//        val payerName = extractPaymentBillingName(paymentData)
-//        if (payerName != null) {
-//            _paymentUiState.update { PaymentUiState.PaymentCompleted(payerName) }
-//        } else {
-//            _paymentUiState.update { PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR) }
-//        }
-        setPaymentData(paymentData)
     }
 }
 
