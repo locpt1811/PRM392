@@ -84,9 +84,9 @@ fun ShoppingProductItem(
                 description,
                 rating,
                 price,
+                Publisher(publisher_id, publisher_name).toString(),
                 BookLanguage(language_id, language_code, language_name),
                 Category(category_id, category_name),
-                Publisher(publisher_id, publisher_name)
                 )
         ) } },
         colors = CardDefaults.cardColors(containerColor = Color.White),

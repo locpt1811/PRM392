@@ -177,6 +177,7 @@ private fun FavoritesScreenPreview() {
                         publisher_name = "preview publisher",
                         category_id = 1,
                         category_name = "preview category",
+                        user_id = "123"
                     )
                 ),
                 onRemoveFavoriteClicked = {},

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun ChatScreen(chatRoomId: String, userId: String, viewModel: ChatViewModel = hiltViewModel()) {
+fun ChatScreen(chatRoomId: String, viewModel: ChatViewModel = hiltViewModel()) {
     val messages by viewModel.messages.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
@@ -45,7 +45,7 @@ fun ChatScreen(chatRoomId: String, userId: String, viewModel: ChatViewModel = hi
 
             Button(onClick = {
                 if (messageContent.text.isNotEmpty()) {
-                    viewModel.sendMessage(chatRoomId, userId, messageContent.text)
+                    viewModel.sendMessage(chatRoomId, messageContent.text)
                     messageContent = TextFieldValue() // Clear the input field
                 }
             }) {

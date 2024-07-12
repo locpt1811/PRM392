@@ -223,6 +223,7 @@ private fun SearchScreenPreview() {
                         null,
                         null,
                         null,
+                        category_name = null
                     )
                 },
                 isSearchResultEmpty = false,

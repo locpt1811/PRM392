@@ -29,6 +29,7 @@ import com.example.finalproject.R
 import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.presentation.chat.ChatScreen
 import com.example.finalproject.presentation.home.address.AddressScreen
 import com.example.finalproject.presentation.home.favorite.FavoritesScreen
 import com.example.finalproject.presentation.home.product.ProductScreen
@@ -83,6 +84,12 @@ fun NavGraphBuilder.addHomeGraph(
             onNavigateRoute = onNavigateToRoute
         )
     }
+    composable(HomeSections.CHAT.route + "/{chatRoomId}") { backStackEntry ->
+        val chatRoomId = backStackEntry.arguments?.getString("chatRoomId")
+        chatRoomId?.let {
+            ChatScreen(chatRoomId = it)
+        }
+    }
 }
 
 
@@ -121,6 +128,12 @@ enum class HomeSections(
         Icons.Filled.LocationOn,
         Icons.Outlined.LocationOn,
         "home/address"
+    ),
+    CHAT(
+        R.string.chat,
+        Icons.Filled.Home,
+        Icons.Outlined.Home,
+        "home/chat" // Define your route here
     )
 }
 

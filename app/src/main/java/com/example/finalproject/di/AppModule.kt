@@ -1,6 +1,8 @@
 package com.example.finalproject.di
 
+import android.app.Application
 import android.content.Context
+import androidx.navigation.NavHostController
 import com.example.finalproject.common.helper.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -22,4 +24,16 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDispatcherIO(): CoroutineDispatcher = Dispatchers.IO
+    @Provides
+    @Singleton
+    fun provideApplicationContext(application: Application): Context {
+        return application.applicationContext
+    }
+
+    @Provides
+    @Singleton
+    fun provideNavController(context: Context): NavHostController {
+        // Initialize and provide NavHostController instance here
+        return NavHostController(context)
+    }
 }

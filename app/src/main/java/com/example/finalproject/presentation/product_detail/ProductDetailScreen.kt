@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -57,7 +59,6 @@ fun ProductDetailScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onCartClick: () -> Unit,
-    onNavigateToChat: (currentUserId: String, bookOwnerId: String) -> Unit,
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -108,7 +109,7 @@ fun ProductDetailScreen(
                     }
                 }
             },
-            onNavigateToChat = onNavigateToChat,
+            onNavigateToChat = viewModel::navigateToChat,
             cartButtonText = if (uiState.isProductInCart) {
                 stringResource(id = R.string.go_to_cart)
             } else {
@@ -134,7 +135,7 @@ private fun ProductDetailScreenContent(
     onFavoriteBtnClicked: () -> Unit,
     onAddToCartClicked: () -> Unit,
     cartButtonText: String,
-    onNavigateToChat: (currentUserId: String, bookOwnerId: String) -> Unit
+    onNavigateToChat: () -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         AsyncImage(
@@ -185,7 +186,7 @@ private fun ProductDetails(
     isProductFavorite: Boolean,
     onAddToCartClicked: () -> Unit,
     cartButtonText: String,
-    onNavigateToChat: (currentUserId: String, bookOwnerId: String) -> Unit
+    onNavigateToChat: () -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -251,7 +252,7 @@ private fun ProductInfo(
     langCode:String,
     isProductFavorite: Boolean,
     onFavoriteBtnClicked: () -> Unit,
-    onNavigateToChat: (currentUserId: String, bookOwnerId: String) -> Unit
+    onNavigateToChat: () -> Unit
     ) {
     Column(modifier = modifier.fillMaxSize()) {
         Row(
@@ -269,12 +270,23 @@ private fun ProductInfo(
                 )
                 Text(text = "$rate")
             }
-            IconButton(onClick = onFavoriteBtnClicked) {
-                Icon(
-                    imageVector = if (isProductFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = null,
-                    tint = Color.Red
-                )
+            Row {
+                // Navigate to Chat button
+                IconButton(onClick = onNavigateToChat) {
+                    Icon(
+                        imageVector = Icons.Filled.Phone,
+                        contentDescription = "Navigate to Chat",
+                        tint = Color.Red
+                    )
+                }
+                // Favorite button
+                IconButton(onClick = onFavoriteBtnClicked) {
+                    Icon(
+                        imageVector = if (isProductFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = null,
+                        tint = Color.Red
+                    )
+                }
             }
         }
         Text(
@@ -343,9 +355,7 @@ private fun ProductDetailScreenPreview() {
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},
                 cartButtonText = "Add to Cart",
-                onNavigateToChat = { currentUserId, bookOwnerId ->
-                    println("Navigating to chat: currentUserId=$currentUserId, bookOwnerId=$bookOwnerId")
-                }
+                onNavigateToChat = {}
             )
         }
     }
@@ -371,9 +381,7 @@ private fun ProductDetailScreenProductFavoritePreview() {
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},
                 cartButtonText = "Go to Cart",
-                onNavigateToChat = { currentUserId, bookOwnerId ->
-                    println("Navigating to chat: currentUserId=$currentUserId, bookOwnerId=$bookOwnerId")
-                }
+                onNavigateToChat = {}
             )
         }
     }

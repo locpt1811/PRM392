@@ -13,6 +13,7 @@ import com.example.finalproject.model.shopping.BookDTO
 import com.google.gson.Gson
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import javax.inject.Inject
 
 object MainDestinations {
     const val ONBOARDING_ROUTE = "onboarding"
@@ -26,6 +27,7 @@ object MainDestinations {
     const val GG_PAYMENT_ROUTE = "ggpayment"
     const val PAYMENT_AMOUNT_KEY = "paymentAmount"
     const val ADDRESS_ROUTE = "address"
+    const val CHAT_ROUTE = "chat"
 }
 
 @Composable
@@ -36,7 +38,7 @@ fun rememberShoppingAppNavController(
 }
 
 @Stable
-class ShoppingAppNavController(
+class ShoppingAppNavController @Inject constructor(
     val navController: NavHostController
 ) {
 
@@ -82,6 +84,15 @@ class ShoppingAppNavController(
         }
     }
 
+    fun navigateToChat(chatRoomId: String) {
+        navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatRoomId") {
+            launchSingleTop = true
+            restoreState = true
+            popUpTo(findStartDestination(navController.graph).id) {
+                saveState = true
+            }
+        }
+    }
     fun onNavigateLogin(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
             navController.navigate(MainDestinations.LOGIN_ROUTE) {

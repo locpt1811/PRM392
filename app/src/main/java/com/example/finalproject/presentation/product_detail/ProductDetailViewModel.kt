@@ -9,10 +9,13 @@ import com.example.finalproject.R
 import com.example.finalproject.common.Response
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.data.mapper.toProductEntity
+import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.BookRepository
+import com.example.finalproject.domain.repository.ChatRepository
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.presentation.navigation.MainDestinations
+import com.example.finalproject.presentation.navigation.ShoppingAppNavController
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,6 +33,9 @@ import javax.inject.Inject
 class ProductDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bookRepository: BookRepository,
+    private val authRepository: AuthRepository,
+    private val chatRepository: ChatRepository,
+    private val navController: ShoppingAppNavController,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -201,6 +207,29 @@ class ProductDetailViewModel @Inject constructor(
                         ))
                     }
                 }
+            }
+        }
+    }
+    fun navigateToChat() {
+        viewModelScope.launch(ioDispatcher) {
+            val currentUser = authRepository.retreiveCurrentUser()
+            val productOwner = _uiState.value.product?.user_id ?: ""
+
+            if (currentUser != null && productOwner.isNotEmpty()) {
+                Log.e("ProductDetailViewModel", "USER "+currentUser.uid+ "OWNER "+ productOwner)
+
+                val response = chatRepository.getChatRoomId(currentUser.uid, productOwner)
+                if (response is Response.Success) {
+                    val chatRoomId = response.data ?: ""
+                    Log.e("ProductDetailViewModel", "NAVIGATE SUCCESS")
+                    navController.navigateToChat(chatRoomId)
+
+                } else {
+                    // Handle error case
+                    Log.e("ProductDetailViewModel", "Failed to retrieve chat room ID")
+                }
+            } else {
+                Log.e("ProductDetailViewModel", "Current user or product owner is null or empty")
             }
         }
     }

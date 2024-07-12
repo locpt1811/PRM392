@@ -22,6 +22,7 @@
     <string name="expiry_date">Expiry Date</string>
     <string name="cvc">CVC</string>
     <string name="delivery">Delivery</string>
+    <string name="chat">Chat</string>
     <string name="total">Total</string>
     <string name="payment">Payment</string>
     <string name="home">Home</string>
