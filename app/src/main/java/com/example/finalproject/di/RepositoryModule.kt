@@ -21,10 +21,11 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideAuthRepository(
+        postgrest: Postgrest,
         auth: Auth,
         preferenceManager: PreferenceManager
     ): AuthRepository {
-        return AuthRepositoryImpl(auth, preferenceManager)
+        return AuthRepositoryImpl(postgrest ,auth, preferenceManager)
     }
 
     @Provides

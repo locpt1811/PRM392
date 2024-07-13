@@ -122,6 +122,21 @@ class ProfileViewModel @Inject constructor(
             Log.e("Error", e.message.toString())
         }
     }
+
+     fun updateUserPassword(){
+        try{
+            viewModelScope.launch {
+                authRepository.updateUser {
+                    password = "123"
+                }
+            }
+
+        }catch (e: Exception) {
+            Log.e("Error", e.message.toString())
+        }
+    }
+
+
     fun setAccountInfoType(infoType: InfoType) {
         this.infoType = infoType
 
@@ -144,9 +159,9 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun updateUserName() {
-        if (updateValue.isNotBlank()) {
-            viewModelScope.launch(ioDispatcher) {
+//    fun updateUserName() {
+//        if (updateValue.isNotBlank()) {
+//            viewModelScope.launch(ioDispatcher) {
 //                repository.updateUserProfile(userProfileChangeRequest {
 //                    displayName = updateValue
 //                })?.addOnCompleteListener { task ->
@@ -169,9 +184,9 @@ class ProfileViewModel @Inject constructor(
 //                        }
 //                    }
 //                }
-            }
-        }
-    }
+//            }
+//        }
+//    }
 
     fun updateUserPhoto(uri: Uri) {
         viewModelScope.launch(ioDispatcher) {
