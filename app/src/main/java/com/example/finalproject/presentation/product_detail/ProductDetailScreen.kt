@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation.product_detail
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -27,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -57,6 +61,7 @@ fun ProductDetailScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onCartClick: () -> Unit,
+    onChatClick: (String, String) -> Unit,
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -107,6 +112,13 @@ fun ProductDetailScreen(
                     }
                 }
             },
+            onNavigateToChat = {
+                val userId = uiState.userId // Assuming userId is stored in uiState
+                val otherUserId = uiState.product?.user_id
+                if(otherUserId != null && userId!=null){
+                    onChatClick(userId, otherUserId)
+                    }
+               },
             cartButtonText = if (uiState.isProductInCart) {
                 stringResource(id = R.string.go_to_cart)
             } else {
@@ -131,7 +143,8 @@ private fun ProductDetailScreenContent(
     isProductFavorite: Boolean,
     onFavoriteBtnClicked: () -> Unit,
     onAddToCartClicked: () -> Unit,
-    cartButtonText: String
+    cartButtonText: String,
+    onNavigateToChat: () -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         AsyncImage(
@@ -161,7 +174,8 @@ private fun ProductDetailScreenContent(
             isProductFavorite = isProductFavorite,
             onFavoriteBtnClicked = onFavoriteBtnClicked,
             onAddToCartClicked = onAddToCartClicked,
-            cartButtonText = cartButtonText
+            cartButtonText = cartButtonText,
+            onNavigateToChat = onNavigateToChat
         )
     }
 }
@@ -180,7 +194,8 @@ private fun ProductDetails(
     onFavoriteBtnClicked: () -> Unit,
     isProductFavorite: Boolean,
     onAddToCartClicked: () -> Unit,
-    cartButtonText: String
+    cartButtonText: String,
+    onNavigateToChat: () -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -196,7 +211,8 @@ private fun ProductDetails(
             langName = langName,
             langCode = langCode,
             onFavoriteBtnClicked = onFavoriteBtnClicked,
-            isProductFavorite = isProductFavorite
+            isProductFavorite = isProductFavorite,
+            onNavigateToChat = onNavigateToChat,
         )
         HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
 
@@ -244,8 +260,9 @@ private fun ProductInfo(
     langName:String,
     langCode:String,
     isProductFavorite: Boolean,
-    onFavoriteBtnClicked: () -> Unit
-) {
+    onFavoriteBtnClicked: () -> Unit,
+    onNavigateToChat: () -> Unit
+    ) {
     Column(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -262,12 +279,23 @@ private fun ProductInfo(
                 )
                 Text(text = "$rate")
             }
-            IconButton(onClick = onFavoriteBtnClicked) {
-                Icon(
-                    imageVector = if (isProductFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = null,
-                    tint = Color.Red
-                )
+            Row {
+                // Navigate to Chat button
+                IconButton(onClick = onNavigateToChat) {
+                    Icon(
+                        imageVector = Icons.Filled.Phone,
+                        contentDescription = "Navigate to Chat",
+                        tint = Color.Red
+                    )
+                }
+                // Favorite button
+                IconButton(onClick = onFavoriteBtnClicked) {
+                    Icon(
+                        imageVector = if (isProductFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = null,
+                        tint = Color.Red
+                    )
+                }
             }
         }
         Text(
@@ -335,7 +363,8 @@ private fun ProductDetailScreenPreview() {
                 isProductFavorite = false,
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},
-                cartButtonText = "Add to Cart"
+                cartButtonText = "Add to Cart",
+                onNavigateToChat = {}
             )
         }
     }
@@ -360,7 +389,8 @@ private fun ProductDetailScreenProductFavoritePreview() {
                 isProductFavorite = true,
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},
-                cartButtonText = "Go to Cart"
+                cartButtonText = "Go to Cart",
+                onNavigateToChat = {}
             )
         }
     }

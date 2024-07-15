@@ -39,8 +39,7 @@ data class ProductUiState(
 @HiltViewModel
 class ProductViewModel @Inject constructor(
     private val shoppingRepository: BookRepository,
-    private val ioDispatcher: CoroutineDispatcher,
-    private val authRepository: AuthRepository
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductScreenUiState())

@@ -56,6 +56,8 @@ data class BookEntity(
     @ColumnInfo("publisher_name")
     val publisher_name: String?,
 
+    @ColumnInfo("user_id")
+    val user_id: String?,
 
     // Category
     @ColumnInfo("category_id")

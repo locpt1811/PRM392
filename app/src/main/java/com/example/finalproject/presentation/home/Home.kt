@@ -46,6 +46,7 @@ import androidx.navigation.navArgument
 import com.example.finalproject.R
 import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.presentation.chat.ChatScreen
 import com.example.finalproject.presentation.home.address.AddressScreen
 import com.example.finalproject.presentation.home.favorite.FavoritesScreen
 import com.example.finalproject.presentation.home.product.ProductScreen
@@ -60,12 +61,15 @@ fun NavGraphBuilder.addHomeGraph(
     onProductClick: (BookDTO, NavBackStackEntry) -> Unit,
     onSignOutClick: (NavBackStackEntry) -> Unit,
     onCartClick: (NavBackStackEntry) -> Unit,
+    onChatListClick: (NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
     composable(HomeSections.PRODUCT.route) { from ->
         ProductScreen(
             onProductClick = remember { { product -> onProductClick(product, from) } },
             onCartClick = remember { { onCartClick(from) } },
+            onNavigateRoute = onNavigateToRoute,
+            onChatListClick = remember { { onChatListClick(from) } },
             onNavigateRoute = onNavigateToRoute,
             onNavigateToSearch = { query ->
                 val searchRoute = "${HomeSections.SEARCH.route}?query=${query}"

@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -14,6 +15,7 @@ import com.example.finalproject.presentation.home.HomeSections
 import com.google.gson.Gson
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import javax.inject.Inject
 
 object MainDestinations {
     const val ONBOARDING_ROUTE = "onboarding"
@@ -27,6 +29,10 @@ object MainDestinations {
     const val GG_PAYMENT_ROUTE = "ggpayment"
     const val PAYMENT_AMOUNT_KEY = "paymentAmount"
     const val ADDRESS_ROUTE = "address"
+    const val CHAT_ROUTE = "chat"
+    const val CHAT_USER_ID = "userId"
+    const val CHAT_OTHER_USER_ID = "otherUserId"
+    const val CHAT_LIST_ROUTE = "chatList"
 }
 
 @Composable
@@ -37,7 +43,7 @@ fun rememberShoppingAppNavController(
 }
 
 @Stable
-class ShoppingAppNavController(
+class ShoppingAppNavController @Inject constructor(
     val navController: NavHostController
 ) {
 
@@ -92,7 +98,6 @@ class ShoppingAppNavController(
             navController.navigate(MainDestinations.ONBOARDING_ROUTE)
         }
     }
-
     fun onNavigateLogin(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
             navController.navigate(MainDestinations.LOGIN_ROUTE) {
@@ -135,7 +140,17 @@ class ShoppingAppNavController(
         }
     }
 
+    fun navigateToChat(userId: String, otherUserId: String, from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate("${MainDestinations.CHAT_ROUTE}/$userId/$otherUserId")
+        }
+    }
 
+    fun navigateToChatList(from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate(MainDestinations.CHAT_LIST_ROUTE)
+        }
+    }
 }
 
 private fun shouldNavigate(from: NavBackStackEntry): Boolean = from.lifecycleIsResumed()

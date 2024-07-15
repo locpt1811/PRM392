@@ -9,13 +9,17 @@ import com.example.finalproject.R
 import com.example.finalproject.common.Response
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.data.mapper.toProductEntity
+import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.BookRepository
+import com.example.finalproject.domain.repository.ChatRepository
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.presentation.navigation.MainDestinations
+import com.example.finalproject.presentation.navigation.ShoppingAppNavController
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,12 +28,14 @@ import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
+import kotlin.math.log
 
 @Stable
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bookRepository: BookRepository,
+    private val authRepository: AuthRepository,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -44,6 +50,7 @@ class ProductDetailViewModel @Inject constructor(
                 _uiState.update { it.copy(product = product) }
                 findFavProduct(productId = product.book_id)
                 findProductInCart(productId = product.book_id)
+                retrieveUserId()
             } catch (e: Exception) {
                 Log.e("ProductDetailViewModel", "Error decoding or parsing product data", e)
             }
@@ -205,6 +212,17 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
+    private fun retrieveUserId() {
+        viewModelScope.launch(ioDispatcher) {
+            val currentUserId = authRepository.retreiveCurrentUser()?.uid
+            _uiState.update {
+                it.copy(
+                    userId = currentUserId
+                )
+            }
+        }
+    }
+
     fun consumedUserMessages() {
         _uiState.update {
             it.copy(userMessages = listOf())
@@ -223,5 +241,6 @@ data class ProductScreenUiState(
     val isProductFavorite: Boolean = false,
     val userMessages: List<UiText> = listOf(),
     val errorMessages: List<UiText> = listOf(),
-    val isProductInCart: Boolean = false
+    val isProductInCart: Boolean = false,
+    val userId: String? = null
 )
