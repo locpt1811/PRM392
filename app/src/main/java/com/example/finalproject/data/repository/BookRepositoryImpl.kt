@@ -130,6 +130,7 @@ class BookRepositoryImpl @Inject constructor(
 
                 Response.Success(result)
             } catch (e: Exception) {
+                Log.e("Error", e.toString())
                 Response.Error(errorMessageId = R.string.error_message_books_db)
             }
 

@@ -6,6 +6,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.0"
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("androidx.room")
 
 //    alias(libs.plugins.hilt.android)
 //    alias(libs.plugins.google.services)
@@ -18,6 +19,9 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
     defaultConfig {
         applicationId = "com.example.finalproject"
