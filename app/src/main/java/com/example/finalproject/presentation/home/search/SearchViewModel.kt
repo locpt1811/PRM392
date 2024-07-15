@@ -132,13 +132,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun saveSearchHistory(value: String) {
-        searchedText = value
-        viewModelScope.launch {
-            preferenceManager.saveData(SEARCH_HISTORY,value)
-        }
-    }
-
     fun errorConsumed() {
         _uiState.update {
             it.copy(errorMessages = listOf())
