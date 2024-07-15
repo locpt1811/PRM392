@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
@@ -53,6 +54,7 @@ fun ProductScreen(
     modifier: Modifier = Modifier,
     onProductClick: (BookDTO) -> Unit,
     onCartClick: () -> Unit,
+    onChatListClick: () -> Unit,
     onNavigateRoute: (String) -> Unit,
     viewModel: ProductViewModel = hiltViewModel()
 ) {
@@ -76,6 +78,7 @@ fun ProductScreen(
             isProductListLoading = uiState.productUiState.isLoading,
             onProductClick = onProductClick,
             onShoppingCartClicked = onCartClick,
+            onChatListClicked = onChatListClick,
             errors = uiState.errorMessages
         )
     }
@@ -90,6 +93,7 @@ private fun ProductScreenContent(
     isProductListLoading: Boolean,
     onProductClick: (BookDTO) -> Unit,
     onShoppingCartClicked: () -> Unit,
+    onChatListClicked: () -> Unit,
     errors: List<UiText>
 ) {
     val allKeyword = stringResource(id = R.string.all)
@@ -136,6 +140,9 @@ private fun ProductScreenContent(
                         text = stringResource(id = R.string.discover_products),
                         style = MaterialTheme.typography.headlineMedium
                     )
+                    IconButton(onClick = onChatListClicked) {
+                        Icon(imageVector = Icons.Outlined.Email, contentDescription = null)
+                    }
                     IconButton(onClick = onShoppingCartClicked) {
                         Icon(imageVector = Icons.Outlined.ShoppingCart, contentDescription = null)
                     }
@@ -292,6 +299,7 @@ private fun ProductScreenPreview() {
                 isProductListLoading = false,
                 onProductClick = {},
                 onShoppingCartClicked = {},
+                onChatListClicked = {},
                 errors = listOf()
             )
         }
@@ -311,6 +319,7 @@ private fun ProductScreenErrorPreview() {
                 isProductListLoading = false,
                 onProductClick = {},
                 onShoppingCartClicked = {},
+                onChatListClicked = {},
                 errors = listOf(UiText.DynamicString("This is a preview error"))
             )
         }

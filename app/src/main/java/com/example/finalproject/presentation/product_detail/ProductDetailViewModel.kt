@@ -212,7 +212,7 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
-    fun retrieveUserId() {
+    private fun retrieveUserId() {
         viewModelScope.launch(ioDispatcher) {
             val currentUserId = authRepository.retreiveCurrentUser()?.uid
             _uiState.update {
@@ -220,7 +220,6 @@ class ProductDetailViewModel @Inject constructor(
                     userId = currentUserId
                 )
             }
-            Log.e("DetailVM","current user id "+ currentUserId)
         }
     }
 

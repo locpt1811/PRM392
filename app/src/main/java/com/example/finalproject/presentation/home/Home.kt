@@ -41,13 +41,15 @@ fun NavGraphBuilder.addHomeGraph(
     onProductClick: (BookDTO, NavBackStackEntry) -> Unit,
     onSignOutClick: (NavBackStackEntry) -> Unit,
     onCartClick: (NavBackStackEntry) -> Unit,
+    onChatListClick: (NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
     composable(HomeSections.PRODUCT.route) { from ->
         ProductScreen(
             onProductClick = remember { { product -> onProductClick(product, from) } },
             onCartClick = remember { { onCartClick(from) } },
-            onNavigateRoute = onNavigateToRoute
+            onNavigateRoute = onNavigateToRoute,
+            onChatListClick = remember { { onChatListClick(from) } },
         )
     }
     composable(HomeSections.SEARCH.route) { from ->

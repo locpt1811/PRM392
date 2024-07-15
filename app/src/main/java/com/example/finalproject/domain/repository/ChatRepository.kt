@@ -6,11 +6,11 @@ import com.example.finalproject.model.shopping.BookEntity
 import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.model.shopping.CateDTO
 import com.example.finalproject.model.shopping.ChatDTO
-import com.example.finalproject.model.shopping.ChatRoomDTO
-import com.example.finalproject.model.shopping.MessageDTO
 
 interface ChatRepository {
     suspend fun listenToMessages(userId: String, otherUserId: String, onNewMessage: (ChatDTO) -> Unit)
+    suspend fun unsubscribeFromMessages()
+
     suspend fun getAllChatUser(userId: String): Response<List<String>>
     suspend fun getAllChat(userId: String, otherUserId: String): Response<List<ChatDTO>>
     suspend fun getAllOtherChat(userId: String, otherUserId: String): Response<List<ChatDTO>>

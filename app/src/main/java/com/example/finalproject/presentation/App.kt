@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.presentation.cart.CartScreen
+import com.example.finalproject.presentation.chat.ChatListScreen
 import com.example.finalproject.presentation.chat.ChatScreen
 import com.example.finalproject.presentation.checkout.CheckoutScreen
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
@@ -44,6 +45,7 @@ fun ShoppingApp(startDestination: String) {
                 onLoginClick = shoppingAppNavController::navigateHome,
                 onPaymentClick = shoppingAppNavController::navigatePayment,
                 onChatClick = shoppingAppNavController::navigateToChat,
+                onChatListClick = shoppingAppNavController::navigateToChatList,
                 onGooglePayButtonClick = shoppingAppNavController::navigateGGPayment,
                 onContinueShoppingClick = shoppingAppNavController::navigateHome,
                 onFinished = shoppingAppNavController::navigateHome,
@@ -67,13 +69,14 @@ private fun NavGraphBuilder.shoppingAppGraph(
     onFinished: (NavBackStackEntry) -> Unit,
     upPress: () -> Unit,
     onChatClick: (String, String, NavBackStackEntry) -> Unit,
+    onChatListClick: (NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
     navigation(
         route = MainDestinations.PRODUCT_ROUTE,
         startDestination = HomeSections.PRODUCT.route
     ) {
-        addHomeGraph(onProductClick, onSignOutClick, onCartClick, onNavigateToRoute)
+        addHomeGraph(onProductClick, onSignOutClick, onCartClick, onChatListClick, onNavigateToRoute)
     }
 
     composable(route = MainDestinations.LOGIN_ROUTE) { from ->
@@ -125,7 +128,8 @@ private fun NavGraphBuilder.shoppingAppGraph(
             onBackClick = { navController.popBackStack() },
             onCartClick = remember { { onCartClick(from) } },
             onChatClick = { userId, otherUserId ->
-                navController.navigate("${MainDestinations.CHAT_ROUTE}/$userId/$otherUserId")
+                //navController.navigate("${MainDestinations.CHAT_ROUTE}/$userId/$otherUserId")
+                onChatClick(userId,otherUserId,from)
             }
         )
     }
@@ -146,4 +150,13 @@ private fun NavGraphBuilder.shoppingAppGraph(
             onBackClick = { navController.popBackStack() },
         )
     }
+
+    composable(route = MainDestinations.CHAT_LIST_ROUTE) { from ->
+        ChatListScreen(
+            onChatIconClick = { userId, otherUserId ->
+                onChatClick(userId,otherUserId,from)
+            }
+        )
+    }
+
 }

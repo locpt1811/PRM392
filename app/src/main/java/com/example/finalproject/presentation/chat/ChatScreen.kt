@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -24,9 +26,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.finalproject.R
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
+@OptIn(ExperimentalMaterial3Api::class)@Composable
 fun ChatScreen(
     userId: String,
     otherUserId: String,
@@ -37,10 +39,16 @@ fun ChatScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     var messageContent by remember { mutableStateOf(TextFieldValue()) }
+    val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(otherUserId) {
-        viewModel.fetchMessages(otherUserId)
-        viewModel.listenToMessages(otherUserId)
+    // Scroll to the bottom whenever messages or errorMessage changes
+    LaunchedEffect(messages, errorMessage) {
+        // Scroll to the bottom
+        if (messages.isNotEmpty()) {
+            coroutineScope.launch {
+                messagesState.animateScrollToItem(messages.size - 1)
+            }
+        }
     }
 
     Scaffold(
@@ -65,7 +73,12 @@ fun ChatScreen(
                 Text(text = errorMessage!!, color = MaterialTheme.colorScheme.error)
             }
 
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                state = rememberLazyListState().apply {
+                    messagesState = this
+                }
+            ) {
                 items(messages.size) { index ->
                     val message = messages[index]
                     val isUserMessage = message.from_user_id == userId
@@ -110,7 +123,7 @@ fun ChatScreen(
 
                 Button(onClick = {
                     if (messageContent.text.isNotEmpty()) {
-                        viewModel.sendMessage(otherUserId, messageContent.text)
+                        viewModel.sendMessage(messageContent.text)
                         messageContent = TextFieldValue() // Clear the input field
                     }
                 }) {
@@ -120,3 +133,6 @@ fun ChatScreen(
         }
     }
 }
+
+// Outside the ChatScreen composable
+private var messagesState: LazyListState by mutableStateOf(LazyListState())

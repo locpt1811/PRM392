@@ -5,7 +5,6 @@ import com.example.finalproject.model.shopping.BookEntity
 import com.example.finalproject.model.shopping.Category
 import com.example.finalproject.model.shopping.Publisher
 import com.example.finalproject.model.shopping.BookLanguage
-import com.example.finalproject.model.shopping.MessageDTO
 
 fun BookDTO.toProductEntity(): BookEntity {
     return BookEntity(
@@ -56,16 +55,5 @@ fun BookEntity.toBookDTO(): BookDTO {
             category_id = this.category_id,
             category_name = this.category_name
         )
-    )
-}
-
-
-// Extension function to map JSON to data classes
-fun Map<String, Any>.toMessageDTO(): MessageDTO {
-    return MessageDTO(
-        id = this["id"] as String,
-        chat_room_id = this["chat_room_id"] as String,
-        user_id = this["user_id"] as String,
-        content = this["content"] as String
     )
 }

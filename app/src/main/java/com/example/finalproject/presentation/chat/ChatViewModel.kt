@@ -8,18 +8,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.example.finalproject.model.shopping.MessageDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.SavedStateHandle
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.model.auth.User
 import com.example.finalproject.model.shopping.ChatDTO
+import com.example.finalproject.presentation.navigation.MainDestinations
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.runBlocking
 
 @Stable
 @HiltViewModel
 class ChatViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val chatRepository: ChatRepository,
     private val authRepository: AuthRepository,
     private val ioDispatcher: CoroutineDispatcher
@@ -31,14 +33,26 @@ class ChatViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
     private val userId = retrieveCurrentUser()?.uid
-    fun fetchMessages(otherUserId: String) {
-        if (userId != null) {
+    private val otherUserId = savedStateHandle.get<String>(MainDestinations.CHAT_OTHER_USER_ID)
+
+    private var isListening = false
+
+    init {
+        viewModelScope.launch {
+            fetchMessages()
+            listenToMessages()
+        }
+    }
+
+    fun fetchMessages() {
+        if (userId != null && otherUserId != null) {
             viewModelScope.launch(ioDispatcher) {
                 val userMessagesResponse = chatRepository.getAllChat(userId, otherUserId)
                 val otherMessagesResponse = chatRepository.getAllOtherChat(userId, otherUserId)
 
                 if (userMessagesResponse is Response.Success && otherMessagesResponse is Response.Success) {
-                    val combinedMessages = (userMessagesResponse.data + otherMessagesResponse.data).sortedBy { it.created_at }
+                    val combinedMessages =
+                        (userMessagesResponse.data + otherMessagesResponse.data).sortedBy { it.created_at }
                     _messages.value = combinedMessages
                 } else {
                     _errorMessage.value = "Error fetching messages"
@@ -48,18 +62,20 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    fun sendMessage(otherUserId: String, content: String) {
-        if(userId!=null){
+    fun sendMessage(content: String) {
+        if (userId != null && otherUserId != null) {
             viewModelScope.launch(ioDispatcher) {
                 when (val response = chatRepository.sendChatMessage(userId, otherUserId, content)) {
-                    is Response.Success -> fetchMessages(otherUserId)
+                    is Response.Success -> fetchMessages()
                     is Response.Error -> _errorMessage.value = "Failed to send message"
                 }
             }
         }
     }
-    suspend fun listenToMessages(otherUserId: String) {
-        if (userId != null) {
+
+    suspend fun listenToMessages() {
+        if (!isListening && userId != null && otherUserId != null) {
+            isListening = true
             Log.e("ChatVM", "Listening Start")
             chatRepository.listenToMessages(userId, otherUserId) { newMessage ->
                 viewModelScope.launch(ioDispatcher) {

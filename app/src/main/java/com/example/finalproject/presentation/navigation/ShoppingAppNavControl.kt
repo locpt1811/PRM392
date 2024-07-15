@@ -31,6 +31,7 @@ object MainDestinations {
     const val CHAT_ROUTE = "chat"
     const val CHAT_USER_ID = "userId"
     const val CHAT_OTHER_USER_ID = "otherUserId"
+    const val CHAT_LIST_ROUTE = "chatList"
 }
 
 @Composable
@@ -129,13 +130,16 @@ class ShoppingAppNavController @Inject constructor(
     }
 
     fun navigateToChat(userId: String, otherUserId: String, from: NavBackStackEntry) {
-
-        Log.e("ShopApp","Navigating")
         if (shouldNavigate(from)) {
             navController.navigate("${MainDestinations.CHAT_ROUTE}/$userId/$otherUserId")
         }
     }
 
+    fun navigateToChatList(from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate(MainDestinations.CHAT_LIST_ROUTE)
+        }
+    }
 }
 
 private fun shouldNavigate(from: NavBackStackEntry): Boolean = from.lifecycleIsResumed()
