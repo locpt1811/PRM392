@@ -73,7 +73,7 @@ fun NavGraphBuilder.addHomeGraph(
             onNavigateToSearch = { query ->
                 val searchRoute = "${HomeSections.SEARCH.route}?query=${query}"
                 onNavigateToRoute(searchRoute)
-            },
+            }
         )
     }
 
