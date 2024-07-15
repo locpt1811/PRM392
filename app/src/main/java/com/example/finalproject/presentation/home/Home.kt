@@ -70,7 +70,6 @@ fun NavGraphBuilder.addHomeGraph(
             onCartClick = remember { { onCartClick(from) } },
             onNavigateRoute = onNavigateToRoute,
             onChatListClick = remember { { onChatListClick(from) } },
-            onNavigateRoute = onNavigateToRoute,
             onNavigateToSearch = { query ->
                 val searchRoute = "${HomeSections.SEARCH.route}?query=${query}"
                 onNavigateToRoute(searchRoute)
