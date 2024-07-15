@@ -103,24 +103,13 @@ dependencies {
     implementation("io.ktor:ktor-utils:2.3.11")
     implementation("io.ktor:ktor-client-okhttp:2.3.11")
     implementation(platform("io.github.jan-tennert.supabase:bom:2.5.0"))
-//    implementation("io.github.jan-tennert.supabase:postgrest-kt")
-//    implementation("io.github.jan-tennert.supabase:realtime-kt")
 
     //implementation("io.ktor:ktor-client-android:2.3.11")
 
     // Hilt
-//    implementation ("com.google.dagger:hilt-android:2.51.1")
-//    annotationProcessor ("com.google.dagger:hilt-compiler:2.51.1")
-//    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-
-//    implementation(libs.hilt.android)
-//    implementation(libs.androidx.hilt.navigation.compose)
-//    kapt(libs.hilt.android.compiler)
-
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-swiperefresh:0.21.0-beta")

@@ -101,7 +101,7 @@ class ProfileViewModel @Inject constructor(
     }
     suspend fun logOut() {
         try {
-            authRepository.logout();
+            authRepository.logout()
         } catch (e: Exception) {
             Log.e("Error", e.message.toString())
         }

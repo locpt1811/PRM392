@@ -1,25 +1,32 @@
 package com.example.finalproject.presentation.product_detail
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.HeartBroken
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -33,7 +40,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +54,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -66,11 +77,6 @@ fun ProductDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    if (uiState.userMessages.isNotEmpty()) {
-        ShoppingShowToastMessage(message = uiState.userMessages.first().asString())
-        viewModel.consumedUserMessages()
-    }
-
     if (uiState.errorMessages.isNotEmpty()) {
         ShoppingShowToastMessage(message = uiState.errorMessages.first().asString())
         viewModel.consumedErrorMessages()
@@ -79,11 +85,14 @@ fun ProductDetailScreen(
     ShoppingScaffold(modifier = modifier) { paddingValues ->
         TopAppBar(
             title = {
-                Text(text = stringResource(id = R.string.products))
+                Text(
+                    text = stringResource(id = R.string.products),
+                    color = colorResource(id = R.color.white)
+                )
             },
             navigationIcon = {
                 IconButton(onClick = onBackClick) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = colorResource(id = R.color.white))
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
@@ -146,7 +155,10 @@ private fun ProductDetailScreenContent(
     cartButtonText: String,
     onNavigateToChat: () -> Unit
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
+    ) {
         AsyncImage(
             modifier = Modifier
                 .weight(1f)
@@ -159,6 +171,7 @@ private fun ProductDetailScreenContent(
             contentScale = ContentScale.Fit,
             placeholder = if (LocalInspectionMode.current) painterResource(id = R.drawable.debug_placeholder) else null
         )
+
         ProductDetails(
             modifier = Modifier
                 .weight(1f)
@@ -280,66 +293,94 @@ private fun ProductInfo(
                 Text(text = "$rate")
             }
             Row {
-                // Navigate to Chat button
+                // Chat button
                 IconButton(onClick = onNavigateToChat) {
                     Icon(
-                        imageVector = Icons.Filled.Phone,
+                        imageVector = Icons.AutoMirrored.Filled.Message,
                         contentDescription = "Navigate to Chat",
-                        tint = Color.Red
+                        tint = colorResource(id = R.color.black)
                     )
                 }
                 // Favorite button
                 IconButton(onClick = onFavoriteBtnClicked) {
                     Icon(
-                        imageVector = if (isProductFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        imageVector = if (isProductFavorite) Icons.Filled.Favorite else Icons.Filled.HeartBroken,
                         contentDescription = null,
                         tint = Color.Red
                     )
                 }
             }
         }
-        Text(
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-            text = title,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
-        )
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-            text = cateName
-        )
+        Column(modifier = modifier.fillMaxSize()){
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-            text = langCode
-        )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+                text = cateName
+            )
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-            text = langName
-        )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+                text = pubName
+            )
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-            text = description
-        )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+                text = langCode
+            )
 
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+                text = langName
+            )
+
+            var seeMore by remember { mutableStateOf(true) }
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
+                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
+                text = description,
+                maxLines = if (seeMore) 5 else Int.MAX_VALUE,
+                overflow = TextOverflow.Ellipsis,
+            )
+            val textButton = if (seeMore) {
+                stringResource(id = R.string.see_more)
+            } else {
+                stringResource(id = R.string.see_less)
+            }
+            Text(
+                text = textButton,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .heightIn(20.dp)
+                    .fillMaxWidth()
+                    .padding(top = 15.dp)
+                    .clickable {
+                        seeMore = !seeMore
+                    }
+            )
+        }
 
     }
 }
@@ -398,4 +439,6 @@ private fun ProductDetailScreenProductFavoritePreview() {
 
 private const val previewDescription = "Ranranrn " +
         "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, " +
+        "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."+
+        "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."+
         "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."

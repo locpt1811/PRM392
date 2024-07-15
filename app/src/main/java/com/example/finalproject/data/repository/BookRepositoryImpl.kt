@@ -33,7 +33,7 @@ class BookRepositoryImpl @Inject constructor(
                     .decodeList<CateDTO>()
                 Response.Success(result)
             } catch (e: Exception) {
-                Response.Error<List<CateDTO>>(errorMessageId = R.string.error_message_categories)
+                Response.Error(errorMessageId = R.string.error_message_categories)
             }
 
         }
@@ -42,38 +42,6 @@ class BookRepositoryImpl @Inject constructor(
     override suspend fun getBooks(): Response<List<BookDTO>> {
         return withContext(Dispatchers.IO) {
             try {
-//                val columns = Columns.raw("""
-//                                            book_id,
-//                                            title,
-//                                            isbn13,
-//                                            language_id,
-//                                            num_pages,
-//                                            publisher_id
-//                                            image_url,
-//                                            description,
-//                                            rating,
-//                                            category_id,
-//                                            price,
-//
-//                                            book_language (
-//                                              language_code,
-//                                              language_name
-//                                            ),
-//
-//                                            publisher (
-//                                              publisher_name
-//                                            )
-//
-//                                            category (
-//                                              category_name
-//                                            )
-//                                        """.trimIndent())
-//                val result = postgrest
-//                    .from("book")
-//                    .select(columns = columns)
-//                    .decodeList<BookDTO>()
-
-
                 val result = postgrest
                     .from("book")
                     .select()
@@ -109,7 +77,7 @@ class BookRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val book = postgrest.from("book")
-                    .select() {
+                    .select {
                         filter {
                             eq("book_id", id)
                         }
@@ -126,13 +94,6 @@ class BookRepositoryImpl @Inject constructor(
     override suspend fun getBookByIdFullDetail(id: String): Response<BookDTO> {
         return withContext(Dispatchers.IO) {
             try {
-//                val book = postgrest.from("book")
-//                    .select() {
-//                        filter {
-//                            eq("book_id", id)
-//                        }
-//                    }
-//                    .decodeSingle<BookDTO>()
                 val book = postgrest.rpc("get_books_by_id_with_details?id=${id}", RpcMethod.GET)
                     .decodeSingle<BookEntity>()
                     .toBookDTO()
@@ -149,11 +110,6 @@ class BookRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
 
-//                val result = postgrest
-//                    .from("book")
-//                    .select()
-//                    .decodeList<BookDTO>()
-//                    .map { it.toProductEntity() }
                 val result = postgrest.rpc("get_books_with_details")
                     .decodeList<BookEntity>()
 

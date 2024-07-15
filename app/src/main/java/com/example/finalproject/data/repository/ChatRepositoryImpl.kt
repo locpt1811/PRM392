@@ -111,7 +111,7 @@ class ChatRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val result = postgrest.from("chat")
-                    .select() {
+                    .select {
                         filter {
                             eq("from_user_id", userId)
                             and { eq("to_user_id", otherUserId) }
@@ -128,7 +128,7 @@ class ChatRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val result = postgrest.from("chat")
-                    .select() {
+                    .select {
                         filter {
                             eq("from_user_id", otherUserId)
                             and { eq("to_user_id", userId) }
