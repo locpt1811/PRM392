@@ -59,6 +59,7 @@ fun ShoppingProductItem(
     description: String?,
     rating: Double?,
     price: Double?,
+    user_id: String?,
 
     language_id: Int?,
     language_code: String?,
@@ -84,9 +85,10 @@ fun ShoppingProductItem(
                 description,
                 rating,
                 price,
+                user_id,
                 BookLanguage(language_id, language_code, language_name),
                 Category(category_id, category_name),
-                Publisher(publisher_id, publisher_name)
+                Publisher(publisher_id, publisher_name),
                 )
         ) } },
         colors = CardDefaults.cardColors(containerColor = Color.White),

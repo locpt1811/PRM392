@@ -95,14 +95,17 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:postgrest-kt:2.5.0")
     implementation("io.github.jan-tennert.supabase:storage-kt:2.5.0")
     implementation("io.github.jan-tennert.supabase:gotrue-kt:2.5.0")
+    implementation("io.github.jan-tennert.supabase:realtime-kt:2.5.0")
     implementation("io.ktor:ktor-client-android:2.3.11")
     implementation("io.ktor:ktor-client-core:2.3.11")
+    implementation("io.ktor:ktor-client-cio:2.3.11")
     implementation("io.ktor:ktor-utils:2.3.11")
+    implementation("io.ktor:ktor-client-okhttp:2.3.11")
     implementation(platform("io.github.jan-tennert.supabase:bom:2.5.0"))
-    implementation("io.github.jan-tennert.supabase:postgrest-kt")
-    implementation("io.github.jan-tennert.supabase:realtime-kt")
+//    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+//    implementation("io.github.jan-tennert.supabase:realtime-kt")
 
-    implementation("io.ktor:ktor-client-android:2.3.11")
+    //implementation("io.ktor:ktor-client-android:2.3.11")
 
     // Hilt
 //    implementation ("com.google.dagger:hilt-android:2.51.1")

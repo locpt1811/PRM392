@@ -29,6 +29,7 @@ import com.example.finalproject.R
 import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.presentation.chat.ChatScreen
 import com.example.finalproject.presentation.home.address.AddressScreen
 import com.example.finalproject.presentation.home.favorite.FavoritesScreen
 import com.example.finalproject.presentation.home.product.ProductScreen
@@ -40,13 +41,15 @@ fun NavGraphBuilder.addHomeGraph(
     onProductClick: (BookDTO, NavBackStackEntry) -> Unit,
     onSignOutClick: (NavBackStackEntry) -> Unit,
     onCartClick: (NavBackStackEntry) -> Unit,
+    onChatListClick: (NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
     composable(HomeSections.PRODUCT.route) { from ->
         ProductScreen(
             onProductClick = remember { { product -> onProductClick(product, from) } },
             onCartClick = remember { { onCartClick(from) } },
-            onNavigateRoute = onNavigateToRoute
+            onNavigateRoute = onNavigateToRoute,
+            onChatListClick = remember { { onChatListClick(from) } },
         )
     }
     composable(HomeSections.SEARCH.route) { from ->
