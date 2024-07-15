@@ -1,33 +1,50 @@
 package com.example.finalproject.presentation.home
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.finalproject.R
 import com.example.finalproject.common.helper.PreferenceManager
-import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.presentation.home.address.AddressScreen
 import com.example.finalproject.presentation.home.favorite.FavoritesScreen
@@ -35,6 +52,9 @@ import com.example.finalproject.presentation.home.product.ProductScreen
 import com.example.finalproject.presentation.home.profile.ProfileScreen
 import com.example.finalproject.presentation.home.search.SearchScreen
 import com.example.finalproject.utils.REMEMBER_ME
+import java.net.URLDecoder
+import java.net.URLEncoder
+
 
 fun NavGraphBuilder.addHomeGraph(
     onProductClick: (BookDTO, NavBackStackEntry) -> Unit,
@@ -46,15 +66,36 @@ fun NavGraphBuilder.addHomeGraph(
         ProductScreen(
             onProductClick = remember { { product -> onProductClick(product, from) } },
             onCartClick = remember { { onCartClick(from) } },
-            onNavigateRoute = onNavigateToRoute
+            onNavigateRoute = onNavigateToRoute,
+            onNavigateToSearch = { query ->
+                val searchRoute = "${HomeSections.SEARCH.route}?query=${query}"
+                onNavigateToRoute(searchRoute)
+            },
         )
     }
-    composable(HomeSections.SEARCH.route) { from ->
+
+    composable(
+        route = "${HomeSections.SEARCH.route}?query={query}",
+        arguments = listOf(navArgument("query") { defaultValue = "" })
+    ) { from ->
+        val encodedQuery = from.arguments?.getString("query") ?: ""
+        val decodedQuery = URLDecoder.decode(encodedQuery, "UTF-8")
         SearchScreen(
-            onProductClick = remember { { product -> onProductClick(product, from) } },
-            onNavigateRoute = onNavigateToRoute
+            initialQuery = decodedQuery,
+            onProductClick = remember { {
+                product -> onProductClick(product, from)
+            } },
+            onNavigateRoute = onNavigateToRoute,
         )
     }
+
+//    composable(HomeSections.SEARCH.route) { from ->
+//        SearchScreen(
+//            onProductClick = remember { { product -> onProductClick(product, from) } },
+//            onNavigateRoute = onNavigateToRoute
+//        )
+//    }
+
     composable(HomeSections.FAVORITES.route) { from ->
         FavoritesScreen(
             onProductClick = remember {
@@ -125,10 +166,19 @@ enum class HomeSections(
 }
 
 @Composable
+fun ShoppingAppTopBar(
+    onNavigateToSearch: (String) -> Unit,
+) {
+    SearchBarM3(
+        onNavigateToSearch = onNavigateToSearch
+    )
+}
+
+@Composable
 fun ShoppingAppBottomBar(
     tabs: Array<HomeSections>,
     currentRoute: String,
-    navigateToRoute: (String) -> Unit
+    navigateToRoute: (String) -> Unit,
 ) {
     val currentSection = tabs.first { it.route == currentRoute }
 
@@ -149,6 +199,61 @@ fun ShoppingAppBottomBar(
                 },
                 label = {
                     Text(text = stringResource(id = section.title))
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBarM3(
+    onNavigateToSearch: (String) -> Unit,
+) {
+
+    var query by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
+
+    val searchHistory = listOf("Android", "Kotlin", "The Beatles", "Cliffs Notes", "The Illuminati")
+
+    SearchBar(
+        modifier = Modifier.padding(
+            top = dimensionResource(id = R.dimen.one_level_margin)
+        ),
+        query = query,
+        onQueryChange = { query = it },
+        onSearch = { newQuery ->
+            onNavigateToSearch(newQuery)
+        },
+        active = active,
+        onActiveChange = { active = it },
+        placeholder = {
+            Text(text = "Search")
+        },
+        leadingIcon = {
+            Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")
+        },
+        trailingIcon = {
+            Row {
+                IconButton(onClick = { /* open mic dialog */ }) {
+                    Icon(imageVector = Icons.Filled.Mic, contentDescription = "Mic")
+                }
+                if (active) {
+                    IconButton(
+                        onClick = { if (query.isNotEmpty()) query = "" else active = false }
+                    ) {
+                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+                    }
+                }
+            }
+        }
+    ) {
+        searchHistory.takeLast(3).forEach { item ->
+            ListItem(
+                modifier = Modifier.clickable { query = item },
+                headlineContent = { Text(text = item) },
+                leadingContent = {
+                    Icon(imageVector = Icons.Filled.History, contentDescription = "History")
                 }
             )
         }

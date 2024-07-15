@@ -1,5 +1,6 @@
 package com.example.finalproject.data.repository
 
+import android.util.Log
 import com.example.finalproject.R
 import com.example.finalproject.common.Response
 import com.example.finalproject.data.datasource.local.cart.CartLocalDataSource
@@ -12,6 +13,7 @@ import com.example.finalproject.model.shopping.BookEntity
 import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.model.shopping.CateDTO
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.RpcMethod
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.Dispatchers
@@ -131,7 +133,7 @@ class BookRepositoryImpl @Inject constructor(
 //                        }
 //                    }
 //                    .decodeSingle<BookDTO>()
-                val book = postgrest.rpc("get_books_by_id_with_details", id)
+                val book = postgrest.rpc("get_books_by_id_with_details?id=${id}", RpcMethod.GET)
                     .decodeSingle<BookEntity>()
                     .toBookDTO()
 
@@ -147,11 +149,28 @@ class BookRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
 
-                val result = postgrest
-                    .from("book")
-                    .select()
-                    .decodeList<BookDTO>()
-                    .map { it.toProductEntity() }
+//                val result = postgrest
+//                    .from("book")
+//                    .select()
+//                    .decodeList<BookDTO>()
+//                    .map { it.toProductEntity() }
+                val result = postgrest.rpc("get_books_with_details")
+                    .decodeList<BookEntity>()
+
+                Response.Success(result)
+            } catch (e: Exception) {
+                Response.Error(errorMessageId = R.string.error_message_books_db)
+            }
+
+        }
+    }
+
+    override suspend fun getAllBookDbByTitle(title: String): Response<List<BookEntity>> {
+        return withContext(Dispatchers.IO) {
+            try {
+
+                val result = postgrest.rpc("get_books_by_title_with_details?book_title=${title}",RpcMethod.GET)
+                    .decodeList<BookEntity>()
 
                 Response.Success(result)
             } catch (e: Exception) {

@@ -87,6 +87,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material:material-icons-extended")
 
     // ggmap
     implementation("com.google.android.gms:play-services-maps:18.2.0")

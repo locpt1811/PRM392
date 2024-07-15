@@ -10,6 +10,7 @@ import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.presentation.home.HomeSections
 import com.google.gson.Gson
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -51,7 +52,7 @@ class ShoppingAppNavController(
         if (route != currentRoute) {
             navController.navigate(route) {
                 launchSingleTop = true
-                restoreState = true
+                restoreState = false
                 popUpTo(findStartDestination(navController.graph).id) {
                     saveState = true
                 }
@@ -69,6 +70,16 @@ class ShoppingAppNavController(
             navController.navigate("${MainDestinations.PRODUCT_DETAIL_ROUTE}/$encodedValue")
         }
     }
+
+//    fun navigateToSearch(query: String, from: NavBackStackEntry) {
+//        if (shouldNavigate(from)) {
+//            val encodedValue =
+//                URLEncoder.encode(
+//                    query,"UTF-8"
+//                )
+//            navController.navigate("${HomeSections.SEARCH.route}?query=${encodedValue}")
+//        }
+//    }
 
     fun navigateToSignUp(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {

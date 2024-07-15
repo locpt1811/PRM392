@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation.home.search
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -42,11 +45,25 @@ import com.example.finalproject.utils.CustomPreview
 
 @Composable
 fun SearchScreen(
+    initialQuery : String,
     modifier: Modifier = Modifier,
     onProductClick: (BookDTO) -> Unit,
     onNavigateRoute: (String) -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(initialQuery) {
+        viewModel.setQueryToEmpty()
+        viewModel.searchedText = initialQuery
+        viewModel.searchTitle(initialQuery)
+        viewModel.saveSearchHistory(initialQuery)
+    }
+
+    DisposableEffect(initialQuery) {
+        onDispose {
+            viewModel.setQueryToEmpty()
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsState()
 
     if (uiState.errorMessages.isNotEmpty()) {

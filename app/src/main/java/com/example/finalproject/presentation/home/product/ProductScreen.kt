@@ -46,6 +46,7 @@ import com.example.finalproject.presentation.designsystem.components.ThemeButton
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.presentation.home.HomeSections
 import com.example.finalproject.presentation.home.ShoppingAppBottomBar
+import com.example.finalproject.presentation.home.ShoppingAppTopBar
 import com.example.finalproject.utils.CustomPreview
 
 @Composable
@@ -54,6 +55,7 @@ fun ProductScreen(
     onProductClick: (BookDTO) -> Unit,
     onCartClick: () -> Unit,
     onNavigateRoute: (String) -> Unit,
+    onNavigateToSearch: (String) -> Unit,
     viewModel: ProductViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -65,6 +67,11 @@ fun ProductScreen(
                 tabs = HomeSections.values(),
                 currentRoute = HomeSections.PRODUCT.route,
                 navigateToRoute = onNavigateRoute
+            )
+        },
+        topBar = {
+            ShoppingAppTopBar(
+                onNavigateToSearch = onNavigateToSearch,
             )
         }
     ) { paddingValues ->
