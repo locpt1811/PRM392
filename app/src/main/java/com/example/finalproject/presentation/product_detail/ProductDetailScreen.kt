@@ -77,6 +77,11 @@ fun ProductDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    if (uiState.userMessages.isNotEmpty()) {
+        ShoppingShowToastMessage(message = uiState.userMessages.first().asString())
+        viewModel.consumedUserMessages()
+    }
+
     if (uiState.errorMessages.isNotEmpty()) {
         ShoppingShowToastMessage(message = uiState.errorMessages.first().asString())
         viewModel.consumedErrorMessages()
