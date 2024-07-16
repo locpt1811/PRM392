@@ -67,19 +67,11 @@ class MainActivity : ComponentActivity() {
 //            }
             if (hasNotificationPermission) {
                 shoppingNotifier.launchNotification()
-                Log.d("TAG", "yes")
             }
-
-            Log.d("permission", "${ hasNotificationPermission }")
 
             val startDestination = if (preferenceManager.getData(FIRST_TIME_LAUNCH, true)) {
                 MainDestinations.ONBOARDING_ROUTE
             } else {
-//                if (preferenceManager.getData(ACCESS_TOKEN, "").isEmpty()) {
-//                    MainDestinations.LOGIN_ROUTE
-//                } else {
-//                    MainDestinations.PRODUCT_ROUTE
-//                }
                 MainDestinations.PRODUCT_ROUTE
             }
 

@@ -223,10 +223,8 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
-    fun consumedUserMessages() {
-        _uiState.update {
-            it.copy(userMessages = listOf())
-        }
+    fun onCategoryClick(cateName: String) {
+
     }
 
     fun consumedErrorMessages() {
