@@ -355,14 +355,6 @@ private fun ProductInfo(
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
                     .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-                text = cateName
-            )
-
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
                 text = pubName
             )
 

@@ -137,6 +137,22 @@ class BookRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getAllBookDbByCateName(cateName: String): Response<List<BookEntity>> {
+        return withContext(Dispatchers.IO) {
+            try {
+
+                val result = postgrest.rpc("get_books_by_category_with_details?category_name=${cateName}",RpcMethod.GET)
+                    .decodeList<BookEntity>()
+
+                Response.Success(result)
+            } catch (e: Exception) {
+                Log.e("Error", e.toString())
+                Response.Error(errorMessageId = R.string.error_message_books_db)
+            }
+
+        }
+    }
+
     override suspend fun addFavoriteProduct(productEntity: BookEntity): Response<Unit> =
         favoriteProductLocalDatasource.addFavoriteProduct(productEntity)
 
