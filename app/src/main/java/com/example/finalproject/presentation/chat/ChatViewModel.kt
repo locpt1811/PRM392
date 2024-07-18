@@ -72,6 +72,16 @@ class ChatViewModel @Inject constructor(
             }
         }
     }
+    fun sendImageMessage(imagePath: ByteArray) {
+        if (userId != null && otherUserId != null) {
+            viewModelScope.launch(ioDispatcher) {
+                when (val response = chatRepository.sendImageMessage(userId, otherUserId, imagePath)) {
+                    is Response.Success -> fetchMessages()
+                    is Response.Error -> _errorMessage.value = "Failed to send image"
+                }
+            }
+        }
+    }
 
     suspend fun listenToMessages() {
         if (!isListening && userId != null && otherUserId != null) {

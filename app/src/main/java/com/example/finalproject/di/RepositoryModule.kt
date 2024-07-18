@@ -16,6 +16,7 @@ import dagger.hilt.components.SingletonComponent
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.storage.Storage
 import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
@@ -45,8 +46,9 @@ object RepositoryModule {
     @Singleton
     fun provideChatRepository(
         postgrest: Postgrest,
-        supabaseClient: SupabaseClient
+        supabaseClient: SupabaseClient,
+        storage: Storage
     ): ChatRepository {
-        return ChatRepositoryImpl(postgrest, supabaseClient)
+        return ChatRepositoryImpl(postgrest, supabaseClient,storage)
     }
 }

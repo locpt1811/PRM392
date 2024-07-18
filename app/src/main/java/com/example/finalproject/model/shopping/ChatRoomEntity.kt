@@ -6,11 +6,12 @@ import kotlinx.serialization.Serializable
 @Immutable
 @Serializable
 data class ChatDTO(
-    val id: Int,
+    val id: Int?,
     val from_user_id: String,
     val to_user_id: String,
     val content: String,
-    val created_at: String
+    val created_at: String?,
+    val is_image: Boolean
 )
 
 @Immutable
