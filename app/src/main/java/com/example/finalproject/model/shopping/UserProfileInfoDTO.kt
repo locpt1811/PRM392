@@ -13,3 +13,10 @@ data class UserProfileInfoDTO(
     val last_name: String? = null
 )
 
+@Immutable
+@Serializable
+data class UserProfileDTO(
+    val id: String,
+    val first_name: String? = null,
+    val last_name: String? = null
+)

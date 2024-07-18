@@ -51,6 +51,7 @@ fun ChatScreen(
     // State for messages and error message
     val messages by viewModel.messages.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val otherUserName by viewModel.otherUserName.collectAsState()
 
     // State for input message and image path
     var messageContent by remember { mutableStateOf(TextFieldValue()) }
@@ -72,7 +73,7 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.chat)) },
+                title = { Text(text = otherUserName ?: stringResource(id = R.string.chat)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -205,7 +206,7 @@ fun ImageSelection(
     }
 }
 
-fun readBytesFromUri(context: Context, uri: Uri): ByteArray? {
+private fun readBytesFromUri(context: Context, uri: Uri): ByteArray? {
     val contentResolver: ContentResolver = context.contentResolver
     val inputStream: InputStream? = contentResolver.openInputStream(uri)
     val byteBuffer = ByteArrayOutputStream()

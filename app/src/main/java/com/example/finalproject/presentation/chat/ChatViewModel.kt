@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import com.example.finalproject.domain.repository.AuthRepository
+import com.example.finalproject.domain.repository.ProfileRepository
 import com.example.finalproject.model.auth.User
 import com.example.finalproject.model.shopping.ChatDTO
 import com.example.finalproject.presentation.navigation.MainDestinations
@@ -24,6 +25,7 @@ class ChatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val chatRepository: ChatRepository,
     private val authRepository: AuthRepository,
+    private val profileRepository: ProfileRepository,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -32,6 +34,10 @@ class ChatViewModel @Inject constructor(
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
+
+    private val _otherUserName = MutableStateFlow<String?>(null)
+    val otherUserName: StateFlow<String?> = _otherUserName
+
     private val userId = retrieveCurrentUser()?.uid
     private val otherUserId = savedStateHandle.get<String>(MainDestinations.CHAT_OTHER_USER_ID)
 
@@ -40,10 +46,26 @@ class ChatViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             fetchMessages()
+            fetchOtherUserName()
             listenToMessages()
         }
     }
 
+    private suspend fun fetchOtherUserName() {
+        if (otherUserId != null) {
+            viewModelScope.launch(ioDispatcher) {
+                when (val response = profileRepository.getProfileUsers()) {
+                    is Response.Success -> {
+                        val otherUserProfile = response.data.firstOrNull { it.id == otherUserId }
+                        _otherUserName.value = otherUserProfile?.let {
+                            "${it.first_name.orEmpty()} ${it.last_name.orEmpty()}"
+                        }
+                    }
+                    is Response.Error -> _errorMessage.value = "Failed to fetch user profile"
+                }
+            }
+        }
+    }
     fun fetchMessages() {
         if (userId != null && otherUserId != null) {
             viewModelScope.launch(ioDispatcher) {

@@ -157,6 +157,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
 
     composable(route = MainDestinations.CHAT_LIST_ROUTE) { from ->
         ChatListScreen(
+            onBackClick = { navController.popBackStack() },
             onChatIconClick = { userId, otherUserId ->
                 onChatClick(userId,otherUserId,from)
             }
