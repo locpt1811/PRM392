@@ -3,6 +3,7 @@ package com.example.finalproject.presentation.cart
 import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,7 +53,7 @@ class CartViewModel @Inject constructor(
 
     // A client for interacting with the Google Pay API.
     private val paymentsClient: PaymentsClient = PaymentsUtil.createPaymentsClient(application)
-
+    val navigateToPaymentActivity = MutableLiveData<Unit>()
     init {
         getCart()
 
@@ -241,7 +242,9 @@ class CartViewModel @Inject constructor(
 
         return null
     }
-
+    fun requestPayment1() {
+        navigateToPaymentActivity.value = Unit
+    }
     fun requestPayment() {
         Log.d("MMpaymentData", "requestPayment")
         // Disables the button to prevent multiple clicks.

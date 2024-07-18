@@ -1,5 +1,7 @@
 package com.example.finalproject.presentation.checkout
 
+import com.example.finalproject.presentation.PaymentActivity
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,44 +21,32 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.finalproject.R
 import com.example.finalproject.presentation.designsystem.components.ShoppingButton
-import com.example.finalproject.presentation.payment.PaymentViewModel
 import com.example.finalproject.utils.PaymentsUtil
 import com.google.pay.button.PayButton
-import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.common.api.CommonStatusCodes
-import com.google.android.gms.wallet.contract.TaskResultContracts.GetPaymentDataResult
-import kotlinx.coroutines.launch
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun CheckoutScreen(
     modifier: Modifier = Modifier,
     onContinueShoppingClick: () -> Unit,
+    onGooglePayButtonClick: () -> Unit,
     payUiState: PaymentUiState = PaymentUiState.NotStarted,
     viewModel: CheckoutViewModel = hiltViewModel()
 ) {
     val padding = 20.dp
     val black = Color(0xff000000.toInt())
     val grey = Color(0xffeeeeee.toInt())
-
+    val context = LocalContext.current
+    val paymentAmount = 1200f
     if (payUiState is PaymentUiState.PaymentCompleted) {
         Column(
             modifier = Modifier
@@ -101,15 +91,23 @@ fun CheckoutScreen(
         ) {
             Text(text = "hello")
 
-            if (payUiState !is PaymentUiState.NotStarted) {
+//            if (payUiState !is PaymentUiState.NotStarted) {
                 PayButton(
                     modifier = Modifier
                         .testTag("payButton")
                         .fillMaxWidth(),
-                    onClick = viewModel::requestPayment,
+                    onClick = onGooglePayButtonClick,
                     allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
                 )
-            }
+//            }
+
+            PayButton(
+                modifier = Modifier
+                    .testTag("payButton")
+                    .fillMaxWidth(),
+                onClick = viewModel::requestPayment,
+                allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
+            )
         }
     }
 }

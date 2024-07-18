@@ -21,6 +21,7 @@ import com.google.android.gms.wallet.PaymentsClient
 import com.google.android.gms.wallet.contract.TaskResultContracts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,6 +33,7 @@ import org.json.JSONObject
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @Stable
@@ -52,9 +54,23 @@ class CheckoutViewModel @Inject constructor(
     init {
         savedStateHandle.get<Float>(MainDestinations.PAYMENT_AMOUNT_KEY)?.let { amount ->
             totalAmount = amount.toDouble()
+            Log.d("MMpaymentData", "totalAmount: $totalAmount")
         }
+
         viewModelScope.launch {
             verifyGooglePayReadiness()
+            val googlePayAvailability = when (_paymentUiState.value) {
+                is PaymentUiState.Available -> "Google Pay is available"
+                is PaymentUiState.NotStarted -> "Google Pay readiness check not started"
+                is PaymentUiState.PaymentCompleted -> "Payment has been completed"
+                is PaymentUiState.Error -> "An error occurred"
+                else -> "Unknown state"
+            }
+            Log.d("MMpaymentData", "Google Pay availability: $googlePayAvailability")
+        }
+        viewModelScope.launch {
+            val a = fetchCanUseGooglePay()
+            Log.d("MMpaymentData", "Google Pay can pay: $a")
         }
     }
 
@@ -92,7 +108,10 @@ class CheckoutViewModel @Inject constructor(
     ) */
     fun getLoadPaymentDataTask(priceCents: Long): Task<PaymentData> {
         val paymentDataRequestJson = PaymentsUtil.getPaymentDataRequest(priceCents)
+        Log.d("MMpaymentData", "paymentDataRequestJson: $paymentDataRequestJson")
         val request = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
+        Log.d("MMpaymentData", "request: $request")
+
         return paymentsClient.loadPaymentData(request)
     }
 
@@ -142,24 +161,49 @@ class CheckoutViewModel @Inject constructor(
 
         return null
     }
-
     fun requestPayment() {
         Log.d("MMpaymentData", "requestPayment start")
         viewModelScope.launch(ioDispatcher) {
-            val task = getLoadPaymentDataTask(priceCents = 1200L)
-            task.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val paymentData = it.result
-                    Log.d("MMpaymentData success", it.result.toJson())
-                    setPaymentData(paymentData)
+            try {
+                withContext(Dispatchers.Main) {
+                    val task = getLoadPaymentDataTask(priceCents = 1200L)
+                    task.addOnCompleteListener { completedTask ->
+                        if (completedTask.isSuccessful) {
+                            val paymentData = completedTask.result
+                            Log.d("MMpaymentData success", paymentData?.toJson() ?: "Payment data is null")
+                            setPaymentData(paymentData)
+                        } else {
+                            Log.e("MMpaymentData", "Payment failed: ${completedTask.exception}")
+                            if (completedTask.exception is ApiException) {
+                                val apiException = completedTask.exception as ApiException
+                                Log.e("MMpaymentData", "Google Pay API error: ${apiException.statusCode}")
+                            }
+                        }
+                    }
                 }
-                else{
-                    Log.d("pay Fail", "${it.exception.toString()}")
-
-                }
+            } catch (e: Exception) {
+                Log.e("MMpaymentData", "Exception in requestPayment: $e")
             }
         }
     }
+
+//    fun requestPayment() {
+//        Log.d("MMpaymentData", "requestPayment start")
+//        viewModelScope.launch(ioDispatcher) {
+//            val task = getLoadPaymentDataTask(priceCents = 1200L)
+//            task.addOnCompleteListener {
+//                if (it.isSuccessful) {
+//                    val paymentData = it.result
+//                    Log.d("MMpaymentData success", it.result.toJson())
+//                    setPaymentData(paymentData)
+//                }
+//                else{
+//                    Log.d("pay Fail", "${it.exception.toString()}")
+//
+//                }
+//            }
+//        }
+//    }
 }
 
 abstract class PaymentUiState internal constructor() {

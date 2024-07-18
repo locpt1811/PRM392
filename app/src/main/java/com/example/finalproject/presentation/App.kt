@@ -29,7 +29,7 @@ import com.example.finalproject.presentation.signup.SignUpScreen
 
 
 @Composable
-fun ShoppingApp(startDestination: String) {
+fun ShoppingApp(startDestination: String, mainActivity: MainActivity) {
     ShoppingAppTheme {
         val shoppingAppNavController = rememberShoppingAppNavController()
         NavHost(
@@ -47,6 +47,7 @@ fun ShoppingApp(startDestination: String) {
                 onChatClick = shoppingAppNavController::navigateToChat,
                 onChatListClick = shoppingAppNavController::navigateToChatList,
                 onGooglePayButtonClick = shoppingAppNavController::navigateGGPayment,
+                onGooglePayButtonClick2 ={ mainActivity.requestPayment() },
                 onContinueShoppingClick = shoppingAppNavController::navigateHome,
                 onFinished = shoppingAppNavController::navigateHome,
                 upPress = shoppingAppNavController::upPress,
@@ -66,12 +67,14 @@ private fun NavGraphBuilder.shoppingAppGraph(
     onPaymentClick: (Float, NavBackStackEntry) -> Unit,
     onGooglePayButtonClick: (Float, NavBackStackEntry) -> Unit,
     onContinueShoppingClick: (NavBackStackEntry) -> Unit,
+    onGooglePayButtonClick2: (NavBackStackEntry) -> Unit,
     onFinished: (NavBackStackEntry) -> Unit,
     upPress: () -> Unit,
     onChatClick: (String, String, NavBackStackEntry) -> Unit,
     onChatListClick: (NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
+
     navigation(
         route = MainDestinations.PRODUCT_ROUTE,
         startDestination = HomeSections.PRODUCT.route
@@ -115,7 +118,8 @@ private fun NavGraphBuilder.shoppingAppGraph(
             type = NavType.FloatType
         })
     ) { from ->
-        CheckoutScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
+        CheckoutScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } },
+            onGooglePayButtonClick = remember { { onGooglePayButtonClick2(from) } })
     }
 
     composable(

@@ -89,7 +89,7 @@ object Constants {
      *
      * @value #COUNTRY_CODE Your local country
      */
-    const val COUNTRY_CODE = "US"
+    const val COUNTRY_CODE = "USs"
 
     /**
      * Required by the API, but not visible to the user.

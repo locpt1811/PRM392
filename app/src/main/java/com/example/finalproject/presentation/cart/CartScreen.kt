@@ -1,5 +1,6 @@
 package com.example.finalproject.presentation.cart
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -41,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.finalproject.R
 import com.example.finalproject.model.shopping.CartEntity
+import com.example.finalproject.presentation.PaymentActivity
 import com.example.finalproject.presentation.designsystem.components.ShoppingScaffold
 import com.example.finalproject.presentation.designsystem.components.ShoppingShowToastMessage
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
@@ -58,7 +62,7 @@ fun CartScreen(
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
+    val context = LocalContext.current
     if (uiState.errorMessages.isNotEmpty()) {
         ShoppingShowToastMessage(message = uiState.errorMessages.first().asString())
         viewModel.consumedErrorMessage()
@@ -81,7 +85,7 @@ fun CartScreen(
                 { onGooglePayButtonClick((uiState.subtotal).toFloat()) }
             }
 
-//            onGooglePayButtonClick = { viewModel.requestPayment() }
+//            onGooglePayButtonClick = { viewModel.requestPayment1() }
 
         )
     }

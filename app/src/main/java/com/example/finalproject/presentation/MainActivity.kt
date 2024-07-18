@@ -1,6 +1,7 @@
 package com.example.finalproject.presentation
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.core.notification.ShoppingNotifier
+import com.example.finalproject.presentation.cart.CartViewModel
+import com.example.finalproject.presentation.checkout.CheckoutViewModel
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.ACCESS_TOKEN
 import com.example.finalproject.utils.FIRST_TIME_LAUNCH
@@ -39,7 +42,7 @@ class MainActivity : ComponentActivity() {
     private var hasNotificationPermission: Boolean = false
 
     private val viewModel: MainActivityViewModel by viewModels()
-
+    private val model: CheckoutViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -84,8 +87,33 @@ class MainActivity : ComponentActivity() {
             }
 
             ShoppingApp(
-                startDestination = startDestination
+                startDestination = startDestination,
+                mainActivity = this@MainActivity
             )
         }
+
+
     }
+
+    private val paymentDataLauncher = registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { taskResult ->
+        when (taskResult.status.statusCode) {
+            CommonStatusCodes.SUCCESS -> {
+                taskResult.result!!.let {
+                    Log.i("Google Pay result:", it.toJson())
+                }
+            }
+            //CommonStatusCodes.CANCELED -> The user canceled
+            //AutoResolveHelper.RESULT_ERROR -> The API returned an error (it.status: Status)
+            //CommonStatusCodes.INTERNAL_ERROR -> Handle other unexpected errors
+        }
+    }
+
+    fun requestPayment() {
+
+        Log.d("PaymentActivity", "request here")
+        val task = model.getLoadPaymentDataTask(priceCents = 1000L)
+        task.addOnCompleteListener(paymentDataLauncher::launch)
+    }
+
+
 }
