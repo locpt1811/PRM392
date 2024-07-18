@@ -20,6 +20,7 @@ data class OrderItemDTO(
     val id: Int,
     val order_id: Int,
     val book_id: Int,
+    val quantity: Int,
     val book: BookDTO
 )
 

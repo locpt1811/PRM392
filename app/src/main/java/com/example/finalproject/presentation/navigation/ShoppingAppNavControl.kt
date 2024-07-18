@@ -29,6 +29,9 @@ object MainDestinations {
     const val GG_PAYMENT_ROUTE = "ggpayment"
     const val PAYMENT_AMOUNT_KEY = "paymentAmount"
     const val ADDRESS_ROUTE = "address"
+    const val MY_ORDERS_ROUTE = "myOrders"
+    const val MY_ORDER_DETAIL_ROUTE = "myOrderDetail"
+    const val MY_ORDER_DETAIL_ID = "myOrderDetailId"
     const val CHAT_ROUTE = "chat"
     const val CHAT_USER_ID = "userId"
     const val CHAT_OTHER_USER_ID = "otherUserId"
@@ -149,6 +152,16 @@ class ShoppingAppNavController @Inject constructor(
     fun navigateToChatList(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
             navController.navigate(MainDestinations.CHAT_LIST_ROUTE)
+        }
+    }
+    fun navigateToMyOrders(from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate(MainDestinations.MY_ORDERS_ROUTE)
+        }
+    }
+    fun navigateToMyOrderDetail(orderId: Int, from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate("${MainDestinations.MY_ORDER_DETAIL_ROUTE}/$orderId")
         }
     }
 }

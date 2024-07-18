@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
@@ -64,6 +63,7 @@ fun NavGraphBuilder.addHomeGraph(
     onSignOutClick: (NavBackStackEntry) -> Unit,
     onCartClick: (NavBackStackEntry) -> Unit,
     onChatListClick: (NavBackStackEntry) -> Unit,
+    onMyOrdersClick: (NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
     composable(HomeSections.PRODUCT.route) { from ->
@@ -120,7 +120,8 @@ fun NavGraphBuilder.addHomeGraph(
 
                 }
             },
-            onNavigateRoute = onNavigateToRoute
+            onNavigateRoute = onNavigateToRoute,
+            onMyOrdersClicked = { onMyOrdersClick(from) }
         )
     }
 

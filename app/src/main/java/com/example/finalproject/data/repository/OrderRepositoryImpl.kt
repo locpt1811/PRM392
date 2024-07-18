@@ -31,6 +31,8 @@ class OrderRepositoryImpl @Inject constructor(
                     .rpc("get_orders_with_details",
                         RpcMethod.GET)
                     .decodeList<OrderDTO>()
+                Log.e("OrderRepo", "Get get_orders_with_details: ${result}")
+
                 Response.Success(result)
             } catch (e: Exception) {
                 Log.e("OrderRepo", "Get exception: ${e.message}")
@@ -39,13 +41,32 @@ class OrderRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getOrdersByUserId(userUuid: UUID): Response<OrderDTO> {
+    override suspend fun getOrdersByUserId(userUuid: UUID): Response<List<OrderDTO>> {
         return withContext(Dispatchers.IO) {
             try {
+                Log.e("OrderRepo", "Get getOrdersByUserId uuid: ${userUuid}")
+
                 val result = postgrest
                     .rpc("get_orders_by_user_id?arg_user_id=${userUuid}",
                         RpcMethod.GET)
+                    .decodeList<OrderDTO>()
+                Log.e("OrderRepo", "Get getOrdersByUserId: ${result}")
+
+                Response.Success(result)
+            } catch (e: Exception) {
+                Log.e("OrderRepo", "Get 1 exception: ${e.message}")
+                Response.Error(errorMessageId = R.string.error_message_books)
+            }
+        }
+    }
+    override suspend fun getOrderByOrderId(orderId: Int): Response<OrderDTO> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = postgrest
+                    .rpc("get_order_by_order_id?arg_order_id=${orderId}",
+                        RpcMethod.GET)
                     .decodeSingle<OrderDTO>()
+
                 Response.Success(result)
             } catch (e: Exception) {
                 Log.e("OrderRepo", "Get 1 exception: ${e.message}")

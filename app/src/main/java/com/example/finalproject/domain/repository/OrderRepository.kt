@@ -10,7 +10,8 @@ import com.example.finalproject.model.shopping.UserProfileInfoDTO
 import java.util.UUID
 
 interface OrderRepository {
-    suspend fun getOrdersByUserId(userUuid: UUID): Response<OrderDTO>
+    suspend fun getOrderByOrderId(orderId: Int): Response<OrderDTO>
+    suspend fun getOrdersByUserId(userUuid: UUID): Response<List<OrderDTO>>
     suspend fun getOrders(): Response<List<OrderDTO>>
     suspend fun createOrder(orderDTO: CreateOrderDTO, items: List<CartEntity>): Response<Unit>
 }
