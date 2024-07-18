@@ -32,13 +32,16 @@ import com.google.pay.button.PayButton
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun CheckoutScreen(
     modifier: Modifier = Modifier,
     onContinueShoppingClick: () -> Unit,
-    onGooglePayButtonClick: () -> Unit,
+    onGooglePayButtonClick: (Float) -> Unit,
     payUiState: PaymentUiState = PaymentUiState.NotStarted,
     viewModel: CheckoutViewModel = hiltViewModel()
 ) {
@@ -47,6 +50,7 @@ fun CheckoutScreen(
     val grey = Color(0xffeeeeee.toInt())
     val context = LocalContext.current
     val paymentAmount = 1200f
+    val uiState by viewModel.uiState.collectAsState()
     if (payUiState is PaymentUiState.PaymentCompleted) {
         Column(
             modifier = Modifier
@@ -82,6 +86,7 @@ fun CheckoutScreen(
     }
     else {
         Text(text = "checkout screen")
+
         Column(
             modifier = Modifier
                 .background(grey)
@@ -91,23 +96,18 @@ fun CheckoutScreen(
         ) {
             Text(text = "hello")
 
+
 //            if (payUiState !is PaymentUiState.NotStarted) {
                 PayButton(
                     modifier = Modifier
                         .testTag("payButton")
                         .fillMaxWidth(),
-                    onClick = onGooglePayButtonClick,
+                    onClick =  remember {
+                        { onGooglePayButtonClick((viewModel.totalAmount* 100).toFloat()) }
+                    },
                     allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
                 )
 //            }
-
-            PayButton(
-                modifier = Modifier
-                    .testTag("payButton")
-                    .fillMaxWidth(),
-                onClick = viewModel::requestPayment,
-                allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
-            )
         }
     }
 }

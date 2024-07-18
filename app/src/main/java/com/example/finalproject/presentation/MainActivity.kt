@@ -92,6 +92,7 @@ class MainActivity : ComponentActivity() {
             CommonStatusCodes.SUCCESS -> {
                 taskResult.result!!.let {
                     Log.i("Google Pay result:", it.toJson())
+                    model.setPaymentData(it)
                 }
             }
             //CommonStatusCodes.CANCELED -> The user canceled
@@ -100,10 +101,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun requestPayment() {
+    fun requestPayment(amount: Long) {
 
-        Log.d("PaymentActivity", "request here")
-        val task = model.getLoadPaymentDataTask(priceCents = 1000L)
+        Log.d("PaymentActivity", "$amount")
+        val task = model.getLoadPaymentDataTask(amount)
         task.addOnCompleteListener(paymentDataLauncher::launch)
     }
 
