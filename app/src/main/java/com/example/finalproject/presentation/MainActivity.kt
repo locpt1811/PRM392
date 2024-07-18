@@ -46,7 +46,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        installSplashScreen()
+        val splashWasDisplayed = savedInstanceState != null
+        if(!splashWasDisplayed){
+            val splashScreen = installSplashScreen()
+            splashScreen.setOnExitAnimationListener { splashScreenViewProvider ->
+                splashScreenViewProvider.iconView
+                    .animate()
+                    .setDuration(3000L) // Adjust duration as needed
+                    .alpha(0f) // Fade in (if initially hidden)
+                    .scaleX(3f) // Scale up by 20%
+                    .scaleY(3f) //
+                    .withEndAction {
+                        splashScreenViewProvider.remove()
+                    }.start()
+            }
+        }
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()
