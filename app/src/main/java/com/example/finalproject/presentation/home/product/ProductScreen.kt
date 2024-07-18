@@ -45,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.finalproject.R
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.model.shopping.BookDTO
+import com.example.finalproject.presentation.designsystem.components.Banner
 import com.example.finalproject.presentation.designsystem.components.ShoppingScaffold
 import com.example.finalproject.presentation.designsystem.components.ThemeButton
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
@@ -157,12 +158,14 @@ private fun ProductScreenContent(
                         Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowForward, contentDescription = null)
                     }
                 }
+
                 CategoryList(
                     categories = categories,
                     isCategoriesLoading = isCategoriesLoading,
                     selectedCatName = selectedCatName,
                     onCategoryClick = remember { { selectedCatName = it } }
                 )
+
                 ProductList(
                     productList = productList,
                     isProductListLoading = isProductListLoading,

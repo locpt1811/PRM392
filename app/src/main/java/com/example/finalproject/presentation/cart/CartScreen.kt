@@ -42,6 +42,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.finalproject.R
 import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.presentation.PaymentActivity
@@ -51,21 +52,34 @@ import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.utils.CustomPreview
 import com.example.finalproject.utils.DELIVERY_FEE
 import com.example.finalproject.presentation.designsystem.components.CheckOutButton
+import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.PaymentsUtil
 import com.google.pay.button.PayButton
 
 @Composable
 fun CartScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     onPaymentClick: (Float) -> Unit,
     onGooglePayButtonClick: (Float) -> Unit,
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val paymentUiState by viewModel.paymentUiState.collectAsState()
+    val isSuccess by viewModel.isSuccess.collectAsState()
     val context = LocalContext.current
     if (uiState.errorMessages.isNotEmpty()) {
         ShoppingShowToastMessage(message = uiState.errorMessages.first().asString())
         viewModel.consumedErrorMessage()
+    }
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            navController.navigate(MainDestinations.CART_ROUTE){
+                popUpTo(MainDestinations.CART_ROUTE) { inclusive = true }
+            }
+
+        }
+
     }
 
     ShoppingScaffold(
@@ -82,7 +96,7 @@ fun CartScreen(
                 { onPaymentClick((uiState.subtotal).toFloat()) }
             },
             onGooglePayButtonClick = remember {
-                { onGooglePayButtonClick((uiState.subtotal).toFloat()) }
+                { onGooglePayButtonClick(((uiState.subtotal + 2.00)*100).toFloat()) }
             }
 
 //            onGooglePayButtonClick = { viewModel.requestPayment1() }
@@ -102,6 +116,7 @@ private fun CartScreenContent(
     onCheckoutBtnClicked: () -> Unit,
     onGooglePayButtonClick: () -> Unit
 ) {
+
     if (cartList.isNotEmpty()) {
         Column(
             modifier = modifier

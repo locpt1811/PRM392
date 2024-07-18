@@ -82,9 +82,21 @@ class OrderRepositoryImpl @Inject constructor(
                         "user_id" to orderDTO.user_id,
                         "address" to orderDTO.address
                     ))
+                val recentInsertResponse = postgrest.from("order_user")
+                    .select {
+                        filter {
+                            orderDTO.user_id?.let { eq("user_id", it) }
+                        }
+                    }
 
-                val createOrderResponse = orderInsertResponse.data?.let { it as CreateOrderResponseDTO }
-                val orderId = createOrderResponse?.id ?: throw Exception("Failed to retrieve order ID")
+
+
+
+//                val createOrderResponse = orderInsertResponse.data?.let { it as CreateOrderResponseDTO }
+//                val orderId = createOrderResponse?.id ?: throw Exception("Failed to retrieve order ID")
+
+                val orderId = recentInsertResponse.data ?: throw Exception("Failed to retrieve order ID")
+                Log.d("OrderRepo", "Order ID: ${recentInsertResponse.data}")
 
                 // Prepare the items for insertion into order_item
                 val orderItems = items.map { item ->

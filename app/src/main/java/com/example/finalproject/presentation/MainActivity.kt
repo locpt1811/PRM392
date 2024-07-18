@@ -42,11 +42,25 @@ class MainActivity : ComponentActivity() {
     private var hasNotificationPermission: Boolean = false
 
     private val viewModel: MainActivityViewModel by viewModels()
-    private val model: CheckoutViewModel by viewModels()
+    private val model: CartViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        installSplashScreen()
+        val splashWasDisplayed = savedInstanceState != null
+        if(!splashWasDisplayed){
+            val splashScreen = installSplashScreen()
+            splashScreen.setOnExitAnimationListener { splashScreenViewProvider ->
+                splashScreenViewProvider.iconView
+                    .animate()
+                    .setDuration(3000L) // Adjust duration as needed
+                    .alpha(0f) // Fade in (if initially hidden)
+                    .scaleX(3f) // Scale up by 20%
+                    .scaleY(3f) //
+                    .withEndAction {
+                        splashScreenViewProvider.remove()
+                    }.start()
+            }
+        }
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()
@@ -92,6 +106,7 @@ class MainActivity : ComponentActivity() {
             CommonStatusCodes.SUCCESS -> {
                 taskResult.result!!.let {
                     Log.i("Google Pay result:", it.toJson())
+                    model.setPaymentData(it)
                 }
             }
             //CommonStatusCodes.CANCELED -> The user canceled
@@ -100,10 +115,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun requestPayment() {
+    fun requestPayment(amount: Long) {
 
-        Log.d("PaymentActivity", "request here")
-        val task = model.getLoadPaymentDataTask(priceCents = 1000L)
+        Log.d("PaymentActivity", "$amount")
+        val task = model.getLoadPaymentDataTask(amount)
         task.addOnCompleteListener(paymentDataLauncher::launch)
     }
 

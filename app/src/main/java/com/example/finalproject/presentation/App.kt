@@ -1,6 +1,7 @@
 package com.example.finalproject.presentation
 
 import android.content.IntentSender.OnFinished
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavBackStackEntry
@@ -51,7 +52,7 @@ fun ShoppingApp(startDestination: String, mainActivity: MainActivity) {
                 onMyOrdersClick = shoppingAppNavController::navigateToMyOrders,
                 onOrderDetailClick = shoppingAppNavController::navigateToMyOrderDetail,
                 onGooglePayButtonClick = shoppingAppNavController::navigateGGPayment,
-                onGooglePayButtonClick2 ={ mainActivity.requestPayment() },
+                onGooglePayButtonClick2 = { amount, from -> mainActivity.requestPayment(amount.toLong()) },
                 onContinueShoppingClick = shoppingAppNavController::navigateHome,
                 onFinished = shoppingAppNavController::navigateHome,
                 upPress = shoppingAppNavController::upPress,
@@ -71,7 +72,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
     onPaymentClick: (Float, NavBackStackEntry) -> Unit,
     onGooglePayButtonClick: (Float, NavBackStackEntry) -> Unit,
     onContinueShoppingClick: (NavBackStackEntry) -> Unit,
-    onGooglePayButtonClick2: (NavBackStackEntry) -> Unit,
+    onGooglePayButtonClick2: (Float,NavBackStackEntry) -> Unit,
     onFinished: (NavBackStackEntry) -> Unit,
     upPress: () -> Unit,
     onChatClick: (String, String, NavBackStackEntry) -> Unit,
@@ -105,8 +106,9 @@ private fun NavGraphBuilder.shoppingAppGraph(
 
     composable(route = MainDestinations.CART_ROUTE) { from ->
         CartScreen(
-            onGooglePayButtonClick = remember { { amount -> onGooglePayButtonClick(amount, from) } },
-            onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } })
+            onGooglePayButtonClick = remember { { amount -> onGooglePayButtonClick2(amount, from) } },
+            onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } },
+            navController = navController,)
     }
 
     composable(
@@ -125,7 +127,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
         })
     ) { from ->
         CheckoutScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } },
-            onGooglePayButtonClick = remember { { onGooglePayButtonClick2(from) } })
+            onGooglePayButtonClick = remember { { amount -> onGooglePayButtonClick2(amount, from) } })
     }
 
     composable(
