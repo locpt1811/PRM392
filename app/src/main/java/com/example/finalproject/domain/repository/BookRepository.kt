@@ -14,6 +14,7 @@ interface BookRepository {
     suspend fun getBookByIdFullDetail(id: String): Response<BookDTO>
     suspend fun getAllBookDb(): Response<List<BookEntity>>
     suspend fun getAllBookDbByTitle(title: String): Response<List<BookEntity>>
+    suspend fun getAllBookDbByCateName(cateName: String): Response<List<BookEntity>>
     suspend fun addFavoriteProduct(productEntity: BookEntity): Response<Unit>
 
     suspend fun getAllFavoriteProducts(): Response<List<BookEntity>>

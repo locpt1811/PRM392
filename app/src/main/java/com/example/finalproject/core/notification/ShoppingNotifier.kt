@@ -39,7 +39,7 @@ class ShoppingNotifier @Inject constructor(
         }
 
         return NotificationCompat.Builder(context, NotificationChannelIds.SHOPPING_NOTIFICATION)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.splash_logo)
             .setContentTitle(context.getString(R.string.shopping_notification_title))
             .setContentText(context.getString(R.string.shop_notification_description))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

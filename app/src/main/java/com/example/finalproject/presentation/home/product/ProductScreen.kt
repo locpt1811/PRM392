@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
+import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.ShoppingCart
@@ -73,7 +76,10 @@ fun ProductScreen(
         },
         topBar = {
             ShoppingAppTopBar(
+                modifier = Modifier,
                 onNavigateToSearch = onNavigateToSearch,
+                onChatListClick = onChatListClick,
+                onCartClick = onCartClick
             )
         }
     ) { paddingValues ->
@@ -148,13 +154,8 @@ private fun ProductScreenContent(
                         style = MaterialTheme.typography.headlineMedium
                     )
                     IconButton(onClick = onChatListClicked) {
-                        Icon(imageVector = Icons.Outlined.Email, contentDescription = null)
+                        Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowForward, contentDescription = null)
                     }
-                    IconButton(onClick = onShoppingCartClicked) {
-                        Icon(imageVector = Icons.Outlined.ShoppingCart, contentDescription = null)
-                    }
-
-                    // change theme button
                 }
                 CategoryList(
                     categories = categories,

@@ -70,7 +70,7 @@
     <string name="confirm">Confirm</string>
     <string name="products">Products</string>
     <string name="shopping_notification_title">Don\'t forget to shop</string>
-    <string name="shop_notification_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vitae odio in mauris elementum commodo id ut neque. Sed a blandit justo, eu porta libero.</string>
+    <string name="shop_notification_description">Come and buy your favorite books. Your cart is ready to checkout.</string>
     <string name="shopping_channel_name" translatable="false">Shopping channel</string>
     <string name="shopping_channel_description" translatable="false">Daily shopping reminder</string>
     <string name="delete">Delete</string>

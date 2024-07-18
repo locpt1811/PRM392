@@ -7,14 +7,20 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -22,11 +28,9 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.HeartBroken
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -58,12 +62,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.finalproject.R
 import com.example.finalproject.presentation.designsystem.components.ShoppingScaffold
 import com.example.finalproject.presentation.designsystem.components.ShoppingShowToastMessage
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
+import com.example.finalproject.presentation.home.product.CategoryItem
 import com.example.finalproject.utils.CustomPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,6 +82,11 @@ fun ProductDetailScreen(
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    if (uiState.userMessages.isNotEmpty()) {
+        ShoppingShowToastMessage(message = uiState.userMessages.first().asString())
+        viewModel.consumedUserMessages()
+    }
 
     if (uiState.errorMessages.isNotEmpty()) {
         ShoppingShowToastMessage(message = uiState.errorMessages.first().asString())
@@ -99,6 +110,7 @@ fun ProductDetailScreen(
                 containerColor = MaterialTheme.colorScheme.primary
             )
         )
+
         ProductDetailScreenContent(
             modifier = Modifier.padding(paddingValues),
             title = uiState.product?.title ?: "",
@@ -112,6 +124,7 @@ fun ProductDetailScreen(
             image = uiState.product?.image_url ?: "",
             isProductFavorite = uiState.isProductFavorite,
             onFavoriteBtnClicked = viewModel::onFavoriteProductClick,
+            onCategoryClick = viewModel::onCategoryClick,
             onAddToCartClicked = remember {
                 {
                     if (uiState.isProductInCart) {
@@ -124,10 +137,10 @@ fun ProductDetailScreen(
             onNavigateToChat = {
                 val userId = uiState.userId // Assuming userId is stored in uiState
                 val otherUserId = uiState.product?.user_id
-                if(otherUserId != null && userId!=null){
+                if (otherUserId != null && userId != null) {
                     onChatClick(userId, otherUserId)
-                    }
-               },
+                }
+            },
             cartButtonText = if (uiState.isProductInCart) {
                 stringResource(id = R.string.go_to_cart)
             } else {
@@ -152,12 +165,12 @@ private fun ProductDetailScreenContent(
     isProductFavorite: Boolean,
     onFavoriteBtnClicked: () -> Unit,
     onAddToCartClicked: () -> Unit,
+    onCategoryClick: (String) -> Unit,
     cartButtonText: String,
     onNavigateToChat: () -> Unit
 ) {
     Column(modifier = modifier
         .fillMaxSize()
-        .verticalScroll(rememberScrollState())
     ) {
         AsyncImage(
             modifier = Modifier
@@ -186,6 +199,7 @@ private fun ProductDetailScreenContent(
             langCode = langCode,
             isProductFavorite = isProductFavorite,
             onFavoriteBtnClicked = onFavoriteBtnClicked,
+            onCategoryClick = onCategoryClick,
             onAddToCartClicked = onAddToCartClicked,
             cartButtonText = cartButtonText,
             onNavigateToChat = onNavigateToChat
@@ -205,6 +219,7 @@ private fun ProductDetails(
     langName:String,
     langCode:String,
     onFavoriteBtnClicked: () -> Unit,
+    onCategoryClick: (String) -> Unit,
     isProductFavorite: Boolean,
     onAddToCartClicked: () -> Unit,
     cartButtonText: String,
@@ -225,6 +240,7 @@ private fun ProductDetails(
             langCode = langCode,
             onFavoriteBtnClicked = onFavoriteBtnClicked,
             isProductFavorite = isProductFavorite,
+            onCategoryClick = onCategoryClick,
             onNavigateToChat = onNavigateToChat,
         )
         HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
@@ -274,9 +290,12 @@ private fun ProductInfo(
     langCode:String,
     isProductFavorite: Boolean,
     onFavoriteBtnClicked: () -> Unit,
+    onCategoryClick: (String) -> Unit,
     onNavigateToChat: () -> Unit
     ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -304,7 +323,7 @@ private fun ProductInfo(
                 // Favorite button
                 IconButton(onClick = onFavoriteBtnClicked) {
                     Icon(
-                        imageVector = if (isProductFavorite) Icons.Filled.Favorite else Icons.Filled.HeartBroken,
+                        imageVector = if (isProductFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = null,
                         tint = Color.Red
                     )
@@ -312,7 +331,10 @@ private fun ProductInfo(
             }
         }
 
-        Column(modifier = modifier.fillMaxSize()){
+        Column(modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+        ){
             Text(
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
@@ -322,12 +344,10 @@ private fun ProductInfo(
                 fontWeight = FontWeight.Bold
             )
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-                text = cateName
+            CategoryItem(
+                categoryName = cateName,
+                selectedCatName = cateName,
+                onCategoryClick = onCategoryClick
             )
 
             Text(
@@ -404,6 +424,7 @@ private fun ProductDetailScreenPreview() {
                 isProductFavorite = false,
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},
+                onCategoryClick = {},
                 cartButtonText = "Add to Cart",
                 onNavigateToChat = {}
             )
@@ -430,6 +451,7 @@ private fun ProductDetailScreenProductFavoritePreview() {
                 isProductFavorite = true,
                 onFavoriteBtnClicked = {},
                 onAddToCartClicked = {},
+                onCategoryClick = {},
                 cartButtonText = "Go to Cart",
                 onNavigateToChat = {}
             )

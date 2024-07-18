@@ -55,7 +55,6 @@ fun SearchScreen(
         viewModel.setQueryToEmpty()
         viewModel.searchedText = initialQuery
         viewModel.searchTitle(initialQuery)
-        viewModel.saveSearchHistory(initialQuery)
     }
 
     DisposableEffect(initialQuery) {
