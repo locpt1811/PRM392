@@ -345,6 +345,8 @@ private fun ProductInfo(
             )
 
             CategoryItem(
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin)),
                 categoryName = cateName,
                 selectedCatName = cateName,
                 onCategoryClick = onCategoryClick
