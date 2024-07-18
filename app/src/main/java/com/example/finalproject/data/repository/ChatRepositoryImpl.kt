@@ -3,6 +3,7 @@ package com.example.finalproject.data.repository
 import android.util.Log
 import com.example.finalproject.R
 import com.example.finalproject.common.Response
+import com.example.finalproject.di.SupabaseModule_ProvideSupabaseStorageFactory
 import com.example.finalproject.domain.repository.ChatRepository
 import com.example.finalproject.model.shopping.ChatDTO
 import com.example.finalproject.model.shopping.ChatListResponse
@@ -20,6 +21,7 @@ import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.realtime.selectAsFlow
+import io.github.jan.supabase.storage.Storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -29,11 +31,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 class ChatRepositoryImpl @Inject constructor(
     private val postgrest: Postgrest,
-    private val supabaseClient: SupabaseClient
+    private val supabaseClient: SupabaseClient,
+    private val storage: Storage
 ) : ChatRepository {
 
     private var channel: RealtimeChannel? = null
@@ -66,21 +71,66 @@ class ChatRepositoryImpl @Inject constructor(
         channel = null
     }
 
-    override suspend fun sendChatMessage(fromUserId: String,toUserId: String, content: String): Response<Unit> {
+
+    override suspend fun sendChatMessage(fromUserId: String, toUserId: String, content: String): Response<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 postgrest.from("chat")
                     .insert(mapOf(
                         "from_user_id" to fromUserId,
                         "to_user_id" to toUserId,
-                        "content" to content
+                        "content" to content,
+                        "is_image" to "false"
                     ))
                 Response.Success(Unit)
             } catch (e: Exception) {
+                Log.e("ChatRepo", "Chat sent exception: ${e.message}")
                 Response.Error(errorMessageId = R.string.error_message_books)
             }
         }
     }
+
+    override suspend fun sendImageMessage(fromUserId: String, toUserId: String, imagePath: ByteArray): Response<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                // Upload the image to Supabase storage
+                val imageUrl = uploadImage(imagePath)
+                Log.e("ChatRepo", "ImageUrl: ${imageUrl}")
+                if (imageUrl != null) {
+                    postgrest.from("chat")
+                        .insert(mapOf(
+                            "from_user_id" to fromUserId,
+                            "to_user_id" to toUserId,
+                            "content" to imageUrl,
+                            "is_image" to "true"
+                        ))
+                    Response.Success(Unit)
+                } else {
+                    Response.Error(errorMessageId = R.string.error_message_books)
+                }
+            } catch (e: Exception) {
+                Log.e("ChatRepo", "Image sent exception: ${e.message}")
+                Response.Error(errorMessageId = R.string.error_message_books)
+            }
+        }
+    }
+    private suspend fun uploadImage(imageBytes: ByteArray): String? {
+        return try {
+            Log.e("ChatRepo", "try to upload image")
+            val fileName = "${UUID.randomUUID()}.jpg"
+            val response = storage.from("chat-images").upload(fileName, imageBytes)
+            val filePath = response.substringAfterLast('/')
+            val imageUrl = storage.from("chat-images").publicUrl(filePath)
+
+            Log.e("ChatRepo", "Image uploaded to: $imageUrl")
+            imageUrl
+        } catch (e: Exception) {
+            Log.e("ChatRepo", "Image upload exception: ${e.message}")
+            null
+        }
+    }
+
+
     override suspend fun getAllChatUser(userId: String): Response<List<String>> {
         return withContext(Dispatchers.IO) {
             try {

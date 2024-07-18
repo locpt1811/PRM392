@@ -15,4 +15,5 @@ interface ChatRepository {
     suspend fun getAllChat(userId: String, otherUserId: String): Response<List<ChatDTO>>
     suspend fun getAllOtherChat(userId: String, otherUserId: String): Response<List<ChatDTO>>
     suspend fun sendChatMessage(fromUserId: String,toUserId: String, content: String): Response<Unit>
+    suspend fun sendImageMessage(fromUserId: String,toUserId: String, content: ByteArray): Response<Unit>
 }
