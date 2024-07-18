@@ -7,10 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finalproject.common.Response
 import com.example.finalproject.common.helper.UiText
+import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.BookRepository
+import com.example.finalproject.domain.repository.OrderRepository
 import com.example.finalproject.model.shopping.CartEntity
+import com.example.finalproject.model.shopping.CreateOrderDTO
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.PaymentsUtil
 import com.google.android.gms.common.api.ApiException
@@ -41,6 +45,8 @@ import kotlin.coroutines.resume
 class CartViewModel @Inject constructor(
     application: Application,
     private val bookRepository: BookRepository,
+    private val orderRepository: OrderRepository,
+    private val authRepository: AuthRepository,
     private val ioDispatcher:CoroutineDispatcher,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -50,6 +56,9 @@ class CartViewModel @Inject constructor(
 
     private val _paymentUiState: MutableStateFlow<PaymentUiState> = MutableStateFlow(PaymentUiState.NotStarted)
     val paymentUiState: StateFlow<PaymentUiState> = _paymentUiState.asStateFlow()
+
+    private val _isSuccess = MutableStateFlow(false)
+    val isSuccess: StateFlow<Boolean> = _isSuccess.asStateFlow()
 
     // A client for interacting with the Google Pay API.
     private val paymentsClient: PaymentsClient = PaymentsUtil.createPaymentsClient(application)
@@ -213,8 +222,26 @@ class CartViewModel @Inject constructor(
         val payState = extractPaymentBillingName(paymentData)?.let {
             PaymentUiState.PaymentCompleted(payerName = it)
         } ?: PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR)
+        _paymentUiState.update {  payState }
+        Log.d("Order:", "Set done");
+        viewModelScope.launch {
+            createOrder()
+        }
+    }
+    suspend fun createOrder(){
+        val address = "123 Main St"
+        val userId = authRepository.retreiveCurrentUser()?.uid
 
-        _paymentUiState.update { payState }
+        val orderDTO = CreateOrderDTO(address, userId)
+        Log.d("Order:", "$orderDTO");
+            val cartResponse = bookRepository.getCart()
+            val cartList = (cartResponse as Response.Success).data
+            val response = orderRepository.createOrder(orderDTO,cartList)
+            if (response is Response.Success) {
+                _isSuccess.value = true
+            }
+            Log.d("Order:", "Create successfully");
+
     }
 
     private fun extractPaymentBillingName(paymentData: PaymentData): String? {

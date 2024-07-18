@@ -6,10 +6,12 @@ import com.example.finalproject.data.datasource.local.favorite_product.FavoriteP
 import com.example.finalproject.data.repository.AuthRepositoryImpl
 import com.example.finalproject.data.repository.BookRepositoryImpl
 import com.example.finalproject.data.repository.ChatRepositoryImpl
+import com.example.finalproject.data.repository.OrderRepositoryImpl
 import com.example.finalproject.data.repository.ProfileRepositoryImpl
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.BookRepository
 import com.example.finalproject.domain.repository.ChatRepository
+import com.example.finalproject.domain.repository.OrderRepository
 import com.example.finalproject.domain.repository.ProfileRepository
 import dagger.Module
 import dagger.Provides
@@ -59,5 +61,12 @@ object RepositoryModule {
         postgrest: Postgrest
     ): ProfileRepository {
         return ProfileRepositoryImpl(postgrest)
+    }
+    @Provides
+    @Singleton
+    fun provideOrderRepository(
+        postgrest: Postgrest
+    ): OrderRepository {
+        return OrderRepositoryImpl(postgrest)
     }
 }

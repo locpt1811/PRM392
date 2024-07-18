@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
     private var hasNotificationPermission: Boolean = false
 
     private val viewModel: MainActivityViewModel by viewModels()
-    private val model: CheckoutViewModel by viewModels()
+    private val model: CartViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

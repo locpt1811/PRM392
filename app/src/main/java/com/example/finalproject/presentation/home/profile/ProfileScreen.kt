@@ -218,7 +218,37 @@ fun ProfileScreen(
                             )
                         }
                     }
+                    OutlinedButton(
+                        onClick = { signOut = true
+                            onSignOutClicked() },
+                        modifier = Modifier.fillMaxWidth(),
+                        border = null,
+                        shape = MaterialTheme.shapes.small,
+                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                        colors = ButtonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.White,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.DarkGray
+                        )
 
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "LogOut",
+                                modifier = Modifier.size(18.dp),
+                                tint = Color.White
+                            )
+                            Text(
+                                text = "Log out",
+                                modifier = Modifier.padding(start = 8.dp),
+                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                     OutlinedButton(
                         onClick = { isUpdatePasswordVisible = true },
                         modifier = Modifier.fillMaxWidth(),

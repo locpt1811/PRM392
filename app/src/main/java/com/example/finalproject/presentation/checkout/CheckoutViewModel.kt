@@ -52,6 +52,8 @@ class CheckoutViewModel @Inject constructor(
     // A client for interacting with the Google Pay API.
     private val paymentsClient: PaymentsClient = PaymentsUtil.createPaymentsClient(application)
     var totalAmount : Double = 0.0
+    private val _isSuccess = MutableStateFlow(false)
+    val isSuccess: StateFlow<Boolean> = _isSuccess.asStateFlow()
 
     init {
         savedStateHandle.get<Float>(MainDestinations.PAYMENT_AMOUNT_KEY)?.let { amount ->
@@ -132,10 +134,17 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun setPaymentData(paymentData: PaymentData) {
+        _isSuccess.value = false
         val payState = extractPaymentBillingName(paymentData)?.let {
             PaymentUiState.PaymentCompleted(payerName = it)
         } ?: PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR)
         Log.d("MMpaymentData", "setPaymentData: $payState")
+        if(payState is PaymentUiState.PaymentCompleted){
+            _isSuccess.value = true
+        }
+        Log.d("MMpaymentData", "1isSuccess: ${isSuccess.value}")
+        Log.d("MMpaymentData", "2isSuccess: ${_isSuccess.value}")
+        Log.d("MMpaymentData", "3isSuccess: ${isSuccess.value}")
         _paymentUiState.update { payState }
     }
 
@@ -163,31 +172,6 @@ class CheckoutViewModel @Inject constructor(
         }
 
         return null
-    }
-    fun requestPayment() {
-        Log.d("MMpaymentData", "requestPayment start")
-        viewModelScope.launch(ioDispatcher) {
-            try {
-                withContext(Dispatchers.Main) {
-                    val task = getLoadPaymentDataTask(priceCents = 1200L)
-                    task.addOnCompleteListener { completedTask ->
-                        if (completedTask.isSuccessful) {
-                            val paymentData = completedTask.result
-                            Log.d("MMpaymentData success", paymentData?.toJson() ?: "Payment data is null")
-                            setPaymentData(paymentData)
-                        } else {
-                            Log.e("MMpaymentData", "Payment failed: ${completedTask.exception}")
-                            if (completedTask.exception is ApiException) {
-                                val apiException = completedTask.exception as ApiException
-                                Log.e("MMpaymentData", "Google Pay API error: ${apiException.statusCode}")
-                            }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("MMpaymentData", "Exception in requestPayment: $e")
-            }
-        }
     }
 
 //    fun requestPayment() {

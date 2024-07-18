@@ -32,17 +32,21 @@ import com.google.pay.button.PayButton
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
+import com.example.finalproject.presentation.navigation.MainDestinations
 
 @Composable
 fun CheckoutScreen(
     modifier: Modifier = Modifier,
     onContinueShoppingClick: () -> Unit,
     onGooglePayButtonClick: (Float) -> Unit,
-    payUiState: PaymentUiState = PaymentUiState.NotStarted,
+    payUiState: PaymentUiState = PaymentUiState.PaymentCompleted(""),
     viewModel: CheckoutViewModel = hiltViewModel()
 ) {
     val padding = 20.dp
@@ -50,8 +54,14 @@ fun CheckoutScreen(
     val grey = Color(0xffeeeeee.toInt())
     val context = LocalContext.current
     val paymentAmount = 1200f
-    val uiState by viewModel.uiState.collectAsState()
-    if (payUiState is PaymentUiState.PaymentCompleted) {
+    val uiState by viewModel.paymentUiState.collectAsState()
+    val isSuccess by viewModel.isSuccess.collectAsState()
+    Log.d("CheckoutScreen", "Recomposing with isSuccess: $isSuccess")
+    LaunchedEffect(isSuccess) {
+        Log.d("CheckoutScreen", "Recomposing with isSuccess: $isSuccess")
+        Log.d("CheckoutScreen", "Recomposing with paysate: $payUiState")
+    }
+    if ( payUiState is PaymentUiState.PaymentCompleted) {
         Column(
             modifier = Modifier
                 .testTag("successScreen")
@@ -71,7 +81,8 @@ fun CheckoutScreen(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "${payUiState.payerName} completed a payment.\nWe are preparing your order.",
+//                ${payUiState.payerName}
+                text = "You has completed a payment.\nWe are preparing your order.",
                 fontSize = 17.sp,
                 color = Color.DarkGray,
                 textAlign = TextAlign.Center
@@ -94,7 +105,12 @@ fun CheckoutScreen(
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.spacedBy(space = padding / 2),
         ) {
-            Text(text = "hello")
+            Text(
+                text = "Total money: ${(viewModel.totalAmount).toFloat()}",
+                fontSize = 24.sp, // Adjust the font size as needed
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = padding)
+            )
 
 
 //            if (payUiState !is PaymentUiState.NotStarted) {

@@ -100,8 +100,9 @@ private fun NavGraphBuilder.shoppingAppGraph(
 
     composable(route = MainDestinations.CART_ROUTE) { from ->
         CartScreen(
-            onGooglePayButtonClick = remember { { amount -> onGooglePayButtonClick(amount, from) } },
-            onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } })
+            onGooglePayButtonClick = remember { { amount -> onGooglePayButtonClick2(amount, from) } },
+            onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } },
+            navController = navController,)
     }
 
     composable(
