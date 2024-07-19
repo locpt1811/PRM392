@@ -57,9 +57,6 @@ class CartViewModel @Inject constructor(
     private val _paymentUiState: MutableStateFlow<PaymentUiState> = MutableStateFlow(PaymentUiState.NotStarted)
     val paymentUiState: StateFlow<PaymentUiState> = _paymentUiState.asStateFlow()
 
-    private val _isSuccess = MutableStateFlow(false)
-    val isSuccess: StateFlow<Boolean> = _isSuccess.asStateFlow()
-
     // A client for interacting with the Google Pay API.
     private val paymentsClient: PaymentsClient = PaymentsUtil.createPaymentsClient(application)
     val navigateToPaymentActivity = MutableLiveData<Unit>()
@@ -238,7 +235,9 @@ class CartViewModel @Inject constructor(
             val cartList = (cartResponse as Response.Success).data
             val response = orderRepository.createOrder(orderDTO,cartList)
             if (response is Response.Success) {
-                _isSuccess.value = true
+                _uiState.update {
+                    it.copy(isSuccess = true)
+                }
             }
             Log.d("Order:", "Create successfully");
 
@@ -272,55 +271,13 @@ class CartViewModel @Inject constructor(
     fun requestPayment1() {
         navigateToPaymentActivity.value = Unit
     }
-    fun requestPayment() {
-        Log.d("MMpaymentData", "requestPayment")
-        // Disables the button to prevent multiple clicks.
-        viewModelScope.launch(ioDispatcher) {
-            val task = getLoadPaymentDataTask(priceCents = 1200L)
-//            try {
-//                val paymentDataTask = task.awaitTask() // Get the Task<PaymentData>
-//                val paymentData = paymentDataTask.result // Extract PaymentData from the Task
-//                if (paymentData != null) {
-//                    handlePaymentSuccess(paymentData)
-//                } else {
-//                    // Handle the case where paymentData is null (potential error)
-//                    _paymentUiState.update { PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR, "Payment data is null") }
-//                }
-//            } catch (e: Exception) {
-//                // Handle error
-//                _paymentUiState.update { PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR, e.message) }
-//            }
-
-            task.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val paymentData = it.result
-                    Log.d("MMpaymentData", it.result.toJson())
-                    setPaymentData(paymentData)
-                }
-                else{
-                    Log.d("Fuck", it.exception.toString())
-                }
-            }
-
-
-        }
-    }
-
-    private fun handlePaymentSuccess(paymentData: PaymentData) {
-//        val payerName = extractPaymentBillingName(paymentData)
-//        if (payerName != null) {
-//            _paymentUiState.update { PaymentUiState.PaymentCompleted(payerName) }
-//        } else {
-//            _paymentUiState.update { PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR) }
-//        }
-        setPaymentData(paymentData)
-    }
 }
 
 data class CartScreenUiState(
     val cartList: List<CartEntity> = listOf(),
     val errorMessages: List<UiText> = listOf(),
-    val subtotal: Double = 0.0
+    val subtotal: Double = 0.0,
+    val isSuccess: Boolean = false
 )
 
 abstract class PaymentUiState internal constructor() {

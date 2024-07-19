@@ -52,10 +52,10 @@ class MainActivity : ComponentActivity() {
             splashScreen.setOnExitAnimationListener { splashScreenViewProvider ->
                 splashScreenViewProvider.iconView
                     .animate()
-                    .setDuration(3000L) // Adjust duration as needed
-                    .alpha(0f) // Fade in (if initially hidden)
-                    .scaleX(3f) // Scale up by 20%
-                    .scaleY(3f) //
+                    .setDuration(3000L)
+                    .alpha(0f)
+                    .scaleX(3f)
+                    .scaleY(3f)
                     .withEndAction {
                         splashScreenViewProvider.remove()
                     }.start()

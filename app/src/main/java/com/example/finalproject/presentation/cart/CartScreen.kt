@@ -65,15 +65,14 @@ fun CartScreen(
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val paymentUiState by viewModel.paymentUiState.collectAsState()
-    val isSuccess by viewModel.isSuccess.collectAsState()
-    val context = LocalContext.current
+//    val paymentUiState by viewModel.paymentUiState.collectAsState()
+//    val context = LocalContext.current
     if (uiState.errorMessages.isNotEmpty()) {
         ShoppingShowToastMessage(message = uiState.errorMessages.first().asString())
         viewModel.consumedErrorMessage()
     }
-    LaunchedEffect(isSuccess) {
-        if (isSuccess) {
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
             navController.navigate(MainDestinations.CART_ROUTE){
                 popUpTo(MainDestinations.CART_ROUTE) { inclusive = true }
             }
