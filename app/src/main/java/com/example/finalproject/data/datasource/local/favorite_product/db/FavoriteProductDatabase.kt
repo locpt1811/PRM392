@@ -10,11 +10,22 @@ import com.example.finalproject.model.shopping.BookEntity
 //    abstract fun favoriteProductDao(): FavoriteProductDao
 //}
 
+//@Database(
+//    version = 2,
+//    entities = [BookEntity::class],
+//    autoMigrations = [
+//        AutoMigration (from = 1, to = 2)
+//    ],
+//    exportSchema = true
+//)
+//abstract class FavoriteProductDatabase : RoomDatabase() {
+//    abstract fun favoriteProductDao(): FavoriteProductDao
+//}
 @Database(
-    version = 2,
+    version = 3,
     entities = [BookEntity::class],
     autoMigrations = [
-        AutoMigration (from = 1, to = 2)
+        AutoMigration (from = 2, to = 3)
     ],
     exportSchema = true
 )
