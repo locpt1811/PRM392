@@ -94,4 +94,6 @@
 
     <string name="see_more">SEE MORE</string>
     <string name="see_less">SEE LESS</string>
+    <string name="first_name_empty">First name field can not be empty</string>
+    <string name="last_name_empty">Last name field can not be empty</string>
 </resources>

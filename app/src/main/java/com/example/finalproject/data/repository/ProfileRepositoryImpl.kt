@@ -52,24 +52,49 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-     override suspend fun UpdateUserName(firstName: String, lastName: String, uid: UUID): Response<String> {
+    override suspend fun UpdateUserName(firstName: String, lastName: String, uid: UUID): Response<String> {
         return withContext(Dispatchers.IO) {
             try {
-                Log.d("ProfileRepo", "Get 1 exception: ${firstName} ${lastName} ${uid}")
 
 
-                val result = postgrest.from("profiles").update({
-                    set("first_name", firstName)
-                    set("last_name", lastName)
-                }) {
-                    select()
-                    filter {
-                        eq("id", uid)
+                val profile = postgrest.from("profiles")
+                    .select {
+                        filter {
+                            eq("id", uid)
+                        }
                     }
-                }.decodeSingle<UserProfileDTO>()
+                    .decodeSingleOrNull<UserProfileDTO>()
+
+                if(profile != null){
+                    val result = postgrest.from("profiles").update({
+                        set("first_name", firstName)
+                        set("last_name", lastName)
+                    }) {
+                        select()
+                        filter {
+                            eq("id", uid)
+                        }
+                    }.decodeSingle<UserProfileDTO>()
+                }else{
+                    Log.d("CreateProfile", "Get 1 exception: ${firstName} ${lastName} ${uid}")
+                    val result = postgrest.from("profiles")
+                        .insert(UserProfileDTO(uid.toString()
+                            , firstName
+                            , lastName
+                            )
+                        )
+//                        {
+//                        select()
+//                        filter {
+//                            eq("id", uid)
+//                        }
+//                    }.decodeSingle<UserProfileDTO>()
+                    Log.d("CreateProfile", "Get 1 exception: ${result.toString()}")
+                }
 
 
-                Log.d("ProfileRepo", "Get 1 exception: ${result}")
+
+
                 Response.Success("true")
             } catch (e: Exception) {
                 Log.e("ProfileRepo", "Get 1 exception: ${e.message}")

@@ -9,10 +9,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.finalproject.common.Response
 import com.example.finalproject.R
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.BookRepository
+import com.example.finalproject.domain.repository.ProfileRepository
+import com.example.finalproject.model.shopping.UserProfileDTO
+import com.example.finalproject.model.shopping.UserProfileInfoDTO
 import com.example.finalproject.model.user_detail.UserDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @Stable
@@ -29,11 +34,13 @@ class ProfileViewModel @Inject constructor(
     private val auth: AuthRepository,
     private val repository: BookRepository,
     private val authRepository: AuthRepository,
+    private val profileRepository: ProfileRepository,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+    val uid: String = ""
 
     init {
         getUserProfileImage()
@@ -51,7 +58,9 @@ class ProfileViewModel @Inject constructor(
                 it.copy(
                     errorMessages = listOf(
                         UiText.StringResource(resId = R.string.unknown_error)
-                    )
+                    ),
+                    firstNameError = false,
+                    lastNameError = false
                 )
             }
         } else {
@@ -99,6 +108,7 @@ class ProfileViewModel @Inject constructor(
     fun clearAccountInfoValue() {
         updateValue = ""
     }
+
     suspend fun logOut() {
         try {
             authRepository.logout()
@@ -110,28 +120,87 @@ class ProfileViewModel @Inject constructor(
     suspend fun getUserData() {
         try {
             val user = authRepository.retreiveCurrentUser()
-            Log.d("ProfileViewModel", "Retrieved user: $user")
             _uiState.update {
+
                 it.copy(
-                    name = user?.name,
                     email = user?.email,
-                    emailVerified = user?.emailVerified ?: false
+                    emailVerified = user?.emailVerified ?: false,
+                    uid = user?.uid
                 )
             }
+            Log.d("ProfileViewModel", "Retrieved user: $user")
+            val profileResponse = user?.let { profileRepository.getProfileUserById(it.uid) }
+            if (profileResponse is Response.Success<*>) {
+                val profiles = profileResponse.data as UserProfileDTO
+
+
+                _uiState.update {
+
+                    it.copy(
+                        name = "${profiles.first_name} ${profiles.last_name}"
+                    )
+                }
+            }
+
         } catch (e: Exception) {
             Log.e("Error", e.message.toString())
         }
     }
 
-     fun updateUserPassword(){
-        try{
+    fun updateUserPassword() {
+        try {
             viewModelScope.launch {
                 authRepository.updateUser {
                     password = "123"
                 }
             }
 
-        }catch (e: Exception) {
+        } catch (e: Exception) {
+            Log.e("Error", e.message.toString())
+        }
+    }
+
+    fun updateUsername(newFirstname: String, newLastname: String) {
+
+        if (newFirstname.isEmpty()) {
+            _uiState.update {
+                it.copy(firstNameError = true,
+                    errorMessages = listOf(
+                        UiText.StringResource(resId = R.string.first_name_empty)
+                    )
+                    )
+
+
+
+            }
+            return
+        }
+
+        if (newLastname.isEmpty()) {
+            _uiState.update {
+                it.copy(lastNameError = true,
+                     errorMessages = listOf(
+                        UiText.StringResource(resId = R.string.last_name_empty) ))
+            }
+            return
+        }
+
+        try {
+            val uid =  UUID.fromString(_uiState.value.uid)
+            viewModelScope.launch {
+                profileRepository.UpdateUserName(newFirstname, newLastname, uid)
+            }
+            _uiState.update {
+
+                it.copy(
+                    lastNameError = false,
+                    name = "${newFirstname} ${newLastname}",
+                    firstNameError = false
+
+                )
+            }
+
+        } catch (e: Exception) {
             Log.e("Error", e.message.toString())
         }
     }
@@ -159,59 +228,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-//    fun updateUserName() {
-//        if (updateValue.isNotBlank()) {
-//            viewModelScope.launch(ioDispatcher) {
-//                repository.updateUserProfile(userProfileChangeRequest {
-//                    displayName = updateValue
-//                })?.addOnCompleteListener { task ->
-//                    if (task.isSuccessful) {
-//                        _uiState.update {
-//                            it.copy(
-//                                name = auth.currentUser?.displayName, userMessages = listOf(
-//                                    UiText.StringResource(resId = R.string.name_updated_suc)
-//                                ),
-//                                updateAccountInfoDialogState = DialogUiState.DialogInactive
-//                            )
-//                        }
-//                    } else {
-//                        _uiState.update {
-//                            it.copy(errorMessages = listOf(task.exception?.message?.let { message ->
-//                                UiText.DynamicString(message)
-//                            } ?: kotlin.run {
-//                                UiText.StringResource(resId = R.string.unknown_error)
-//                            }))
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    fun updateUserPhoto(uri: Uri) {
-        viewModelScope.launch(ioDispatcher) {
-//            repository.uploadUserProfileImage(uri).addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    _uiState.update {
-//                        it.copy(
-//                            userMessages = listOf(
-//                                UiText.StringResource(resId = R.string.img_upload_suc)
-//                            )
-//                        )
-//                    }
-//                    getUserProfileImage()
-//                } else {
-//                    _uiState.update {
-//                        it.copy(errorMessages = listOf(task.exception?.message?.let { message ->
-//                            UiText.DynamicString(message)
-//                        } ?: kotlin.run {
-//                            UiText.StringResource(resId = R.string.unknown_error)
-//                        }))
-//                    }
-//                }
-//            }
-        }
-    }
 
     private fun getUserProfileImage() {
         viewModelScope.launch(ioDispatcher) {
@@ -226,131 +242,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun sendVerificationCode(activity: Activity) {
-        viewModelScope.launch(ioDispatcher) {
-//            val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-//                override fun onVerificationCompleted(credential: PhoneAuthCredential) {}
-//
-//                override fun onVerificationFailed(e: FirebaseException) {
-//                    _uiState.update {
-//                        it.copy(
-//                            errorMessages = listOf(e.message?.let { message ->
-//                                UiText.DynamicString(message)
-//                            } ?: kotlin.run {
-//                                UiText.StringResource(resId = R.string.unknown_error)
-//                            }),
-//                            verifyPhoneNumberState = VerifyPhoneNumberState(
-//                                verifyPhoneNumberUiEvent = VerifyPhoneNumberUiEvent.Nothing
-//                            )
-//                        )
-//                    }
-//                }
-//
-//                override fun onCodeSent(
-//                    verificationId: String,
-//                    token: PhoneAuthProvider.ForceResendingToken,
-//                ) {
-//                    storedVerificationId = verificationId
-//                    _uiState.update {
-//                        it.copy(
-//                            verifyPhoneNumberState = VerifyPhoneNumberState(
-//                                verifyPhoneNumberUiEvent = VerifyPhoneNumberUiEvent.OnCodeSent,
-//                                dialogState = DialogUiState.DialogActive
-//                            )
-//                        )
-//                    }
-//                }
-//            }
-//
-//            repository.sendVerificationCode(updateValue, activity, callbacks)
-        }
-    }
-
-    fun verifyUserPhoneNumber() {
-//        repository.verifyUserPhoneNumber(
-//            PhoneAuthProvider.getCredential(
-//                storedVerificationId ?: "", verificationCode
-//            )
-//        )?.addOnCompleteListener { task ->
-//            if (task.isSuccessful) {
-//                _uiState.update {
-//                    it.copy(
-//                        verifyPhoneNumberState = VerifyPhoneNumberState(
-//                            verifyPhoneNumberUiEvent = VerifyPhoneNumberUiEvent.OnVerificationComplete,
-//                            dialogState = DialogUiState.DialogInactive
-//                        ),
-//                        phoneNumber = auth.currentUser?.phoneNumber,
-//                        updateAccountInfoDialogState = DialogUiState.DialogInactive
-//                    )
-//                }
-//            } else {
-//                _uiState.update {
-//                    it.copy(
-//                        verifyPhoneNumberState = VerifyPhoneNumberState(
-//                            verifyPhoneNumberUiEvent = VerifyPhoneNumberUiEvent.Nothing,
-//                            dialogState = DialogUiState.DialogInactive
-//                        ),
-//                        errorMessages = listOf(task.exception?.message?.let { message ->
-//                            UiText.DynamicString(message)
-//                        } ?: kotlin.run {
-//                            UiText.StringResource(resId = R.string.unknown_error)
-//                        })
-//                    )
-//                }
-//            }
-        }
-    }
-
-    fun uploadUserAddress() {
-//        viewModelScope.launch(ioDispatcher) {
-//            repository.uploadUserAddress(updateValue).addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    _uiState.update {
-//                        it.copy(
-//                            userMessages = listOf(
-//                                UiText.StringResource(resId = R.string.upload_address_suc)
-//                            ),
-//                            updateAccountInfoDialogState = DialogUiState.DialogInactive
-//                        )
-//                    }
-//                    getUserDetails()
-//                } else {
-//                    _uiState.update {
-//                        it.copy(errorMessages = listOf(task.exception?.message?.let { message ->
-//                            UiText.DynamicString(message)
-//                        } ?: kotlin.run {
-//                            UiText.StringResource(resId = R.string.unknown_error)
-//                        }))
-//                    }
-//                }
-//            }
-//        }
-    }
-
-    fun updateUserBirthdate(birthdate: Long) {
-//        viewModelScope.launch(ioDispatcher) {
-//            repository.uploadUserBirthdate(birthdate).addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    _uiState.update {
-//                        it.copy(
-//                            userMessages = listOf(
-//                                UiText.StringResource(resId = R.string.upload_birthdate_suc)
-//                            )
-//                        )
-//                    }
-//                    getUserDetails()
-//                } else {
-//                    _uiState.update {
-//                        it.copy(errorMessages = listOf(task.exception?.message?.let { message ->
-//                            UiText.DynamicString(message)
-//                        } ?: kotlin.run {
-//                            UiText.StringResource(resId = R.string.unknown_error)
-//                        }))
-//                    }
-//                }
-//            }
-//        }
-    }
 
     private fun getUserDetails() {
 //        viewModelScope.launch(ioDispatcher) {
@@ -373,171 +264,51 @@ class ProfileViewModel @Inject constructor(
 //        }
     }
 
-    fun deleteAccount() {
-//        viewModelScope.launch(ioDispatcher) {
-//            runCatching {
-//                repository.reAuthenticate(Auth(email, password))?.await()
-//            }.onFailure {
-//                handleFailure(it)
-//            }.onSuccess {
-//                runCatching {
-//                    repository.deleteUserFCMToken().await()
-//                }.onFailure {
-//                    handleFailure(it)
-//                }.onSuccess {
-//                    runCatching {
-//                        repository.deleteUserData().await()
-//                    }.onFailure {
-//                        handleFailure(it)
-//                    }.onSuccess {
-//                        runCatching {
-//                            repository.deleteUserProfileImage().await()
-//                        }.onFailure {
-//                            handleFailure(it)
-//                        }.onSuccess {
-//                            runCatching {
-//                                repository.deleteAccount()?.await()
-//                            }.onFailure {
-//                                handleFailure(it)
-//                            }.onSuccess {
-//                                _uiState.update {
-//                                    it.copy(
-//                                        deleteAccountState = DeleteAccountState(
-//                                            DialogUiState.DialogInactive, isDeleteSuccess = true
-//                                        )
-//                                    )
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+
+    data class ProfileUiState(
+        val isLoading: Boolean = false,
+        val errorMessages: List<UiText> = listOf(),
+        val userMessages: List<UiText> = listOf(),
+        val name: String? = null,
+        val email: String? = null,
+        val photoUrl: Uri? = null,
+        val phoneNumber: String? = null,
+        val verifyPhoneNumberState: VerifyPhoneNumberState = VerifyPhoneNumberState(),
+        val userDetail: UserDetail? = null,
+        val deleteAccountState: DeleteAccountState = DeleteAccountState(),
+        val updateAccountInfoDialogState: DialogUiState = DialogUiState.DialogInactive,
+        val imageCropperDialogUiState: DialogUiState = DialogUiState.DialogInactive,
+        val emailVerified: Boolean = true,
+        val uid: String? = null,
+        val firstNameError: Boolean? = false,
+        val lastNameError: Boolean? = false,
+    )
+
+    data class VerifyPhoneNumberState(
+        val verifyPhoneNumberUiEvent: VerifyPhoneNumberUiEvent = VerifyPhoneNumberUiEvent.Nothing,
+        val dialogState: DialogUiState = DialogUiState.DialogInactive
+    )
+
+    sealed interface VerifyPhoneNumberUiEvent {
+        object Nothing : VerifyPhoneNumberUiEvent
+        object OnCodeSent : VerifyPhoneNumberUiEvent
+        object OnVerificationComplete : VerifyPhoneNumberUiEvent
     }
 
-    private fun handleFailure(throwable: Throwable) {
-//        _uiState.update {
-//            it.copy(errorMessages = listOf(throwable.message?.let { message ->
-//                UiText.DynamicString(message)
-//            } ?: kotlin.run {
-//                UiText.StringResource(R.string.unknown_error)
-//            }))
-//        }
+    data class DeleteAccountState(
+        val dialogState: DialogUiState = DialogUiState.DialogInactive,
+        val isDeleteSuccess: Boolean = false
+    )
+
+    sealed interface DialogUiState {
+        object DialogActive : DialogUiState
+        object DialogInactive : DialogUiState
     }
 
-    fun startDialog(dialogType: DialogType) {
-//        when (dialogType) {
-//            DialogType.UPDATE_ACCOUNT_INFO -> {
-//                _uiState.update {
-//                    it.copy(updateAccountInfoDialogState = DialogUiState.DialogActive)
-//                }
-//            }
-//            DialogType.DELETE_ACCOUNT -> {
-//                _uiState.update {
-//                    it.copy(deleteAccountState = DeleteAccountState(DialogUiState.DialogActive))
-//                }
-//            }
-//            DialogType.IMAGE_CROPPER -> {
-//                _uiState.update {
-//                    it.copy(imageCropperDialogUiState = DialogUiState.DialogActive)
-//                }
-//            }
-//            DialogType.VERIFY_PHONE_NUMBER -> {
-//                _uiState.update {
-//                    it.copy(verifyPhoneNumberState = VerifyPhoneNumberState(dialogState = DialogUiState.DialogActive))
-//                }
-//            }
-//        }
+    enum class DialogType {
+        DELETE_ACCOUNT,
+        VERIFY_PHONE_NUMBER,
+        UPDATE_ACCOUNT_INFO,
+        IMAGE_CROPPER
     }
-
-    fun endDialog(dialogType: DialogType) {
-//        when (dialogType) {
-//            DialogType.UPDATE_ACCOUNT_INFO -> {
-//                _uiState.update {
-//                    it.copy(updateAccountInfoDialogState = DialogUiState.DialogInactive)
-//                }
-//            }
-//            DialogType.DELETE_ACCOUNT -> {
-//                _uiState.update {
-//                    it.copy(deleteAccountState = DeleteAccountState(DialogUiState.DialogInactive))
-//                }
-//            }
-//            DialogType.IMAGE_CROPPER -> {
-//                _uiState.update {
-//                    it.copy(imageCropperDialogUiState = DialogUiState.DialogInactive)
-//                }
-//            }
-//            DialogType.VERIFY_PHONE_NUMBER -> {
-//                _uiState.update {
-//                    it.copy(verifyPhoneNumberState = VerifyPhoneNumberState(dialogState = DialogUiState.DialogInactive))
-//                }
-//            }
-//        }
-    }
-
-    fun consumedUserMessage() {
-//        _uiState.update {
-//            it.copy(userMessages = listOf())
-//        }
-    }
-
-    fun consumedErrorMessage() {
-//        _uiState.update {
-//            it.copy(errorMessages = listOf())
-//        }
-//    }
-
-    fun resetVerifyNumberState() {
-//        _uiState.update {
-//            it.copy(
-//                verifyPhoneNumberState = VerifyPhoneNumberState(
-//                    verifyPhoneNumberUiEvent = VerifyPhoneNumberUiEvent.Nothing
-//                )
-//            )
-//        }
-    }
-}
-
-data class ProfileUiState(
-    val isLoading: Boolean = false,
-    val errorMessages: List<UiText> = listOf(),
-    val userMessages: List<UiText> = listOf(),
-    val name: String? = null,
-    val email: String? = null,
-    val photoUrl: Uri? = null,
-    val phoneNumber: String? = null,
-    val verifyPhoneNumberState: VerifyPhoneNumberState = VerifyPhoneNumberState(),
-    val userDetail: UserDetail? = null,
-    val deleteAccountState: DeleteAccountState = DeleteAccountState(),
-    val updateAccountInfoDialogState: DialogUiState = DialogUiState.DialogInactive,
-    val imageCropperDialogUiState: DialogUiState = DialogUiState.DialogInactive,
-    val emailVerified: Boolean = true,
-)
-
-data class VerifyPhoneNumberState(
-    val verifyPhoneNumberUiEvent: VerifyPhoneNumberUiEvent = VerifyPhoneNumberUiEvent.Nothing,
-    val dialogState: DialogUiState = DialogUiState.DialogInactive
-)
-
-sealed interface VerifyPhoneNumberUiEvent {
-    object Nothing : VerifyPhoneNumberUiEvent
-    object OnCodeSent : VerifyPhoneNumberUiEvent
-    object OnVerificationComplete : VerifyPhoneNumberUiEvent
-}
-
-data class DeleteAccountState(
-    val dialogState: DialogUiState = DialogUiState.DialogInactive,
-    val isDeleteSuccess: Boolean = false
-)
-
-sealed interface DialogUiState {
-    object DialogActive : DialogUiState
-    object DialogInactive : DialogUiState
-}
-
-enum class DialogType {
-    DELETE_ACCOUNT,
-    VERIFY_PHONE_NUMBER,
-    UPDATE_ACCOUNT_INFO,
-    IMAGE_CROPPER
 }

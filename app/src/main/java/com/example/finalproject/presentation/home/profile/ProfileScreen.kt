@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -68,6 +69,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -178,17 +180,17 @@ fun ProfileScreen(
                 ) {
                     Text(
                         text = "My Name: ${uiState.name}",
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
                         text = "My Email: ${uiState.email}",
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
                         text = "Email Verified: Yes",
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
                     // Buttons
@@ -196,9 +198,10 @@ fun ProfileScreen(
                         onClick = { isUpdateUsernameVisible = true },
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(70.dp)
                             .padding(bottom = 8.dp),
                         border = null, // Remove default border
-                        shape = MaterialTheme.shapes.small, // Rounded corners
+                        shape = MaterialTheme.shapes.medium, // Rounded corners
                         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
                         colors = ButtonColors(
                             containerColor = Color.DarkGray,
@@ -211,21 +214,21 @@ fun ProfileScreen(
                             Icon(
                                 imageVector = Icons.Default.Person,
                                 contentDescription = "Update Username Icon",
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(20.dp)
                             )
                             Text(
                                 text = "Update Username",
                                 modifier = Modifier.padding(start = 8.dp),
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium.copy( fontSize = 20.sp)
                             )
                         }
                     }
                     OutlinedButton(
                         onClick = { signOut = true
                             onSignOutClicked() },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().height(60.dp),
                         border = null,
-                        shape = MaterialTheme.shapes.small,
+                        shape = MaterialTheme.shapes.medium,
                         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
                         colors = ButtonColors(
                             containerColor = Color.Red,
@@ -239,46 +242,16 @@ fun ProfileScreen(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "LogOut",
-                                modifier = Modifier.size(18.dp),
+                                modifier = Modifier.size(20.dp),
                                 tint = Color.White
                             )
                             Text(
                                 text = "Log out",
                                 modifier = Modifier.padding(start = 8.dp),
-                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White, fontSize = 20.sp)
                             )
                         }
                     }
-
-//                    Spacer(modifier = Modifier.height(16.dp))
-//                    OutlinedButton(
-//                        onClick = { isUpdatePasswordVisible = true },
-//                        modifier = Modifier.fillMaxWidth(),
-//                        border = null,
-//                        shape = MaterialTheme.shapes.small,
-//                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
-//                        colors = ButtonColors(
-//                            containerColor = Color.DarkGray,
-//                            contentColor = Color.White,
-//                            disabledContentColor = Color.Gray,
-//                            disabledContainerColor = Color.DarkGray
-//                        )
-//
-//                    ) {
-//                        Row(verticalAlignment = Alignment.CenterVertically) {
-//                            Icon(
-//                                imageVector = Icons.Default.Lock,
-//                                contentDescription = "Update Password Icon",
-//                                modifier = Modifier.size(18.dp),
-//                                tint = Color.White
-//                            )
-//                            Text(
-//                                text = "Update Password",
-//                                modifier = Modifier.padding(start = 8.dp),
-//                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
-//                            )
-//                        }
-//                    }
 
 
 
@@ -293,58 +266,58 @@ fun ProfileScreen(
 
                     value = newFirstname,
                     onValueChange = { newFirstname = it },
-                    label = { Text("New Fristname") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("New Firstname") },
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    isError = uiState.firstNameError == true,
+
                 )
+                Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
 
                     value = newLastname,
                     onValueChange = { newLastname = it },
                     label = { Text("New Lastname") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    isError = uiState.lastNameError == true,
+
                 )
 
                 OutlinedButton(
                     onClick = {
                         viewModel.updateUsername(newFirstname, newLastname)
-                        isUpdateUsernameVisible = false
-                        newFirstname = ""
-                        newLastname = ""
+                        if(uiState.firstNameError == true  ){
+//                            isUpdateUsernameVisible = true
+
+                        }else if(uiState.lastNameError == true){
+//                            isUpdateUsernameVisible = true
+                        }else{
+//                            isUpdateUsernameVisible = false
+                            newFirstname = ""
+                            newLastname = ""
+                        }
+
+
                     },
+                    modifier = Modifier.padding(16.dp).height(60.dp).width(160.dp),
+                    shape = MaterialTheme.shapes.medium,
+                    contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                    colors = ButtonColors(
+                        containerColor = Color.DarkGray,
+                        contentColor = Color.White,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.DarkGray
+                    )
                     // ...
                 ) {
-                    Text("Submit")
+                    Text(
+                        text = "Submit",
+                        modifier = Modifier.padding(start = 8.dp),
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.White, fontSize = 20.sp))
                 }
             }
 
-//            if (isUpdatePasswordVisible) {
-//                Spacer(modifier = Modifier.height(16.dp))
-//
-//                TextField(
-//                    value = oldPassword,
-//                    onValueChange = { oldPassword = it },
-//                    label = { Text("Old Password") },
-//                    modifier = Modifier.fillMaxWidth()
-//                )
-//
-//                TextField(
-//                    value = newPassword,
-//                    onValueChange = { newPassword = it },
-//                    label = { Text("New Password") },
-//                    modifier = Modifier.fillMaxWidth()
-//                )
-//
-//                OutlinedButton(
-//                    onClick = {
-////                                viewModel.updatePassword(oldPassword, newPassword)
-//                        isUpdatePasswordVisible = false
-//                    },
-//                    // ...
-//                ) {
-//                    Text("Submit")
-//                }
-//            }
+
         }
     }
 
