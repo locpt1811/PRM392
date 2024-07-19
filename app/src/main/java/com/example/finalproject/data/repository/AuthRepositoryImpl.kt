@@ -31,7 +31,7 @@ class AuthRepositoryImpl @Inject constructor(
 
             auth.currentAccessTokenOrNull()?.let {
                 preferenceManager.saveData(ACCESS_TOKEN, it)
-                Log.d("AuthRepositoryImpl", "Sign in successful, access token: $it")
+                Log.d("Tokenabc", "Sign in successful, access token: $it")
 
                 val userInfo =  auth.currentUserOrNull()
                 Log.d("AuthRepositoryImpl", "UserInfo: $userInfo")
@@ -105,8 +105,11 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun logout() : Boolean{
         return try {
+            Log.d("Tokenabc", preferenceManager.getData(ACCESS_TOKEN, "").toString())
             auth.signOut()
             preferenceManager.removeData(ACCESS_TOKEN)
+
+            Log.d("Tokenabc", preferenceManager.getData(ACCESS_TOKEN, "").toString())
             true
         } catch (e: Exception) {
             false

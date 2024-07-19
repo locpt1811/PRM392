@@ -36,6 +36,7 @@ import com.example.finalproject.presentation.cart.CartViewModel
 import com.example.finalproject.presentation.designsystem.components.ShoppingButton
 import com.example.finalproject.presentation.designsystem.components.SuccessPay
 import com.example.finalproject.presentation.navigation.MainDestinations
+import com.example.finalproject.utils.ACCESS_TOKEN
 import com.example.finalproject.utils.FIRST_TIME_LAUNCH
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wallet.contract.TaskResultContracts
@@ -104,10 +105,19 @@ class MainActivity : ComponentActivity() {
                 shoppingNotifier.launchNotification()
             }
 
-            val startDestination = if (preferenceManager.getData(FIRST_TIME_LAUNCH, true)) {
-                MainDestinations.ONBOARDING_ROUTE
+            val startDestination =
+                if (preferenceManager.getData(FIRST_TIME_LAUNCH, true)) {
+
+                    MainDestinations.ONBOARDING_ROUTE
+
             } else {
-                MainDestinations.PRODUCT_ROUTE
+                    Log.d("ShowInit", preferenceManager.getData(ACCESS_TOKEN, "").toString())
+                    if(preferenceManager.getData(ACCESS_TOKEN, "").toString().isEmpty()){
+                        MainDestinations.LOGIN_ROUTE
+                    }else{
+                        MainDestinations.PRODUCT_ROUTE
+                    }
+
             }
             ShoppingApp(
                 startDestination = startDestination,
