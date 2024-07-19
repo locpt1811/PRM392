@@ -8,21 +8,25 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat.startActivity
 import com.example.finalproject.presentation.checkout.CheckoutScreen
+import com.example.finalproject.presentation.designsystem.components.SuccessPay
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PaymentActivity : ComponentActivity() {
+class PaymentActivity : ComponentActivity(
+) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            CheckoutScreen(
-                modifier = Modifier,
-                onContinueShoppingClick = { startMainActivity() }
+            SuccessPay(
+                onContinueShopping = { startMainActivity() }
             )
         }
     }
-}
 
-private fun startMainActivity() {
+    private fun startMainActivity() {
+
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
 }
