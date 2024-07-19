@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -31,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 
 import com.example.finalproject.presentation.designsystem.components.ShoppingScaffold
@@ -83,15 +85,17 @@ fun AddressScreen(
                     text = "The location of our shop is in Landmark 81",
                     textAlign = TextAlign.Left,
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.White, fontSize = 20.sp)
                 )
             }
             val mapView = rememberMapViewWithLifecycle()
             AndroidView({ mapView }) {
                 it.getMapAsync { googleMap ->
                     val shopLocation = LatLng(10.7942, 106.7214) // Landmark 81, Vietnam
-                    googleMap.addMarker(MarkerOptions().position(shopLocation).title("Marker in my shop"))
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(shopLocation))
+                    val zoomLevel = 20f
+                    googleMap.addMarker(MarkerOptions().position(shopLocation).title("This is my book store"))
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(shopLocation,zoomLevel))
                 }
             }
 
