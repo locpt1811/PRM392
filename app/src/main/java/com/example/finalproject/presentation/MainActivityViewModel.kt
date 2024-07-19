@@ -26,15 +26,6 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
             it.copy(consumableViewEvent = listOf())
         }
     }
-
-    fun updateWithCartData(cartUiState: CartScreenUiState) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                isSuccess = cartUiState.isSuccess,
-                consumableViewEvent = listOf(MainUiEvent.Init)
-            )
-        }
-    }
 }
 
 data class MainUiState(

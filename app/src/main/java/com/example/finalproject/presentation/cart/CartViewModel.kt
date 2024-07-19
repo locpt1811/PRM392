@@ -1,6 +1,7 @@
 package com.example.finalproject.presentation.cart
 
 import android.app.Application
+import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,7 @@ import com.example.finalproject.domain.repository.BookRepository
 import com.example.finalproject.domain.repository.OrderRepository
 import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.model.shopping.CreateOrderDTO
+import com.example.finalproject.presentation.PaymentActivity
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.PaymentsUtil
 import com.google.android.gms.common.api.ApiException
@@ -229,6 +231,7 @@ class CartViewModel @Inject constructor(
 
         Log.d("Order:", "Set done");
         proceedReq(addr1)
+        // go to payment activity
     }
 
     fun proceedReq(address: String){

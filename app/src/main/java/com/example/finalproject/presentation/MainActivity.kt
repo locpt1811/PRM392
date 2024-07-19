@@ -10,19 +10,37 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import com.example.finalproject.R
 import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.core.notification.ShoppingNotifier
 import com.example.finalproject.presentation.cart.CartViewModel
+import com.example.finalproject.presentation.designsystem.components.ShoppingButton
+import com.example.finalproject.presentation.designsystem.components.SuccessPay
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.FIRST_TIME_LAUNCH
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wallet.contract.TaskResultContracts
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -63,6 +81,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()
+            val cartUiState by model.uiState.collectAsState()
 
             val permissionLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestPermission(),
@@ -90,22 +109,10 @@ class MainActivity : ComponentActivity() {
             } else {
                 MainDestinations.PRODUCT_ROUTE
             }
-
             ShoppingApp(
                 startDestination = startDestination,
                 mainActivity = this@MainActivity
             )
-        }
-        observeCartViewModel()
-    }
-
-    private fun observeCartViewModel() {
-        lifecycleScope.launch {
-            model.uiState.collect { cartUiState ->
-                if (cartUiState.isSuccess) {
-                    viewModel.updateWithCartData(cartUiState)
-                }
-            }
         }
     }
 
@@ -115,6 +122,8 @@ class MainActivity : ComponentActivity() {
                 taskResult.result!!.let {
                     Log.i("Google Pay result:", it.toJson())
                     model.setPaymentData(it)
+                    val intent = Intent(this, PaymentActivity::class.java)
+                    startActivity(intent)
                 }
             }
             //CommonStatusCodes.CANCELED -> The user canceled

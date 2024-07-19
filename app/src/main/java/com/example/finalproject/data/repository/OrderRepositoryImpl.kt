@@ -78,65 +78,6 @@ class OrderRepositoryImpl @Inject constructor(
             }
         }
     }
-//    override suspend fun createOrder(orderDTO: CreateOrderDTO, items: List<CartEntity>): Response<Unit> {
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                val orderInsertResponse = postgrest.from("order_user")
-//                    .insert(mapOf(
-//                        "user_id" to orderDTO.user_id,
-//                        "address" to orderDTO.address
-//                    ))
-//                val recentInsertResponse = postgrest.from("order_user")
-//                    .select {
-//                        filter {
-//                            orderDTO.user_id?.let { eq("user_id", it) }
-//                        }
-//                    }
-//                val a = postgrest
-//                    .rpc("get_new_order_by_user_id",
-//                        RpcMethod.GET).decodeSingle<OrderEntity>()
-//                val orderId = a.id
-//
-//
-//                Log.d("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "$orderId")
-////                Log.d("OrderRepo", "Order ID: $orderInsertResponse")
-////                val createOrderResponse = orderInsertResponse.data.let { it as CreateOrderResponseDTO }
-////                val orderId = createOrderResponse.id ?: throw Exception("Failed to retrieve order ID")
-//
-////                val orderId = recentInsertResponse.data ?: throw Exception("Failed to retrieve order ID")
-////                Log.d("OrderRepo", "Order ID: ${recentInsertResponse.data}")
-//
-//                // Prepare the items for insertion into order_item
-//                val orderItems = items.map { item ->
-//                    mapOf(
-//                        "book_id" to item.id,
-//                        "order_id" to orderId,
-//                        "quantity" to item.count
-//                    )
-//                }
-//                for (item in orderItems) {
-//                    Log.d("OrderRepo1111111111111", "Item: $item")
-//                }
-//                // Insert into order_item
-//                postgrest.from("order_item")
-//                    .insert(orderItems)
-//
-////                val orderItems = items.map { item ->
-////                    mapOf(
-////                        "book_id" to item.id,
-////                        "quantity" to item.count
-////                    )
-////                }
-////
-////                val result = postgrest.rpc("insert_order?p_user_id=${userId}&p_address=${address}&p_order_items=${supabaseJson.encodeToJsonElement(orderItems).toString()}")
-//
-//                Response.Success(Unit)
-//            } catch (e: Exception) {
-//                Log.e("OrderRepo", "Create order exception: ${e.message}")
-//                Response.Error(errorMessageId = R.string.error_message_books)
-//            }
-//        }
-//    }
 
     override suspend fun createOrder(orderDTO: CreateOrderDTO, items: List<CartEntity>): Response<Unit> {
         return withContext(Dispatchers.IO) {
