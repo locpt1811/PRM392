@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyOrderDetailScreen(
@@ -60,44 +60,46 @@ fun MyOrderDetailScreen(
             val totalItems = orderDetail.items.sumBy { it.quantity }
             val totalAmount = orderDetail.items.sumByDouble { it.quantity * it.book.price!! }
 
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .verticalScroll(rememberScrollState())
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(
-                    text = "Order ID: ${orderDetail.id}",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Address: ${orderDetail.address ?: "Not available"}",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Total Items: $totalItems",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Total Amount: $${"%.2f".format(totalAmount)}",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                item {
+                    Text(
+                        text = "Order ID: ${orderDetail.id}",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Address: ${orderDetail.address ?: "Not available"}",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Total Items: $totalItems",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Total Amount: $${"%.2f".format(totalAmount)}",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = "Items:",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
+                    Text(
+                        text = "Items:",
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-                orderDetail.items.forEach { item ->
+                items(orderDetail.items.size) { index ->
+                    val item = orderDetail.items[index]
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -123,7 +125,6 @@ fun MyOrderDetailScreen(
                                 text = "Total: \$${"%.2f".format(item.quantity * item.book.price!!)}",
                                 style = MaterialTheme.typography.bodyMedium
                             )
-
                         }
                     }
                 }
