@@ -1,6 +1,7 @@
 package com.example.finalproject.presentation.cart
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -52,6 +53,8 @@ import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.utils.CustomPreview
 import com.example.finalproject.utils.DELIVERY_FEE
 import com.example.finalproject.presentation.designsystem.components.CheckOutButton
+import com.example.finalproject.presentation.designsystem.components.FullScreenCircularLoading
+import com.example.finalproject.presentation.designsystem.components.ShoppingButton
 import com.example.finalproject.presentation.navigation.MainDestinations
 import com.example.finalproject.utils.PaymentsUtil
 import com.google.pay.button.PayButton
@@ -62,23 +65,24 @@ fun CartScreen(
     modifier: Modifier = Modifier,
     onPaymentClick: (Float) -> Unit,
     onGooglePayButtonClick: (Float) -> Unit,
+    onContinueShoppingClick: () -> Unit,
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-//    val paymentUiState by viewModel.paymentUiState.collectAsState()
-//    val context = LocalContext.current
+
     if (uiState.errorMessages.isNotEmpty()) {
         ShoppingShowToastMessage(message = uiState.errorMessages.first().asString())
         viewModel.consumedErrorMessage()
     }
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
+            Log.d("AAAAAAAAAAAAA", "BBBBBBBBBBBBBB")
             navController.navigate(MainDestinations.CART_ROUTE){
-                popUpTo(MainDestinations.CART_ROUTE) { inclusive = true }
+                popUpTo(MainDestinations.CART_ROUTE) {
+                    inclusive = true
+                }
             }
-
         }
-
     }
 
     ShoppingScaffold(
@@ -96,10 +100,10 @@ fun CartScreen(
             },
             onGooglePayButtonClick = remember {
                 { onGooglePayButtonClick(((uiState.subtotal + 2.00)*100).toFloat()) }
-            }
-
-//            onGooglePayButtonClick = { viewModel.requestPayment1() }
-
+            },
+            isSuccess = uiState.isSuccess,
+            onContinueShoppingClick = onContinueShoppingClick,
+            isLoading = uiState.isLoading
         )
     }
 }
@@ -113,9 +117,43 @@ private fun CartScreenContent(
     onIncreaseClicked: (Int) -> Unit,
     onDecreaseClicked: (Int) -> Unit,
     onCheckoutBtnClicked: () -> Unit,
-    onGooglePayButtonClick: () -> Unit
+    onGooglePayButtonClick: () -> Unit,
+    isSuccess: Boolean,
+    isLoading: Boolean,
+    onContinueShoppingClick: () -> Unit
 ) {
-
+    if (isLoading) {
+        FullScreenCircularLoading()
+    } else
+    if (isSuccess) {
+        Column(
+            modifier = modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.four_level_margin)),
+                painter = painterResource(id = R.drawable.payment_success),
+                contentDescription = null,
+                contentScale = ContentScale.Fit
+            )
+            Text(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.four_level_margin))
+                    .padding(top = dimensionResource(id = R.dimen.two_level_margin)),
+                text = stringResource(id = R.string.payment_success),
+                textAlign = TextAlign.Center
+            )
+            ShoppingButton(
+                modifier = modifier.padding(top = dimensionResource(id = R.dimen.two_level_margin)),
+                onClick = onContinueShoppingClick,
+                buttonText = stringResource(id = R.string.continue_shopping)
+            )
+        }
+    } else
     if (cartList.isNotEmpty()) {
         Column(
             modifier = modifier
@@ -155,11 +193,14 @@ private fun CartScreenContent(
                     )
                 }
             }
-            CheckOutButton(subtotal = subtotal, onCheckoutBtnClicked = onCheckoutBtnClicked)
+//            CheckOutButton(subtotal = subtotal, onCheckoutBtnClicked = onCheckoutBtnClicked)
             PayButton(
                 modifier = Modifier
                     .testTag("payButton")
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = dimensionResource(id = R.dimen.two_level_margin),
+                    ),
                 onClick = onGooglePayButtonClick,
                 allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
             )
@@ -248,7 +289,10 @@ private fun CartScreenPreview() {
                 onIncreaseClicked = {},
                 onDecreaseClicked = {},
                 onCheckoutBtnClicked = {},
-                onGooglePayButtonClick = {}
+                onGooglePayButtonClick = {},
+                onContinueShoppingClick = {},
+                isSuccess = false,
+                isLoading = false
             )
         }
     }
@@ -267,7 +311,10 @@ private fun CartScreenEmptyCartPreview() {
                 onIncreaseClicked = {},
                 onDecreaseClicked = {},
                 onCheckoutBtnClicked = {},
-                onGooglePayButtonClick = {}
+                onGooglePayButtonClick = {},
+                onContinueShoppingClick = {},
+                isSuccess = false,
+                isLoading = false
             )
         }
     }

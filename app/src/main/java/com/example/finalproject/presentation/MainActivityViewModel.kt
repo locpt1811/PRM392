@@ -1,6 +1,7 @@
 package com.example.finalproject.presentation
 
 import androidx.lifecycle.ViewModel
+import com.example.finalproject.presentation.cart.CartScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,10 +26,20 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
             it.copy(consumableViewEvent = listOf())
         }
     }
+
+    fun updateWithCartData(cartUiState: CartScreenUiState) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isSuccess = cartUiState.isSuccess,
+                consumableViewEvent = listOf(MainUiEvent.Init)
+            )
+        }
+    }
 }
 
 data class MainUiState(
-    val consumableViewEvent: List<MainUiEvent> = listOf()
+    val consumableViewEvent: List<MainUiEvent> = listOf(),
+    val isSuccess: Boolean = false,
 )
 
 sealed interface MainUiEvent {

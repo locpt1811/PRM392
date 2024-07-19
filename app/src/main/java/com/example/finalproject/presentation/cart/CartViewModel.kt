@@ -27,6 +27,7 @@ import com.google.android.gms.wallet.PaymentDataRequest
 import com.google.android.gms.wallet.PaymentsClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
+import okhttp3.Address
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.Executor
@@ -48,18 +50,17 @@ class CartViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
     private val authRepository: AuthRepository,
     private val ioDispatcher:CoroutineDispatcher,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CartScreenUiState())
     val uiState: StateFlow<CartScreenUiState> = _uiState.asStateFlow()
 
     private val _paymentUiState: MutableStateFlow<PaymentUiState> = MutableStateFlow(PaymentUiState.NotStarted)
-    val paymentUiState: StateFlow<PaymentUiState> = _paymentUiState.asStateFlow()
+//    val paymentUiState: StateFlow<PaymentUiState> = _paymentUiState.asStateFlow()
+//    val navigateToPaymentActivity = MutableLiveData<Unit>()
 
     // A client for interacting with the Google Pay API.
     private val paymentsClient: PaymentsClient = PaymentsUtil.createPaymentsClient(application)
-    val navigateToPaymentActivity = MutableLiveData<Unit>()
     init {
         getCart()
 
@@ -220,27 +221,53 @@ class CartViewModel @Inject constructor(
             PaymentUiState.PaymentCompleted(payerName = it)
         } ?: PaymentUiState.Error(CommonStatusCodes.INTERNAL_ERROR)
         _paymentUiState.update {  payState }
+
+        val paymentMethodData =
+            JSONObject(paymentData.toJson()).getJSONObject("paymentMethodData")
+        val addr1 = paymentMethodData.getJSONObject("info")
+            .getJSONObject("billingAddress").getString("address1")
+
         Log.d("Order:", "Set done");
-        viewModelScope.launch {
-            createOrder()
+        proceedReq(addr1)
+    }
+
+    fun proceedReq(address: String){
+        viewModelScope.launch(ioDispatcher) {
+            _uiState.update { it.copy(isLoading = true) }
+            createOrder(address)
+            delay(4000)
+            when (val response = bookRepository.deleteAllCartItems()) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isSuccess = true
+                        )
+                    }
+                }
+
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessages = listOf(
+                                UiText.StringResource(response.errorMessageId)
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
-    suspend fun createOrder(){
-        val address = "123 Main St"
+
+    suspend fun createOrder(addr: String){
+        val address = addr
         val userId = authRepository.retreiveCurrentUser()?.uid
 
         val orderDTO = CreateOrderDTO(address, userId)
-        Log.d("Order:", "$orderDTO");
-            val cartResponse = bookRepository.getCart()
-            val cartList = (cartResponse as Response.Success).data
-            val response = orderRepository.createOrder(orderDTO,cartList)
-            if (response is Response.Success) {
-                _uiState.update {
-                    it.copy(isSuccess = true)
-                }
-            }
-            Log.d("Order:", "Create successfully");
-
+        val cartResponse = bookRepository.getCart()
+        val cartList = (cartResponse as Response.Success).data
+        val response = orderRepository.createOrder(orderDTO,cartList)
     }
 
     private fun extractPaymentBillingName(paymentData: PaymentData): String? {
@@ -268,16 +295,14 @@ class CartViewModel @Inject constructor(
 
         return null
     }
-    fun requestPayment1() {
-        navigateToPaymentActivity.value = Unit
-    }
 }
 
 data class CartScreenUiState(
     val cartList: List<CartEntity> = listOf(),
     val errorMessages: List<UiText> = listOf(),
     val subtotal: Double = 0.0,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val isLoading: Boolean = false
 )
 
 abstract class PaymentUiState internal constructor() {
