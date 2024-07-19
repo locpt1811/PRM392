@@ -17,6 +17,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Panorama
+import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,6 +35,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -73,12 +79,17 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = otherUserName ?: stringResource(id = R.string.chat)) },
+                title = {
+                    Text(
+                        text = otherUserName ?: stringResource(id = R.string.chat),
+                        color = Color.White
+                ) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = Color.White
                         )
                     }
                 },
@@ -172,7 +183,18 @@ fun ChatScreen(
                 }
 
                 // Button to send text message
-                Button(
+//                Button(
+//                    onClick = {
+//                        if (messageContent.text.isNotEmpty()) {
+//                            viewModel.sendMessage(messageContent.text)
+//                            messageContent = TextFieldValue() // Clear the input field
+//                        }
+//                    }
+//                ) {
+//                    Text("Send")
+//                }
+
+                IconButton(
                     onClick = {
                         if (messageContent.text.isNotEmpty()) {
                             viewModel.sendMessage(messageContent.text)
@@ -180,7 +202,7 @@ fun ChatScreen(
                         }
                     }
                 ) {
-                    Text("Send")
+                    Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
                 }
             }
         }
@@ -197,13 +219,18 @@ fun ImageSelection(
         }
     }
 
-    Button(
-        onClick = {
-            launcher.launch("image/*")
-        }
-    ) {
-        Text("Pick Image")
+//    Button(
+//        onClick = {
+//            launcher.launch("image/*")
+//        }
+//    ) {
+//        Text("Pick Image")
+//    }
+
+    IconButton(onClick = { launcher.launch("image/*") }) {
+        Icon(imageVector = Icons.Filled.Panorama, contentDescription = "Picture")
     }
+
 }
 
 private fun readBytesFromUri(context: Context, uri: Uri): ByteArray? {

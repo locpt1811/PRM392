@@ -76,7 +76,6 @@ fun CartScreen(
     }
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
-            Log.d("AAAAAAAAAAAAA", "BBBBBBBBBBBBBB")
             navController.navigate(MainDestinations.CART_ROUTE){
                 popUpTo(MainDestinations.CART_ROUTE) {
                     inclusive = true
