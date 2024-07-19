@@ -115,9 +115,9 @@ class ShoppingAppNavController @Inject constructor(
         }
     }
 
-    fun navigateGGPayment(totalAmount: Float, from: NavBackStackEntry) {
+    fun navigateGGPayment(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
-            navController.navigate("${MainDestinations.GG_PAYMENT_ROUTE}/$totalAmount")
+            navController.navigate(MainDestinations.GG_PAYMENT_ROUTE)
         }
     }
 

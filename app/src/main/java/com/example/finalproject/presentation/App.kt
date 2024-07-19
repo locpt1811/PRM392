@@ -70,7 +70,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
     onSignUpClick: (NavBackStackEntry) -> Unit,
     onLoginClick: (NavBackStackEntry) -> Unit,
     onPaymentClick: (Float, NavBackStackEntry) -> Unit,
-    onGooglePayButtonClick: (Float, NavBackStackEntry) -> Unit,
+    onGooglePayButtonClick: (NavBackStackEntry) -> Unit,
     onContinueShoppingClick: (NavBackStackEntry) -> Unit,
     onGooglePayButtonClick2: (Float,NavBackStackEntry) -> Unit,
     onFinished: (NavBackStackEntry) -> Unit,
@@ -108,7 +108,8 @@ private fun NavGraphBuilder.shoppingAppGraph(
         CartScreen(
             onGooglePayButtonClick = remember { { amount -> onGooglePayButtonClick2(amount, from) } },
             onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } },
-            navController = navController,)
+            navController = navController,
+            onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
     }
 
     composable(
@@ -120,14 +121,9 @@ private fun NavGraphBuilder.shoppingAppGraph(
         PaymentScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
     }
 
-    composable(
-        route = "${MainDestinations.GG_PAYMENT_ROUTE}/{${MainDestinations.PAYMENT_AMOUNT_KEY}}",
-        arguments = listOf(navArgument(MainDestinations.PAYMENT_AMOUNT_KEY) {
-            type = NavType.FloatType
-        })
+    composable(route = MainDestinations.GG_PAYMENT_ROUTE
     ) { from ->
-        CheckoutScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } },
-            onGooglePayButtonClick = remember { { amount -> onGooglePayButtonClick2(amount, from) } })
+        CheckoutScreen(onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
     }
 
     composable(

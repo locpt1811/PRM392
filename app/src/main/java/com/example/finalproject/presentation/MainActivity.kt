@@ -14,17 +14,16 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.core.notification.ShoppingNotifier
 import com.example.finalproject.presentation.cart.CartViewModel
-import com.example.finalproject.presentation.checkout.CheckoutViewModel
 import com.example.finalproject.presentation.navigation.MainDestinations
-import com.example.finalproject.utils.ACCESS_TOKEN
 import com.example.finalproject.utils.FIRST_TIME_LAUNCH
-import com.example.finalproject.utils.REMEMBER_ME
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wallet.contract.TaskResultContracts
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -97,8 +96,17 @@ class MainActivity : ComponentActivity() {
                 mainActivity = this@MainActivity
             )
         }
+        observeCartViewModel()
+    }
 
-
+    private fun observeCartViewModel() {
+        lifecycleScope.launch {
+            model.uiState.collect { cartUiState ->
+                if (cartUiState.isSuccess) {
+                    viewModel.updateWithCartData(cartUiState)
+                }
+            }
+        }
     }
 
     private val paymentDataLauncher = registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { taskResult ->
@@ -116,11 +124,7 @@ class MainActivity : ComponentActivity() {
     }
 
     fun requestPayment(amount: Long) {
-
-        Log.d("PaymentActivity", "$amount")
         val task = model.getLoadPaymentDataTask(amount)
         task.addOnCompleteListener(paymentDataLauncher::launch)
     }
-
-
 }
