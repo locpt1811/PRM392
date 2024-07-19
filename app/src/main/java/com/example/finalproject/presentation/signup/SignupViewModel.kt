@@ -110,9 +110,6 @@ class SignUpViewModel @Inject constructor(
                     it.copy(isLoading = true)
                 }
 
-                Log.d("SignUpViewModel", "Email: $email")
-                Log.d("SignUpViewModel", "Password: $password")
-
                 val signUpSuccessful = authRepository.signUp(email, password)
                 Log.d("SignUpViewModel", "Password: $signUpSuccessful")
                 _uiState.update {

@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -91,7 +90,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     onNavigateRoute: (String) -> Unit,
-    onMyOrdersClicked: () -> Unit,
     onSignOutClicked: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -104,6 +102,8 @@ fun ProfileScreen(
     var isUpdateUsernameVisible by remember { mutableStateOf(false) }
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
+    var newFirstname by remember { mutableStateOf("") }
+    var newLastname by remember { mutableStateOf("") }
 
 
     ShoppingScaffold(
@@ -250,65 +250,38 @@ fun ProfileScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OutlinedButton(
-                        onClick = { isUpdatePasswordVisible = true },
-                        modifier = Modifier.fillMaxWidth(),
-                        border = null,
-                        shape = MaterialTheme.shapes.small,
-                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
-                        colors = ButtonColors(
-                            containerColor = Color.DarkGray,
-                            contentColor = Color.White,
-                            disabledContentColor = Color.Gray,
-                            disabledContainerColor = Color.DarkGray
-                        )
+//                    Spacer(modifier = Modifier.height(16.dp))
+//                    OutlinedButton(
+//                        onClick = { isUpdatePasswordVisible = true },
+//                        modifier = Modifier.fillMaxWidth(),
+//                        border = null,
+//                        shape = MaterialTheme.shapes.small,
+//                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+//                        colors = ButtonColors(
+//                            containerColor = Color.DarkGray,
+//                            contentColor = Color.White,
+//                            disabledContentColor = Color.Gray,
+//                            disabledContainerColor = Color.DarkGray
+//                        )
+//
+//                    ) {
+//                        Row(verticalAlignment = Alignment.CenterVertically) {
+//                            Icon(
+//                                imageVector = Icons.Default.Lock,
+//                                contentDescription = "Update Password Icon",
+//                                modifier = Modifier.size(18.dp),
+//                                tint = Color.White
+//                            )
+//                            Text(
+//                                text = "Update Password",
+//                                modifier = Modifier.padding(start = 8.dp),
+//                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+//                            )
+//                        }
+//                    }
 
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = "Update Password Icon",
-                                modifier = Modifier.size(18.dp),
-                                tint = Color.White
-                            )
-                            Text(
-                                text = "Update Password",
-                                modifier = Modifier.padding(start = 8.dp),
-                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
-                            )
-                        }
-                    }
 
-                    // My Orders Button
-                    OutlinedButton(
-                        onClick = onMyOrdersClicked,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        border = null,
-                        shape = MaterialTheme.shapes.small,
-                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
-                        colors = ButtonColors(
-                            containerColor = Color.DarkGray,
-                            contentColor = Color.White,
-                            disabledContentColor = Color.Gray,
-                            disabledContainerColor = Color.DarkGray
-                        )
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = "My Orders Icon",
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Text(
-                                text = "My Orders",
-                                modifier = Modifier.padding(start = 8.dp),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
+
                 }
             }
 
@@ -318,16 +291,26 @@ fun ProfileScreen(
 
                 TextField(
 
-                    value = newUsername,
-                    onValueChange = { newUsername = it },
-                    label = { Text("New Username") },
+                    value = newFirstname,
+                    onValueChange = { newFirstname = it },
+                    label = { Text("New Fristname") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                TextField(
+
+                    value = newLastname,
+                    onValueChange = { newLastname = it },
+                    label = { Text("New Lastname") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 OutlinedButton(
                     onClick = {
-//                                viewModel.updateUsername(newUsername)
+                        viewModel.updateUsername(newFirstname, newLastname)
                         isUpdateUsernameVisible = false
+                        newFirstname = ""
+                        newLastname = ""
                     },
                     // ...
                 ) {
@@ -335,33 +318,33 @@ fun ProfileScreen(
                 }
             }
 
-            if (isUpdatePasswordVisible) {
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TextField(
-                    value = oldPassword,
-                    onValueChange = { oldPassword = it },
-                    label = { Text("Old Password") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                TextField(
-                    value = newPassword,
-                    onValueChange = { newPassword = it },
-                    label = { Text("New Password") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedButton(
-                    onClick = {
-//                                viewModel.updatePassword(oldPassword, newPassword)
-                        isUpdatePasswordVisible = false
-                    },
-                    // ...
-                ) {
-                    Text("Submit")
-                }
-            }
+//            if (isUpdatePasswordVisible) {
+//                Spacer(modifier = Modifier.height(16.dp))
+//
+//                TextField(
+//                    value = oldPassword,
+//                    onValueChange = { oldPassword = it },
+//                    label = { Text("Old Password") },
+//                    modifier = Modifier.fillMaxWidth()
+//                )
+//
+//                TextField(
+//                    value = newPassword,
+//                    onValueChange = { newPassword = it },
+//                    label = { Text("New Password") },
+//                    modifier = Modifier.fillMaxWidth()
+//                )
+//
+//                OutlinedButton(
+//                    onClick = {
+////                                viewModel.updatePassword(oldPassword, newPassword)
+//                        isUpdatePasswordVisible = false
+//                    },
+//                    // ...
+//                ) {
+//                    Text("Submit")
+//                }
+//            }
         }
     }
 

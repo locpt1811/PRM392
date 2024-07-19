@@ -10,7 +10,8 @@ import java.util.Date
 data class UserProfileInfoDTO(
     val uuid: String,
     val first_name: String? = null,
-    val last_name: String? = null
+    val last_name: String? = null,
+    val avatar_url: String? = null,
 )
 
 @Immutable

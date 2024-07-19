@@ -16,7 +16,10 @@ data class UserProfileInfo(
     val firstName: String?,
 
     @ColumnInfo("last_name")
-    val lastName: String?
+    val lastName: String?,
+
+    @ColumnInfo("avatar_url")
+    val avatarUrl: String?
 
 
 )

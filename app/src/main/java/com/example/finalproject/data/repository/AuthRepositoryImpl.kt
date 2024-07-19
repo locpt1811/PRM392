@@ -5,6 +5,7 @@ import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.data.mapper.toUser
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.model.auth.User
+import com.example.finalproject.model.shopping.UserProfileDTO
 import com.example.finalproject.model.shopping.UserProfileInfo
 import com.example.finalproject.utils.ACCESS_TOKEN
 import io.github.jan.supabase.gotrue.Auth
@@ -77,8 +78,13 @@ class AuthRepositoryImpl @Inject constructor(
 
             val id = auth.currentUserOrNull()?.id
             if(id != null) {
-                val userProfile = UserProfileInfo(id, "first_name", "last_name")
-                postgrest.from("profiles").insert(userProfile)
+                val userProfile = UserProfileInfo(id
+                    , "firstName"
+                    , "lastName"
+                    ,"https://th.bing.com/th/id/OIP.oRoosgD6pPrJW2PXAJ-hBwHaJ4?rs=1&pid=ImgDetMain"
+                )
+                val result = postgrest.from("profiles").insert(userProfile).decodeSingle<UserProfileDTO>()
+                Log.d("AuthRepositoryImpl", "Profile, error: ${result}")
             }
 
             true
