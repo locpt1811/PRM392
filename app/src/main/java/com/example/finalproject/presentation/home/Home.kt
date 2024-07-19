@@ -64,6 +64,7 @@ fun NavGraphBuilder.addHomeGraph(
     onCartClick: (NavBackStackEntry) -> Unit,
     onChatListClick: (NavBackStackEntry) -> Unit,
     onMyOrdersClick: (NavBackStackEntry) -> Unit,
+    onManageOrderClick: (NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
     composable(HomeSections.PRODUCT.route) { from ->
@@ -121,7 +122,8 @@ fun NavGraphBuilder.addHomeGraph(
                 }
             },
             onNavigateRoute = onNavigateToRoute,
-            onMyOrdersClicked = { onMyOrdersClick(from) }
+            onMyOrdersClicked = { onMyOrdersClick(from) },
+            onManageOrderClicked = { onManageOrderClick(from) },
         )
     }
 

@@ -8,10 +8,12 @@ import com.example.finalproject.data.mapper.toDto
 import com.example.finalproject.domain.repository.OrderRepository
 import com.example.finalproject.domain.repository.ProfileRepository
 import com.example.finalproject.model.shopping.CartEntity
+import com.example.finalproject.model.shopping.ChatDTO
 import com.example.finalproject.model.shopping.CreateOrderDTO
 import com.example.finalproject.model.shopping.CreateOrderResponseDTO
 import com.example.finalproject.model.shopping.OrderDTO
 import com.example.finalproject.model.shopping.OrderEntity
+import com.example.finalproject.model.shopping.OrderStatusDTO
 import com.example.finalproject.model.shopping.UserProfileDTO
 import com.example.finalproject.model.shopping.UserProfileInfo
 import com.example.finalproject.model.shopping.UserProfileInfoDTO
@@ -21,6 +23,7 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.RpcMethod
 import io.github.jan.supabase.postgrest.rpc
 import io.github.jan.supabase.supabaseJson
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -79,6 +82,40 @@ class OrderRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateOrderStatus(orderId: Int, statusId: Int): Response<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                postgrest
+                .from("order_user")
+                .update(
+                    {
+                        set("status_id", statusId)
+                    }
+                ) {
+                    filter {
+                        eq("id", orderId)
+                    }
+                }
+                Response.Success(true)
+            } catch (e: Exception) {
+                Log.e("OrderRepo", "Update exception: ${e.message}")
+                Response.Error(errorMessageId = R.string.error_message_books)
+            }
+        }
+    }
+    override suspend fun getOrderStatuses(): Response<List<OrderStatusDTO>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = postgrest.from("order_status")
+                    .select()
+                    .decodeList<OrderStatusDTO>()
+
+                Response.Success(result)
+            } catch (e: Exception) {
+                Response.Error(errorMessageId = R.string.error_message_books)
+            }
+        }
+    }
     override suspend fun createOrder(orderDTO: CreateOrderDTO, items: List<CartEntity>): Response<Unit> {
         return withContext(Dispatchers.IO) {
             try {

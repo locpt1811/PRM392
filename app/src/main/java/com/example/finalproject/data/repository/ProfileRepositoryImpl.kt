@@ -23,9 +23,11 @@ class ProfileRepositoryImpl @Inject constructor(
     override suspend fun getProfileUsers(): Response<List<UserProfileDTO>> {
         return withContext(Dispatchers.IO) {
             try {
+                Log.e("ManageOrderVM","Try user profile")
                 val profile = postgrest.from("profiles")
                     .select()
                     .decodeList<UserProfileDTO>()
+                Log.e("ManageOrderVM","Try user $profile")
                 Response.Success(profile)
             } catch (e: Exception) {
                 Log.e("ProfileRepo", "Get exception: ${e.message}")
