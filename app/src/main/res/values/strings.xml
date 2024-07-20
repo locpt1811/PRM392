@@ -24,6 +24,8 @@
     <string name="delivery">Delivery</string>
     <string name="chat">Chat</string>
     <string name="chat_list">Chat List</string>
+    <string name="my_order">My Order</string>
+    <string name="mng_order">Manage Order</string>
     <string name="total">Total</string>
     <string name="payment">Payment</string>
     <string name="home">Home</string>

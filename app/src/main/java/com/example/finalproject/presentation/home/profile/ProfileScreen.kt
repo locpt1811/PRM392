@@ -226,6 +226,42 @@ fun ProfileScreen(
                             )
                         }
                     }
+
+                    if(!viewModel.fetchCurrentUser()){
+                        OutlinedButton(
+                            onClick = onManageOrderClicked,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .padding(bottom = 8.dp),
+                            border = null,
+                            shape = MaterialTheme.shapes.small,
+                            contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                            colors = ButtonColors(
+                                containerColor = Color.DarkGray,
+                                contentColor = Color.White,
+                                disabledContentColor = Color.Gray,
+                                disabledContainerColor = Color.DarkGray
+                            )
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.ShoppingCart,
+                                    contentDescription = "Manage Orders Icon",
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Text(
+                                    text = "Manage Orders",
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        color = Color.White,
+                                        fontSize = 20.sp
+                                    )
+                                )
+                            }
+                        }
+                    }
+
                     OutlinedButton(
                         onClick = { signOut = true
                             onSignOutClicked() },
@@ -285,40 +321,6 @@ fun ProfileScreen(
                                 modifier = Modifier.padding(start = 8.dp),
                                 style = MaterialTheme.typography.bodyMedium.copy(color = Color.White, fontSize = 20.sp)
                             )
-                        }
-                    }
-                    if(!viewModel.fetchCurrentUser()){
-                        OutlinedButton(
-                            onClick = onManageOrderClicked,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(60.dp)
-                                .padding(bottom = 8.dp),
-                            border = null,
-                            shape = MaterialTheme.shapes.small,
-                            contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
-                            colors = ButtonColors(
-                                containerColor = Color.DarkGray,
-                                contentColor = Color.White,
-                                disabledContentColor = Color.Gray,
-                                disabledContainerColor = Color.DarkGray
-                            )
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.ShoppingCart,
-                                    contentDescription = "Manage Orders Icon",
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Text(
-                                    text = "Manage Orders",
-                                    modifier = Modifier.padding(start = 8.dp),
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        color = Color.White,
-                                        fontSize = 20.sp
-                                    )
-                                )
-                            }
                         }
                     }
                 }
