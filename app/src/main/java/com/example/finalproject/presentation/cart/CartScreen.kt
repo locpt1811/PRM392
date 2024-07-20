@@ -66,6 +66,7 @@ fun CartScreen(
     onPaymentClick: (Float) -> Unit,
     onGooglePayButtonClick: (Float) -> Unit,
     onContinueShoppingClick: () -> Unit,
+    onNavigateToSignIn: () -> Unit,
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -98,7 +99,13 @@ fun CartScreen(
                 { onPaymentClick((uiState.subtotal).toFloat()) }
             },
             onGooglePayButtonClick = remember {
-                { onGooglePayButtonClick(((uiState.subtotal + 2.00)*100).toFloat()) }
+                {
+                    if (viewModel.fetchCurrentUser()) {
+                        onNavigateToSignIn()
+                    } else {
+                        onGooglePayButtonClick(((uiState.subtotal + 2.00) * 100).toFloat())
+                    }
+                }
             },
             isSuccess = uiState.isSuccess,
             onContinueShoppingClick = onContinueShoppingClick,

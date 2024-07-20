@@ -221,19 +221,20 @@ fun ManageOrderScreen(
                     }
                 },
                 confirmButton = {
-                    Button(
-                        onClick = {
-                            selectedStatus?.let { newStatus ->
-                                viewModel.updateOrderStatus(selectedOrderId ?: return@let, statuses.find { it.status_value == newStatus }?.status_id ?: 0)
-                                showDialog = false
-                            }
-                        }
-                    ) {
-                        Text("Update")
-                    }
+//                    Button(
+//                        onClick = {
+//                            selectedStatus?.let { newStatus ->
+//                                viewModel.updateOrderStatus(selectedOrderId ?: return@let, statuses.find { it.status_value == newStatus }?.status_id ?: 0)
+//                                showDialog = false
+//                            }
+//                        }
+//                    ) {
+//                        Text("Update")
+//                    }
                 },
                 dismissButton = {
                     Button(
+                        modifier = Modifier,
                         onClick = {
                             showDialog = false
                         }

@@ -112,7 +112,10 @@ private fun NavGraphBuilder.shoppingAppGraph(
             onGooglePayButtonClick = remember { { amount -> onGooglePayButtonClick2(amount, from) } },
             onPaymentClick = remember { { amount -> onPaymentClick(amount, from) } },
             navController = navController,
-            onContinueShoppingClick = remember { { onContinueShoppingClick(from) } })
+            onContinueShoppingClick = remember { { onContinueShoppingClick(from) } },
+            onNavigateToSignIn = remember {{
+                navController.navigate(MainDestinations.LOGIN_ROUTE)
+            }})
     }
 
     composable(
