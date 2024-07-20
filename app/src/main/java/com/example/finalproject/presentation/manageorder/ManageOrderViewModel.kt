@@ -7,12 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finalproject.common.Response
+import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.OrderRepository
 import com.example.finalproject.domain.repository.ProfileRepository
 import com.example.finalproject.model.shopping.OrderDTO
 import com.example.finalproject.model.shopping.OrderStatusDTO
 import com.example.finalproject.model.shopping.UserProfileDTO
+import com.example.finalproject.utils.ACCESS_TOKEN
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +28,7 @@ class ManageOrderViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
     private val profileRepository: ProfileRepository,
     private val ioDispatcher: CoroutineDispatcher,
+    private val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
     private val _orders = MutableStateFlow<List<OrderDTO>>(emptyList())
@@ -78,6 +81,10 @@ class ManageOrderViewModel @Inject constructor(
                 _statuses.value = response.data as List<OrderStatusDTO>
             }
         }
+    }
+
+    fun fetchCurrentUser(): Boolean {
+        return preferenceManager.getData(ACCESS_TOKEN, "").isEmpty()
     }
 
     fun updateOrderStatus(orderId: Int, statusId: Int) {

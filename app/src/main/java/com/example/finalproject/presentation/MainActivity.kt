@@ -111,12 +111,13 @@ class MainActivity : ComponentActivity() {
                     MainDestinations.ONBOARDING_ROUTE
 
             } else {
-                    Log.d("ShowInit", preferenceManager.getData(ACCESS_TOKEN, "").toString())
-                    if(preferenceManager.getData(ACCESS_TOKEN, "").toString().isEmpty()){
-                        MainDestinations.LOGIN_ROUTE
-                    }else{
-                        MainDestinations.PRODUCT_ROUTE
-                    }
+//                    Log.d("ShowInit", preferenceManager.getData(ACCESS_TOKEN, "").toString())
+//                    if(preferenceManager.getData(ACCESS_TOKEN, "").toString().isEmpty()){
+//                        MainDestinations.LOGIN_ROUTE
+//                    }else{
+//                        MainDestinations.PRODUCT_ROUTE
+//                    }
+                MainDestinations.PRODUCT_ROUTE
 
             }
             ShoppingApp(
