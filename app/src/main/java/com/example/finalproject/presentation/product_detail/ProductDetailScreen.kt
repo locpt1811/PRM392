@@ -344,37 +344,62 @@ private fun ProductInfo(
                 fontWeight = FontWeight.Bold
             )
 
-            CategoryItem(
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin)),
-                categoryName = cateName,
-                selectedCatName = cateName,
-                onCategoryClick = onCategoryClick
-            )
+            Row(modifier = Modifier.padding(
+                horizontal = dimensionResource(id = R.dimen.two_level_margin),
+            )){
+                CategoryItem(
+                    modifier = Modifier
+                        .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin)),
+                    categoryName = cateName,
+                    selectedCatName = cateName,
+                    onCategoryClick = onCategoryClick
+                )
+            }
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-                text = pubName
-            )
+            Row(
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(id = R.dimen.two_level_margin),
+                )
+            ){
+                Text(
+                    text = "Publisher:", fontWeight = FontWeight.Bold
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = pubName
+                )
+            }
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-                text = langCode
-            )
+            Row(
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(id = R.dimen.two_level_margin),
+                )
+            ){
+                Text(
+                    text = "Code:", fontWeight = FontWeight.Bold
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = langCode
+                )
+            }
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.two_level_margin))
-                    .padding(top = dimensionResource(id = R.dimen.one_level_margin)),
-                text = langName
-            )
+            Row(
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(id = R.dimen.two_level_margin),
+                )
+            ){
+                Text(
+                    text = "Language:", fontWeight = FontWeight.Bold
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = langName
+                )
+            }
 
             var seeMore by remember { mutableStateOf(true) }
             Text(
@@ -393,6 +418,7 @@ private fun ProductInfo(
             }
             Text(
                 text = textButton,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .heightIn(20.dp)

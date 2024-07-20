@@ -42,10 +42,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.finalproject.R
 import com.example.finalproject.model.shopping.OrderDTO
 import com.example.finalproject.model.shopping.OrderStatusDTO
 import com.example.finalproject.presentation.designsystem.components.ShoppingShowToastMessage
@@ -75,12 +77,13 @@ fun ManageOrderScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Manage Orders") },
+                title = { Text(text = stringResource(id = R.string.mng_order), color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = Color.White
                         )
                     }
                 },
