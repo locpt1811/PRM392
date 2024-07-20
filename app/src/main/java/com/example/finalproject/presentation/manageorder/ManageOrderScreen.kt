@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -87,6 +88,15 @@ fun ManageOrderScreen(
             )
         }
     ) { padding ->
+        if(viewModel.fetchCurrentUser()) {
+            Text(
+                text ="You do not have permission to access this page",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Red
+                ),
+            )
+        }else
         if (orders.isEmpty()) {
             Box(
                 modifier = Modifier
@@ -96,7 +106,8 @@ fun ManageOrderScreen(
             ) {
                 Text("No orders found.", style = MaterialTheme.typography.headlineSmall)
             }
-        } else {
+        }
+        else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -185,6 +196,7 @@ fun ManageOrderScreen(
             }
         }
 
+
         // Show dialog when showDialog is true
         if (showDialog) {
             AlertDialog(
@@ -209,19 +221,20 @@ fun ManageOrderScreen(
                     }
                 },
                 confirmButton = {
-                    Button(
-                        onClick = {
-                            selectedStatus?.let { newStatus ->
-                                viewModel.updateOrderStatus(selectedOrderId ?: return@let, statuses.find { it.status_value == newStatus }?.status_id ?: 0)
-                                showDialog = false
-                            }
-                        }
-                    ) {
-                        Text("Update")
-                    }
+//                    Button(
+//                        onClick = {
+//                            selectedStatus?.let { newStatus ->
+//                                viewModel.updateOrderStatus(selectedOrderId ?: return@let, statuses.find { it.status_value == newStatus }?.status_id ?: 0)
+//                                showDialog = false
+//                            }
+//                        }
+//                    ) {
+//                        Text("Update")
+//                    }
                 },
                 dismissButton = {
                     Button(
+                        modifier = Modifier,
                         onClick = {
                             showDialog = false
                         }

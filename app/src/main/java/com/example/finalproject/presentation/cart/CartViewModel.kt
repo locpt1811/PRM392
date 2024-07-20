@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finalproject.common.Response
+import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.BookRepository
@@ -18,6 +19,7 @@ import com.example.finalproject.model.shopping.CartEntity
 import com.example.finalproject.model.shopping.CreateOrderDTO
 import com.example.finalproject.presentation.PaymentActivity
 import com.example.finalproject.presentation.navigation.MainDestinations
+import com.example.finalproject.utils.ACCESS_TOKEN
 import com.example.finalproject.utils.PaymentsUtil
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
@@ -52,6 +54,7 @@ class CartViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
     private val authRepository: AuthRepository,
     private val ioDispatcher:CoroutineDispatcher,
+    private val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CartScreenUiState())
@@ -157,6 +160,10 @@ class CartViewModel @Inject constructor(
         _uiState.update {
             it.copy(errorMessages = listOf())
         }
+    }
+
+    fun fetchCurrentUser(): Boolean {
+        return preferenceManager.getData(ACCESS_TOKEN, "").isEmpty()
     }
 
     private fun calculateSubtotal(cartList: List<CartEntity>): Double {
