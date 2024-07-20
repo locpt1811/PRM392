@@ -1,9 +1,12 @@
 package com.example.finalproject.presentation.chat
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,8 +28,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -80,21 +85,33 @@ fun ChatUserIcon(
     userName: String,
     onClick: () -> Unit
 ) {
-    Box(
+    Row(
         modifier = Modifier
-            .size(width = 250.dp, height = 60.dp)
+            .fillMaxWidth()
+            .height(80.dp)  // Adjust height as needed
             .padding(8.dp)
             .clickable { onClick() }
-            .background(Color(0xFF800080), shape = RoundedCornerShape(8.dp)), // Use TriangleShape for a triangle background
-        contentAlignment = Alignment.Center
+            .background(Color.LightGray, shape = RoundedCornerShape(8.dp)),  // Change background color to very light grey
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_profile),  // Replace with your Vector Drawable resource
+            contentDescription = null,
+            modifier = Modifier
+                .size(64.dp)  // Adjust size as needed
+                .padding(8.dp)
+                .clip(CircleShape)
+                .background(Color.Gray)  // Placeholder background color
+        )
         Text(
             text = userName,
-            color = Color.White,
-            fontSize = 20.sp, // Adjust text size as needed
+            color = Color.Black,  // Change text color to black for better contrast
+            fontSize = 24.sp,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis, // Handle overflow with ellipsis
-            modifier = Modifier.padding(8.dp) // Add padding around the text
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .weight(1f)  // Allow text to take available space
         )
     }
 }
