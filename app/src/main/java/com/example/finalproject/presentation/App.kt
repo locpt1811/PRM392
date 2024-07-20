@@ -21,6 +21,7 @@ import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
 import com.example.finalproject.presentation.home.HomeSections
 import com.example.finalproject.presentation.home.addHomeGraph
 import com.example.finalproject.presentation.login.LoginScreen
+import com.example.finalproject.presentation.manageorder.ManageOrderScreen
 import com.example.finalproject.presentation.myorder.MyOrderDetailScreen
 import com.example.finalproject.presentation.myorder.MyOrderScreen
 import com.example.finalproject.presentation.navigation.MainDestinations
@@ -50,6 +51,7 @@ fun ShoppingApp(startDestination: String, mainActivity: MainActivity) {
                 onChatClick = shoppingAppNavController::navigateToChat,
                 onChatListClick = shoppingAppNavController::navigateToChatList,
                 onMyOrdersClick = shoppingAppNavController::navigateToMyOrders,
+                onManageOrderClick = shoppingAppNavController::navigateToManageOrder,
                 onOrderDetailClick = shoppingAppNavController::navigateToMyOrderDetail,
                 onGooglePayButtonClick = shoppingAppNavController::navigateGGPayment,
                 onGooglePayButtonClick2 = { amount, from -> mainActivity.requestPayment(amount.toLong()) },
@@ -78,6 +80,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
     onChatClick: (String, String, NavBackStackEntry) -> Unit,
     onChatListClick: (NavBackStackEntry) -> Unit,
     onMyOrdersClick: (NavBackStackEntry) -> Unit,
+    onManageOrderClick: (NavBackStackEntry) -> Unit,
     onOrderDetailClick: (Int, NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit
 ) {
@@ -86,7 +89,7 @@ private fun NavGraphBuilder.shoppingAppGraph(
         route = MainDestinations.PRODUCT_ROUTE,
         startDestination = HomeSections.PRODUCT.route
     ) {
-        addHomeGraph(onProductClick, onSignOutClick, onCartClick, onChatListClick,onMyOrdersClick, onNavigateToRoute)
+        addHomeGraph(onProductClick, onSignOutClick, onCartClick, onChatListClick,onMyOrdersClick, onManageOrderClick, onNavigateToRoute)
     }
 
     composable(route = MainDestinations.LOGIN_ROUTE) { from ->
@@ -170,6 +173,14 @@ private fun NavGraphBuilder.shoppingAppGraph(
 
     composable(route = MainDestinations.MY_ORDERS_ROUTE) { from ->
         MyOrderScreen(
+            onBackClick = { navController.popBackStack() },
+            onOrderDetailClick = { orderId ->
+                onOrderDetailClick(orderId,from)
+            }
+        )
+    }
+    composable(route = MainDestinations.MANAGE_ORDER_ROUTE) { from ->
+        ManageOrderScreen(
             onBackClick = { navController.popBackStack() },
             onOrderDetailClick = { orderId ->
                 onOrderDetailClick(orderId,from)

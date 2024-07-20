@@ -20,6 +20,7 @@ data class OrderDTO(
     val created_at: String? = null,
     val address: String? = null,
     val user_id: String? = null,
+    val status: String? = null,
     val items: List<OrderItemDTO>
 )
 
@@ -31,6 +32,12 @@ data class OrderItemDTO(
     val book_id: Int,
     val quantity: Int,
     val book: BookDTO
+)
+@Immutable
+@Serializable
+data class OrderStatusDTO(
+    val status_id: Int? = null,
+    val status_value: String? = null
 )
 
 @Immutable

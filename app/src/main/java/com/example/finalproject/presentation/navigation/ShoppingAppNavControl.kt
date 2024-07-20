@@ -32,6 +32,7 @@ object MainDestinations {
     const val MY_ORDERS_ROUTE = "myOrders"
     const val MY_ORDER_DETAIL_ROUTE = "myOrderDetail"
     const val MY_ORDER_DETAIL_ID = "myOrderDetailId"
+    const val MANAGE_ORDER_ROUTE = "manageOrder"
     const val CHAT_ROUTE = "chat"
     const val CHAT_USER_ID = "userId"
     const val CHAT_OTHER_USER_ID = "otherUserId"
@@ -157,6 +158,11 @@ class ShoppingAppNavController @Inject constructor(
     fun navigateToMyOrders(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
             navController.navigate(MainDestinations.MY_ORDERS_ROUTE)
+        }
+    }
+    fun navigateToManageOrder(from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate(MainDestinations.MANAGE_ORDER_ROUTE)
         }
     }
     fun navigateToMyOrderDetail(orderId: Int, from: NavBackStackEntry) {

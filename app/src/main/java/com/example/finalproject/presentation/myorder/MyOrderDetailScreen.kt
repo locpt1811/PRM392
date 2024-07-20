@@ -74,6 +74,13 @@ fun MyOrderDetailScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
+                        text = "Status: ${orderDetail.status}",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.secondary
+                        ),
+                    )
+                    Text(
                         text = "Address: ${orderDetail.address ?: "Not available"}",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold

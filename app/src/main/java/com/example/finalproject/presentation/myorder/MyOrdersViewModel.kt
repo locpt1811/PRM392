@@ -46,7 +46,8 @@ class MyOrdersViewModel @Inject constructor(
             if (currentUser != null) {
                 val response = orderRepository.getOrdersByUserId(UUID.fromString(currentUser))
                 if (response is Response.Success<*>) {
-                    _orders.value = response.data as List<OrderDTO>
+                    val sortedOrders = (response.data as List<OrderDTO>).sortedByDescending { it.created_at }
+                    _orders.value = sortedOrders
                 }
             }
         }
