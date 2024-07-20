@@ -45,12 +45,13 @@ fun ChatListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.chat_list)) },
+                title = { Text(text = stringResource(id = R.string.chat_list), color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = Color.White
                         )
                     }
                 },
@@ -73,14 +74,15 @@ fun ChatListScreen(
             }
         }
     }
-}@Composable
+}
+@Composable
 fun ChatUserIcon(
     userName: String,
     onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
-            .size(width = 180.dp, height = 60.dp)
+            .size(width = 250.dp, height = 60.dp)
             .padding(8.dp)
             .clickable { onClick() }
             .background(Color(0xFF800080), shape = RoundedCornerShape(8.dp)), // Use TriangleShape for a triangle background
@@ -89,7 +91,7 @@ fun ChatUserIcon(
         Text(
             text = userName,
             color = Color.White,
-            fontSize = 24.sp, // Adjust text size as needed
+            fontSize = 20.sp, // Adjust text size as needed
             maxLines = 1,
             overflow = TextOverflow.Ellipsis, // Handle overflow with ellipsis
             modifier = Modifier.padding(8.dp) // Add padding around the text

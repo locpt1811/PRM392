@@ -229,7 +229,10 @@ fun ProfileScreen(
                     OutlinedButton(
                         onClick = { signOut = true
                             onSignOutClicked() },
-                        modifier = Modifier.fillMaxWidth().height(60.dp).padding(bottom = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
+                            .padding(bottom = 8.dp),
                         border = null,
                         shape = MaterialTheme.shapes.medium,
                         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
@@ -284,38 +287,40 @@ fun ProfileScreen(
                             )
                         }
                     }
-                    OutlinedButton(
-                        onClick = onManageOrderClicked,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                            .padding(bottom = 8.dp),
-                        border = null,
-                        shape = MaterialTheme.shapes.small,
-                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
-                        colors = ButtonColors(
-                            containerColor = Color.DarkGray,
-                            contentColor = Color.White,
-                            disabledContentColor = Color.Gray,
-                            disabledContainerColor = Color.DarkGray
-                        )
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = "Manage Orders Icon",
-                                modifier = Modifier.size(20.dp)
+                    if(!viewModel.fetchCurrentUser()){
+                        OutlinedButton(
+                            onClick = onManageOrderClicked,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .padding(bottom = 8.dp),
+                            border = null,
+                            shape = MaterialTheme.shapes.small,
+                            contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                            colors = ButtonColors(
+                                containerColor = Color.DarkGray,
+                                contentColor = Color.White,
+                                disabledContentColor = Color.Gray,
+                                disabledContainerColor = Color.DarkGray
                             )
-                            Text(
-                                text = "Manage Orders",
-                                modifier = Modifier.padding(start = 8.dp),
-                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White, fontSize = 20.sp)
-                            )
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.ShoppingCart,
+                                    contentDescription = "Manage Orders Icon",
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Text(
+                                    text = "Manage Orders",
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        color = Color.White,
+                                        fontSize = 20.sp
+                                    )
+                                )
+                            }
                         }
                     }
-
-
-
                 }
             }
 
@@ -328,7 +333,9 @@ fun ProfileScreen(
                     value = newFirstname,
                     onValueChange = { newFirstname = it },
                     label = { Text("New Firstname") },
-                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
                     isError = uiState.firstNameError == true,
 
                 )
@@ -339,7 +346,9 @@ fun ProfileScreen(
                     value = newLastname,
                     onValueChange = { newLastname = it },
                     label = { Text("New Lastname") },
-                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
                     isError = uiState.lastNameError == true,
 
                 )
@@ -360,7 +369,10 @@ fun ProfileScreen(
 
 
                     },
-                    modifier = Modifier.padding(16.dp).height(60.dp).width(160.dp),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(60.dp)
+                        .width(160.dp),
                     shape = MaterialTheme.shapes.medium,
                     contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
                     colors = ButtonColors(

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finalproject.common.Response
 import com.example.finalproject.R
+import com.example.finalproject.common.helper.PreferenceManager
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.BookRepository
@@ -18,6 +19,7 @@ import com.example.finalproject.domain.repository.ProfileRepository
 import com.example.finalproject.model.shopping.UserProfileDTO
 import com.example.finalproject.model.shopping.UserProfileInfoDTO
 import com.example.finalproject.model.user_detail.UserDetail
+import com.example.finalproject.utils.ACCESS_TOKEN
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +37,8 @@ class ProfileViewModel @Inject constructor(
     private val repository: BookRepository,
     private val authRepository: AuthRepository,
     private val profileRepository: ProfileRepository,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -115,6 +118,11 @@ class ProfileViewModel @Inject constructor(
         } catch (e: Exception) {
             Log.e("Error", e.message.toString())
         }
+    }
+
+    fun fetchCurrentUser(): Boolean {
+        return preferenceManager.getData(ACCESS_TOKEN, "").isEmpty() || !preferenceManager.getData(
+            ACCESS_TOKEN, "").equals("11631d99-c395-4eae-b1b4-17c70427a1b6")
     }
 
     suspend fun getUserData() {

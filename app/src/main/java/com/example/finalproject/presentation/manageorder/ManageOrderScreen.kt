@@ -89,11 +89,13 @@ fun ManageOrderScreen(
         }
     ) { padding ->
         if(viewModel.fetchCurrentUser()) {
-            Text(
+            Text(modifier = Modifier.padding(
+                top = 100.dp,
+            ),
                 text ="You do not have permission to access this page",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    color = Color.Red
+                    color = Color.Red,
                 ),
             )
         }else

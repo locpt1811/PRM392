@@ -84,7 +84,8 @@ class ManageOrderViewModel @Inject constructor(
     }
 
     fun fetchCurrentUser(): Boolean {
-        return preferenceManager.getData(ACCESS_TOKEN, "").isEmpty()
+        return preferenceManager.getData(ACCESS_TOKEN, "").isEmpty() || !preferenceManager.getData(
+            ACCESS_TOKEN, "").equals("11631d99-c395-4eae-b1b4-17c70427a1b6")
     }
 
     fun updateOrderStatus(orderId: Int, statusId: Int) {
