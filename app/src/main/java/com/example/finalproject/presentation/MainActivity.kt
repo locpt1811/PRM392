@@ -47,10 +47,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-//    @Inject
-//    lateinit var shoppingAlarmScheduler: ShoppingAlarmScheduler
-
     @Inject
     lateinit var shoppingNotifier: ShoppingNotifier
 
@@ -82,7 +78,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val uiState by viewModel.uiState.collectAsState()
-            val cartUiState by model.uiState.collectAsState()
 
             val permissionLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestPermission(),
@@ -97,10 +92,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-//            if (uiState.consumableViewEvent.isNotEmpty()) {
-//                shoppingAlarmScheduler.schedule()
-//                viewModel.onUiEventConsumed()
-//            }
             if (hasNotificationPermission) {
                 shoppingNotifier.launchNotification()
             }
@@ -111,14 +102,7 @@ class MainActivity : ComponentActivity() {
                     MainDestinations.ONBOARDING_ROUTE
 
             } else {
-//                    Log.d("ShowInit", preferenceManager.getData(ACCESS_TOKEN, "").toString())
-//                    if(preferenceManager.getData(ACCESS_TOKEN, "").toString().isEmpty()){
-//                        MainDestinations.LOGIN_ROUTE
-//                    }else{
-//                        MainDestinations.PRODUCT_ROUTE
-//                    }
                 MainDestinations.PRODUCT_ROUTE
-
             }
             ShoppingApp(
                 startDestination = startDestination,

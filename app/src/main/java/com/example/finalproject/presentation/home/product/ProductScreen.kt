@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
@@ -46,6 +48,7 @@ import com.example.finalproject.R
 import com.example.finalproject.common.helper.UiText
 import com.example.finalproject.model.shopping.BookDTO
 import com.example.finalproject.presentation.designsystem.components.Banner
+import com.example.finalproject.presentation.designsystem.components.Promotions
 import com.example.finalproject.presentation.designsystem.components.ShoppingScaffold
 import com.example.finalproject.presentation.designsystem.components.ThemeButton
 import com.example.finalproject.presentation.designsystem.theme.ShoppingAppTheme
@@ -165,6 +168,12 @@ private fun ProductScreenContent(
                     selectedCatName = selectedCatName,
                     onCategoryClick = remember { { selectedCatName = it } }
                 )
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.one_level_margin)))
+
+                Promotions()
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.one_level_margin)))
 
                 ProductList(
                     productList = productList,

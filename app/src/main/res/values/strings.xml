@@ -72,8 +72,8 @@
     <string name="enter_valid_email">Please enter a valid email</string>
     <string name="confirm">Confirm</string>
     <string name="products">Products</string>
-    <string name="shopping_notification_title">Don\'t forget to shop</string>
-    <string name="shop_notification_description">Come and buy your favorite books. Your cart is ready to checkout.</string>
+    <string name="shopping_notification_title">Don\'t forget to checkout</string>
+    <string name="shop_notification_description">Come and buy your favorite books.</string>
     <string name="shopping_channel_name" translatable="false">Shopping channel</string>
     <string name="shopping_channel_description" translatable="false">Daily shopping reminder</string>
     <string name="delete">Delete</string>

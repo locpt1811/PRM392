@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.finalproject.R
 import com.example.finalproject.common.Response
 import com.example.finalproject.common.helper.UiText
+import com.example.finalproject.core.notification.ShoppingNotifier
 import com.example.finalproject.data.mapper.toProductEntity
 import com.example.finalproject.domain.repository.AuthRepository
 import com.example.finalproject.domain.repository.BookRepository
@@ -36,7 +37,8 @@ class ProductDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bookRepository: BookRepository,
     private val authRepository: AuthRepository,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val shoppingNotifier: ShoppingNotifier
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductScreenUiState())
@@ -171,6 +173,7 @@ class ProductDetailViewModel @Inject constructor(
                     )
                 )) {
                     is Response.Success<*> -> {
+                        shoppingNotifier.launchNotification()
                         _uiState.update {
                             it.copy(
                                 userMessages = listOf(
